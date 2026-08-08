@@ -1,0 +1,44 @@
+<!-- ============================================================================
+     modulo-4.html — Configurações Gerais (Módulo 4, exclusivo de administrador)
+     ----------------------------------------------------------------------------
+     Painel de usuários (promover/rebaixar/remover conta, reenviar código
+     de troca de senha) + atividade recente, histórico completo de
+     resumos salvos e a lista de dias lançados (mesmo painel do Módulo 3).
+
+     Injetado por inicializacao.js (carregarModulosHtml) dentro de
+     <div id="slot-modulo-4"> em index.html.
+     Comportamento: usuarios.js, resumos-salvos.js, gerenciar-dias-lancados.js.
+     Estilos: style.css, seções "Painel Usuários (Configurações Gerais)".
+     ============================================================================ -->
+
+<!-- ===================== MÓDULO 4: Configurações Gerais ===================== -->
+<section class="view hidden" id="view-config">
+  <div class="panel">
+    <div class="panel-title">Usuários <button type="button" class="refresh-btn" onclick="carregarUsuariosSeNecessario(true)" title="Atualizar">🔄 atualizar</button></div>
+    <div class="panel-hint">Contas com acesso ao sistema. Administradores têm acesso completo; membros só visualizam Faixa X/Y e Análises Gerais, sem poder alterar dados.</div>
+    <div class="user-list" id="user-list"><div class="empty-hint">Carregando...</div></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Configurações de conta</div>
+    <div class="panel-hint">Seus dados de acesso ficam em <button type="button" class="link-btn" onclick="mostrarView('conta')" style="display:inline; font-size:11.5px;">Minha conta →</button></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Atividade recente</div>
+    <div class="panel-hint">Últimas alterações salvas, com quem fez cada uma.</div>
+    <div class="log-list" id="log-list"><div class="empty-hint">Carregando...</div></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Gerenciar dias lançados</div>
+    <div class="panel-hint">Mesma ferramenta do painel "Lançar Pontuação" — remova um dia específico se ele foi lançado por engano.</div>
+    <div class="day-list" id="day-list-config"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Resumos salvos <button type="button" class="refresh-btn" onclick="carregarResumosSeNecessario(true)" title="Atualizar">🔄 atualizar</button></div>
+    <div class="panel-hint">Histórico protegido — fica registrado numa aba própria da planilha e não é apagado mesmo se o ranking do dia a dia for limpo ou reiniciado.</div>
+    <div id="resumos-salvos-lista"><div class="empty-hint">Carregando...</div></div>
+  </div>
+</section>

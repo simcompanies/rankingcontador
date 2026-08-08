@@ -1,0 +1,57 @@
+<!-- ============================================================================
+     modulo-1.html — Faixa X / Faixa Y (Módulo 1)
+     ----------------------------------------------------------------------------
+     O quadro de classificação das duas divisões — tela inicial após o
+     login, visível para qualquer papel (administrador ou membro).
+
+     Injetado por inicializacao.js (carregarModulosHtml) dentro de
+     <div id="slot-modulo-1"> em index.html.
+     Comportamento: renderizacao.js (renderDivision), participantes.js
+     (addParticipant/removeParticipant/renameParticipant/updateScore).
+     Estilos: style.css, seção "Board de ranking".
+     ============================================================================ -->
+
+<!-- ===================== MÓDULO 1: Faixa X / Faixa Y ===================== -->
+<section class="view" id="view-faixas">
+  <div class="board">
+    <div class="division x" id="div-x">
+      <div class="division-head">
+        <div>
+          <div class="division-title">Faixa X</div>
+          <div class="division-range">0 a 19.999M</div>
+        </div>
+      </div>
+      <div class="table-wrap"><table><thead><tr id="head-x"></tr></thead><tbody id="body-x"></tbody></table></div>
+      <div class="empty-hint" id="empty-x" style="display:none;">Nenhum participante ainda.</div>
+      <div class="row-actions hidden">
+        <button onclick="addParticipant('x')">+ Participante</button>
+        <button onclick="addDay()">+ Dia em branco</button>
+      </div>
+    </div>
+
+    <div class="division y" id="div-y">
+      <div class="division-head">
+        <div>
+          <div class="division-title">Faixa Y</div>
+          <div class="division-range">20M ou mais</div>
+        </div>
+      </div>
+      <div class="table-wrap"><table><thead><tr id="head-y"></tr></thead><tbody id="body-y"></tbody></table></div>
+      <div class="empty-hint" id="empty-y" style="display:none;">Nenhum participante ainda.</div>
+      <div class="row-actions hidden">
+        <button onclick="addParticipant('y')">+ Participante</button>
+        <button onclick="addDay()">+ Dia em branco</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Regra de pontuação</div>
+    <div class="rules-note">Pontuação calculada pela posição no crescimento % do dia (não pelo valor da empresa) · 1º ao 10º colocado: +10 a +1 (−1 por posição) · 11º: 0 ponto · a partir do 12º, negativo — decrescente 1 a 1 numa faixa com até 14 participantes, ou escalonado em pares (12º-13º −1, 14º-15º −2, 16º-17º −3...) numa faixa com 15 ou mais · a soma diária forma a classificação da temporada; empates seguem as Regras de Desempate abaixo.</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Regras de desempate</div>
+    <div class="rules-note">Ganho máximo diário +10 · critério 1 — maior pontuação acumulada · critério 2+ — compara o resultado do dia mais recente e retrocede um dia por vez até achar diferença · 0 &gt; -1 &gt; -2, um -2 nunca fica acima de um -1 no mesmo dia comparado.</div>
+  </div>
+</section>

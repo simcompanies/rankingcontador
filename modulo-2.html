@@ -1,0 +1,85 @@
+<!-- ============================================================================
+     modulo-2.html — Análises Gerais (Módulo 2)
+     ----------------------------------------------------------------------------
+     Estatísticas gerais (cartões), filtro por período/dias específicos, o
+     ranking filtrado resultante, os dashboards mais profundos (destaques,
+     evolução acumulada, mapa de desempenho) e o resumo do último dia salvo.
+
+     Injetado por inicializacao.js (carregarModulosHtml) dentro de
+     <div id="slot-modulo-2"> em index.html.
+     Comportamento: analises-gerais.js (renderStatsGrid), filtros.js,
+     analises-dashboard.js (renderDestaques/renderEvolucaoChart/renderHeatmap
+     — chamados de dentro de aplicarFiltroAnalises, em filtros.js, para
+     respeitar sempre o mesmo filtro), resumos-salvos.js (renderUltimoResumo).
+     Estilos: style.css, seções "Painel Estatísticas Gerais", "Filtros
+     (Análises Gerais)", "Dashboard de Análises", "Painel Resumos Salvos".
+     ============================================================================ -->
+
+<!-- ===================== MÓDULO 2: Análises Gerais ===================== -->
+<section class="view hidden" id="view-analises">
+  <div class="panel">
+    <div class="panel-title">Estatísticas gerais</div>
+    <div class="stats-grid" id="stats-grid"></div>
+
+    <div class="panel-hint" style="margin-top:2px;">Filtre o desempenho por período ou por dias específicos.</div>
+    <div class="filtro-bar">
+      <button type="button" class="filtro-modo-btn active" id="filtro-modo-periodo" onclick="setFiltroModo('periodo')">📅 Por período</button>
+      <button type="button" class="filtro-modo-btn" id="filtro-modo-dias" onclick="setFiltroModo('dias')">🔢 Por dias específicos</button>
+      <button type="button" class="filtro-modo-btn" onclick="limparFiltroAnalises()">✕ Limpar filtro</button>
+    </div>
+    <div class="filtro-campos" id="filtro-campos-periodo">
+      <label class="campo"><span>De</span><input type="date" id="filtro-data-de" onchange="aplicarFiltroAnalises()"></label>
+      <label class="campo"><span>Até</span><input type="date" id="filtro-data-ate" onchange="aplicarFiltroAnalises()"></label>
+    </div>
+    <div class="filtro-campos hidden" id="filtro-campos-dias">
+      <div class="filtro-dias-lista" id="filtro-dias-lista"></div>
+    </div>
+
+    <div class="board" style="margin-top:6px;">
+      <div class="division x">
+        <div class="division-head"><div><div class="division-title">Faixa X</div><div class="division-range filtro-resultado-label" id="filtro-label-x"></div></div></div>
+        <div class="mini-rank-list" id="analises-rank-x"></div>
+      </div>
+      <div class="division y">
+        <div class="division-head"><div><div class="division-title">Faixa Y</div><div class="division-range filtro-resultado-label" id="filtro-label-y"></div></div></div>
+        <div class="mini-rank-list" id="analises-rank-y"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Destaques do período</div>
+    <div class="panel-hint">Recordes, quedas e consistência dentro do filtro aplicado acima — atualiza sozinho quando você troca o filtro.</div>
+    <div class="destaques-grid" id="destaques-grid"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Evolução acumulada <span class="panel-sub">top 5 de cada Faixa</span></div>
+    <div class="panel-hint">Como a pontuação acumulada dos melhores colocados andou dia a dia, dentro do período filtrado.</div>
+    <div class="board" style="margin-top:6px;">
+      <div class="division x">
+        <div class="division-head"><div><div class="division-title">Faixa X</div></div></div>
+        <div class="chart-wrap" id="evolucao-chart-x"></div>
+      </div>
+      <div class="division y">
+        <div class="division-head"><div><div class="division-title">Faixa Y</div></div></div>
+        <div class="chart-wrap" id="evolucao-chart-y"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Mapa de desempenho</div>
+    <div class="panel-hint">Cada célula é a pontuação de um participante num dia — verde para ganho, vermelho para perda; quanto mais forte a cor, maior o valor. Arraste para o lado pra ver mais dias.</div>
+    <div class="division-title" style="color:var(--x-color);">Faixa X</div>
+    <div id="heatmap-wrap-x"></div>
+    <div class="division-title heat-divider" style="color:var(--y-color);">Faixa Y</div>
+    <div id="heatmap-wrap-y"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Resumo do último dia <button type="button" class="refresh-btn" onclick="carregarResumosSeNecessario(true)" title="Atualizar">🔄 atualizar</button></div>
+    <div class="panel-hint">Último resumo salvo no histórico — dados do dia mais recente lançado e do acumulado geral.</div>
+    <div id="ultimo-resumo-wrap"><div class="empty-hint">Carregando...</div></div>
+  </div>
+</section>
