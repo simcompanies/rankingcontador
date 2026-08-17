@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <script src="a11y.js"></script><!-- Memória de acessibilidade — PRIMEIRO script da página, ver a11y.js. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ranking — Faixa X / Faixa Y</title>
+<title>Ranking — Faixas </title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
@@ -142,13 +142,16 @@
     </div>
     <nav class="sidebar-nav">
       <button type="button" class="side-link active" data-view="faixas" onclick="mostrarView('faixas')">
-        <span class="side-icon">🏁</span><span class="side-label">Faixa X / Faixa Y</span>
+        <span class="side-icon">🏁</span><span class="side-label">Faixas</span>
       </button>
       <button type="button" class="side-link" data-view="analises" onclick="mostrarView('analises')">
         <span class="side-icon">📊</span><span class="side-label">Análises Gerais</span>
       </button>
       <button type="button" class="side-link" data-view="lancar" data-papel="administrador" onclick="mostrarView('lancar')">
         <span class="side-icon">📝</span><span class="side-label">Lançar Pontuação</span>
+      </button>
+      <button type="button" class="side-link" data-view="lancar" data-papel="administrador" onclick="mostrarView('lancar')">
+        <span class="side-icon">🎛️</span><span class="side-label">Configurações de Faixas e Dias</span>
       </button>
       <button type="button" class="side-link" data-view="config" data-papel="administrador" onclick="mostrarView('config')">
         <span class="side-icon">⚙️</span><span class="side-label">Configurações Gerais</span>
