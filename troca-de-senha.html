@@ -1,0 +1,30 @@
+<!-- ============================================================================
+     troca-de-senha.html — Modal de troca de senha obrigatória
+     ----------------------------------------------------------------------------
+     Aparece sobre qualquer tela quando o backend indica precisaTrocarSenha
+     (após login com senha temporária) — aberto/fechado por
+     abrirModalNovaSenha()/fecharModalNovaSenha() em modulo-0.js.
+
+     Injetado por inicializacao.js (carregarModulosHtml) dentro de
+     <div id="slot-troca-senha"> em index.html.
+     Comportamento: modulo-0.js (handleDefinirNovaSenha).
+     Estilos: style.css, seção "Modal (troca de senha obrigatória...)".
+     ============================================================================ -->
+
+<!-- ===================== TROCA DE SENHA OBRIGATÓRIA (após código temporário) ===================== -->
+<div class="modal-overlay hidden" id="modal-nova-senha">
+  <div class="modal-card">
+    <div class="panel-title">Defina sua nova senha</div>
+    <div class="panel-hint">Você entrou com um código temporário. Defina uma senha nova pra continuar.</div>
+    <form class="auth-form" onsubmit="handleDefinirNovaSenha(event)">
+      <label class="campo"><span>Nova senha</span>
+        <input type="password" id="nova-senha-1" required minlength="6" autocomplete="new-password">
+      </label>
+      <label class="campo"><span>Repetir nova senha</span>
+        <input type="password" id="nova-senha-2" required minlength="6" autocomplete="new-password">
+      </label>
+      <button type="submit" class="launch-submit" id="nova-senha-btn">Salvar nova senha</button>
+    </form>
+    <div id="nova-senha-msg" class="auth-msg hidden"></div>
+  </div>
+</div>
