@@ -34,6 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="mobile.css">
 </head>
 <body>
 
@@ -184,17 +185,12 @@
 
   <div class="main">
     <header class="topbar">
-      <button type="button" class="sidebar-toggle-mobile" onclick="toggleSidebarMobile(true)" aria-label="Abrir menu">☰</button>
       <div class="topbar-title-wrap">
         <h1 class="topbar-title">Ranking Geral</h1>
         <div class="status-line"><span class="status-dot" id="status-dot"></span><span id="sync-status">carregando...</span></div>
       </div>
 
-      <div class="identity-bar" id="identity-bar">
-        <span class="identity-status" id="identity-status-texto"></span>
-        <button type="button" onclick="mostrarView('conta')">👤 Minha conta</button>
-        <button type="button" onclick="handleLogout()">Sair</button>
-      </div>
+      <div class="identity-bar" id="identity-bar"><span class="identity-status" id="identity-status-texto"></span></div>
     </header>
 
     <!-- Módulo 1 (Faixa X / Faixa Y) — preenchido com modulo-1.html -->
@@ -213,6 +209,14 @@
     <div id="slot-configuracoes-conta"></div>
   </div><!-- /.main -->
 </div><!-- /.app-shell -->
+  <div id="v102-context-bar" aria-label="Navegação contextual"></div>
+  <nav id="v102-bottom-nav" aria-label="Navegação principal">
+    <button class="v102-nav-btn active" data-v102-view="faixas"><span>Ranking</span></button>
+    <button class="v102-nav-btn" data-v102-view="analises"><span>Análises</span></button>
+    <button class="v102-nav-btn" data-v102-view="lancar"><span>Lançar pontuação</span></button>
+    <button class="v102-nav-btn" data-v102-view="config"><span>Configurações</span></button>
+  </nav>
+
 
   <!-- ============================================================================
        Scripts, na ordem de dependência (ver o cabeçalho de cada arquivo para
@@ -244,5 +248,6 @@
   <script src="js/features/usuarios.js"></script><!-- Painel de administração de usuários (Módulo 4). -->
   <script src="js/core/renderizacao.js"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
   <script src="js/core/inicializacao.js"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
+  <script src="v102-ui.js"></script>
 </body>
 </html>

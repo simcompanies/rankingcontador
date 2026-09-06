@@ -1,0 +1,18 @@
+/* V102 — camada visual mobile sobre a mecânica oficial */
+:root{--v102-bg:#0d1218;--v102-surface:#151c24;--v102-surface-2:#1b242e;--v102-border:#283441;--v102-text:#f2f5f7;--v102-muted:#8996a4;--v102-accent:#58d68d;--v102-accent-2:#4aa8ff;--v102-danger:#ef6b78}
+*{box-sizing:border-box}
+body{background:var(--v102-bg)!important;color:var(--v102-text)!important;overflow-x:hidden}
+.sidebar{display:none!important}.sidebar-overlay{display:none!important}.main{margin-left:0!important;min-height:100vh!important;padding-bottom:88px!important}.topbar{position:sticky!important;top:0;z-index:80;background:rgba(13,18,24,.94)!important;border-bottom:1px solid var(--v102-border)!important;backdrop-filter:blur(14px);min-height:68px!important;padding:10px 16px!important}.sidebar-toggle-mobile{display:none!important}.identity-bar{display:none!important}.topbar-title{font-size:19px!important}.status-line{font-size:11px!important;color:var(--v102-muted)!important}
+#slot-modulo-0,#slot-troca-senha{position:relative;z-index:100}
+#slot-modulo-1,#slot-modulo-2,#slot-modulo-3,#slot-modulo-4,#slot-configuracoes-conta{max-width:1180px;margin:0 auto;padding:14px 16px}
+.view.hidden{display:none!important}
+.board{display:grid!important;grid-template-columns:1fr!important;gap:14px!important}.division,.panel{background:var(--v102-surface)!important;border:1px solid var(--v102-border)!important;border-radius:16px!important;box-shadow:0 8px 26px rgba(0,0,0,.18)}
+.division-head,.panel-title{color:var(--v102-text)!important}.division-range,.rules-note,.empty-hint,.muted{color:var(--v102-muted)!important}.table-wrap{overflow:auto!important;-webkit-overflow-scrolling:touch}
+/* KPIs do módulo oficial: trilho sem compressão */
+.stats-grid{display:flex!important;gap:12px!important;overflow-x:auto!important;padding:2px 2px 10px!important;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}.stats-grid>.stat-card{min-width:176px!important;flex:0 0 176px!important;scroll-snap-align:start!important}
+input,select,textarea,button{font:inherit}input,select,textarea{background:#10171f!important;color:var(--v102-text)!important;border:1px solid var(--v102-border)!important;border-radius:10px!important}button{border-radius:10px!important}
+/* Barra contextual + navegação */
+#v102-context-bar{position:fixed;left:0;right:0;bottom:58px;z-index:90;display:flex;gap:8px;overflow-x:auto;padding:8px 12px;background:rgba(21,28,36,.96);border-top:1px solid var(--v102-border);backdrop-filter:blur(14px);-webkit-overflow-scrolling:touch}.v102-context-btn{flex:0 0 auto;border:1px solid var(--v102-border);background:#111820;color:#b9c4ce;padding:8px 12px;white-space:nowrap}.v102-context-btn.active{border-color:rgba(88,214,141,.55);color:#e9fff2;background:rgba(88,214,141,.10)}
+#v102-bottom-nav{position:fixed;left:0;right:0;bottom:0;height:58px;z-index:95;display:grid;grid-template-columns:repeat(4,1fr);background:rgba(9,13,18,.98);border-top:1px solid var(--v102-border);padding-bottom:env(safe-area-inset-bottom);backdrop-filter:blur(14px)}.v102-nav-btn{border:0!important;background:transparent!important;color:#7f8b97!important;border-radius:0!important;display:flex;align-items:center;justify-content:center;padding:6px 4px}.v102-nav-btn span{font-size:11px;font-weight:600}.v102-nav-btn.active{color:var(--v102-accent)!important;box-shadow:inset 0 2px 0 var(--v102-accent)}
+#v102-a11y-note{display:none}
+@media(min-width:800px){.board{grid-template-columns:1fr 1fr!important}.main{padding-bottom:0!important}#v102-bottom-nav,#v102-context-bar{display:none!important}#slot-modulo-1,#slot-modulo-2,#slot-modulo-3,#slot-modulo-4,#slot-configuracoes-conta{padding:22px 24px}}
