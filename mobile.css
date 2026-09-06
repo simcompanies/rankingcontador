@@ -16,3 +16,18 @@ input,select,textarea,button{font:inherit}input,select,textarea{background:#1017
 #v102-bottom-nav{position:fixed;left:0;right:0;bottom:0;height:58px;z-index:95;display:grid;grid-template-columns:repeat(4,1fr);background:rgba(9,13,18,.98);border-top:1px solid var(--v102-border);padding-bottom:env(safe-area-inset-bottom);backdrop-filter:blur(14px)}.v102-nav-btn{border:0!important;background:transparent!important;color:#7f8b97!important;border-radius:0!important;display:flex;align-items:center;justify-content:center;padding:6px 4px}.v102-nav-btn span{font-size:11px;font-weight:600}.v102-nav-btn.active{color:var(--v102-accent)!important;box-shadow:inset 0 2px 0 var(--v102-accent)}
 #v102-a11y-note{display:none}
 @media(min-width:800px){.board{grid-template-columns:1fr 1fr!important}.main{padding-bottom:0!important}#v102-bottom-nav,#v102-context-bar{display:none!important}#slot-modulo-1,#slot-modulo-2,#slot-modulo-3,#slot-modulo-4,#slot-configuracoes-conta{padding:22px 24px}}
+/* V103 — refinamento visual da barra contextual. Mecânica oficial preservada. */
+#v102-context-bar{justify-content:stretch;align-items:stretch;scrollbar-width:none}
+#v102-context-bar::-webkit-scrollbar{display:none}
+.v102-context-btn{min-height:40px;flex:1 1 0;text-align:center;display:flex;align-items:center;justify-content:center}
+#v102-context-bar[data-count="1"] .v102-context-btn{flex:1 1 100%}
+#v102-context-bar[data-count="2"] .v102-context-btn{flex:1 1 50%}
+#v102-context-bar[data-count="3"] .v102-context-btn{flex:1 1 33.333%}
+#v102-context-bar[data-count="4"] .v102-context-btn{flex:1 1 25%}
+#v102-context-bar[data-count="5"] .v102-context-btn{flex:0 0 20%;min-width:130px}
+#v102-context-bar[data-count="6"] .v102-context-btn{flex:0 0 16.666%;min-width:130px}
+@media(max-width:520px){
+  #v102-context-bar[data-count="4"] .v102-context-btn,
+  #v102-context-bar[data-count="5"] .v102-context-btn,
+  #v102-context-bar[data-count="6"] .v102-context-btn{flex:0 0 auto;min-width:138px}
+}
