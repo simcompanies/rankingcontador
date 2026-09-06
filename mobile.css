@@ -31,3 +31,17 @@ input,select,textarea,button{font:inherit}input,select,textarea{background:#1017
   #v102-context-bar[data-count="5"] .v102-context-btn,
   #v102-context-bar[data-count="6"] .v102-context-btn{flex:0 0 auto;min-width:138px}
 }
+
+body.v105-sheet-open{overflow:hidden!important}
+.v105-sheet-overlay{position:fixed;inset:0;z-index:200;background:rgba(3,7,10,.62);display:flex;align-items:flex-end;justify-content:center;padding:0;backdrop-filter:blur(3px)}
+.v105-sheet-overlay.hidden{display:none}
+.v105-bottom-sheet{width:min(720px,100%);max-height:min(76vh,720px);background:#151c24;border:1px solid var(--v102-border);border-bottom:0;border-radius:18px 18px 0 0;box-shadow:0 -18px 60px rgba(0,0,0,.34);padding:9px 16px calc(18px + env(safe-area-inset-bottom));overflow:auto;animation:v105-sheet-up .2s ease-out}
+.v105-sheet-handle{width:42px;height:4px;border-radius:99px;background:#5f6a75;margin:2px auto 12px}
+.v105-sheet-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding-bottom:12px;border-bottom:1px solid var(--v102-border)}
+.v105-sheet-kicker{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--v102-accent);margin-bottom:3px}
+.v105-sheet-head h2{margin:0;font-size:18px;color:#f1f5f7}
+.v105-sheet-close{border:1px solid var(--v102-border);background:#10161d;color:#d8e0e5;padding:8px 11px;border-radius:9px}
+.v105-sheet-body{padding-top:14px}.v105-sheet-description{margin:0;color:#b6c0c8;font-size:13px;line-height:1.6}
+.v105-sheet-actions{display:grid;gap:8px;margin-top:16px}.v105-sheet-action{border:1px solid var(--v102-border);background:#111820;color:#e9eef2;text-align:left;border-radius:10px;padding:12px 13px;font-weight:600}.v105-sheet-action:active{transform:scale(.99);background:rgba(88,214,141,.08);border-color:rgba(88,214,141,.5)}
+@keyframes v105-sheet-up{from{transform:translateY(18px);opacity:.6}to{transform:translateY(0);opacity:1}}
+@media(min-width:800px){.v105-bottom-sheet{margin-bottom:14px;border-bottom:1px solid var(--v102-border);border-radius:18px}.v105-sheet-overlay{align-items:flex-end;padding-bottom:14px}}
