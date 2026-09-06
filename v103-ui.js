@@ -141,6 +141,9 @@
         const view = navButton.dataset.v102View;
         if (typeof window.mostrarView === 'function') {
           window.mostrarView(view);
+          // Atualiza imediatamente a camada visual. Não dependemos de um
+          // MutationObserver de atributos (que poderia entrar em loop).
+          render(view);
         } else {
           console.error('[V107] mostrarView não está disponível.');
         }
@@ -182,12 +185,16 @@
       if (event.key === 'Escape') closeSheet();
     });
 
+    // O projeto oficial injeta os módulos por fetch. Observe apenas a
+    // inserção de nós; observar alterações de `class` aqui cria um ciclo:
+    // syncVisibility() -> render() -> classList -> MutationObserver -> ...
+    // Esse ciclo bloqueava o thread principal e fazia todos os botões
+    // parecerem sem resposta.
     const observer = new MutationObserver(() => {
       syncVisibility();
     });
-    observer.observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class'] });
+    observer.observe(document.body, { subtree: true, childList: true });
 
-    // O projeto oficial carrega módulos por fetch; sincronizamos após eles entrarem.
     syncVisibility();
     setTimeout(syncVisibility, 250);
     setTimeout(syncVisibility, 800);
