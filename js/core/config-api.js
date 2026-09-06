@@ -17,9 +17,17 @@
    salvar ranking, listar usuários, OCR etc.) passam por aqui, diferenciadas
    pelo campo "action" enviado no corpo/query da requisição.
    -------------------------------------------------------------------------- */
+<<<<<<< Updated upstream
 // O Web App do Google Apps Script pode redirecionar para script.googleusercontent.com.
 // Esse domínio precisa estar permitido no CSP do index.html.
 const API_URL = 'https://script.google.com/macros/s/AKfycbzzE5jhGAw2y_2oDWJ1kBL-b_-gvbmXBdNdu_kZdGvl4Pp_ArPDWSR2rUtcBQ4qz54NAQ/exec';
+=======
+<<<<<<< HEAD
+// O Web App do Google Apps Script pode redirecionar para script.googleusercontent.com.
+// Esse domínio precisa estar permitido no CSP do index.html.
+const API_URL = 'https://script.google.com/macros/s/AKfycbzB-zCaIRIDt4amlwcQIRDzQUtot2NuNV47r0s-t6xitCk7gZvaORVM8gZ3GiBfnDJBYw/exec';
+>>>>>>> 3a475a42d21f0f9adf1714e9e44aa08f7c225408
+>>>>>>> Stashed changes
 
 /* Chamada autenticada/mutável (POST) — usada para toda ação que grava ou
    altera dado no backend (login, salvar ranking, criar usuário...).
