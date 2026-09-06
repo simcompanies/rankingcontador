@@ -57,7 +57,7 @@ function destaqueCard(icone, rotulo, valor, detalhe){
     <div class="destaque-icone">${icone}</div>
     <div>
       <div class="destaque-rotulo">${rotulo}</div>
-      <div class="destaque-valor">${valor}</div>
+      <div class="destaque-valor">${escapeHtml(valor)}</div>
       <div class="destaque-detalhe">${detalhe}</div>
     </div>
   </div>`;
@@ -163,7 +163,7 @@ function renderEvolucaoChart(div, dias){
       ? `<polyline points="${pontosSvg}" fill="none" stroke="${cor}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`
       : '';
     const bolinhas = s.pontos.map((v,i)=>
-      `<circle cx="${xFor(i).toFixed(1)}" cy="${yFor(v).toFixed(1)}" r="${s.pontos.length>1?3:4}" fill="${cor}"><title>${s.name} · D${dias[i]+1}: ${ptsTag(v)}</title></circle>`
+      `<circle cx="${xFor(i).toFixed(1)}" cy="${yFor(v).toFixed(1)}" r="${s.pontos.length>1?3:4}" fill="${cor}"><title>${escapeHtml(s.name)} · D${dias[i]+1}: ${ptsTag(v)}</title></circle>`
     ).join('');
     return linha + bolinhas;
   }).join('');
@@ -172,7 +172,7 @@ function renderEvolucaoChart(div, dias){
 
   const legenda = top.map((s,idx)=>{
     const cor = CORES_GRAFICO[idx % CORES_GRAFICO.length];
-    return `<span class="chart-legend-item"><span class="chart-legend-dot" style="background:${cor}"></span>${s.name} <b>${ptsTag(s.total)}</b></span>`;
+    return `<span class="chart-legend-item"><span class="chart-legend-dot" style="background:${cor}"></span>${escapeHtml(s.name)} <b>${ptsTag(s.total)}</b></span>`;
   }).join('');
 
   wrap.innerHTML = `
@@ -216,13 +216,13 @@ function renderHeatmap(div, dias){
     const celulas = dias.map(d=>{
       const v = p.scores[d];
       if(v === null || v === undefined){
-        return `<td class="heat-cell heat-empty" title="${p.name} — Dia ${d+1}: sem lançamento">·</td>`;
+        return `<td class="heat-cell heat-empty" title="${escapeHtml(p.name, 'atributo')} — Dia ${d+1}: sem lançamento">·</td>`;
       }
       const intensidade = (Math.min(1, Math.abs(v) / maxAbs)).toFixed(2);
       const classe = v > 0 ? 'heat-pos' : v < 0 ? 'heat-neg' : 'heat-zero';
-      return `<td class="heat-cell ${classe}" style="--intensidade:${intensidade}" title="${p.name} — Dia ${d+1}: ${scoreTag(v)}">${scoreTag(v)}</td>`;
+      return `<td class="heat-cell ${classe}" style="--intensidade:${intensidade}" title="${escapeHtml(p.name, 'atributo')} — Dia ${d+1}: ${scoreTag(v)}">${scoreTag(v)}</td>`;
     }).join('');
-    return `<tr><td class="name heat-name">${p.name}</td>${celulas}</tr>`;
+    return `<tr><td class="name heat-name">${escapeHtml(p.name)}</td>${celulas}</tr>`;
   }).join('');
 
   wrap.innerHTML = `<div class="table-wrap heat-scroll"><table class="heat-table"><thead>${head}</thead><tbody>${body}</tbody></table></div>`;

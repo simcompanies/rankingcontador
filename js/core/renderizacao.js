@@ -61,7 +61,7 @@ function renderDivision(div){
     }
     return `<tr class="${rankClass}">
       <td class="rank">${rank+1}</td>
-      <td class="name">${p.name}${tieTag}</td>
+      <td class="name">${escapeHtml(p.name)}${tieTag}</td>
       ${cells}
       <td class="total">${p.total}</td>
       ${admin ? `<td><div class="row-btns">

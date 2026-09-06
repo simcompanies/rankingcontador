@@ -18,8 +18,8 @@ function renderStatsGrid(){
   if(!grid) return;
   const xAcc = sortDivision('x');
   const yAcc = sortDivision('y');
-  const liderX = xAcc.length ? `${xAcc[0].name} (${ptsTag(xAcc[0].total)})` : '—';
-  const liderY = yAcc.length ? `${yAcc[0].name} (${ptsTag(yAcc[0].total)})` : '—';
+  const liderX = xAcc.length ? `${escapeHtml(xAcc[0].name)} (${ptsTag(xAcc[0].total)})` : '—';
+  const liderY = yAcc.length ? `${escapeHtml(yAcc[0].name)} (${ptsTag(yAcc[0].total)})` : '—';
   grid.innerHTML = `
     <div class="stat-card"><span class="stat-value">${state.days}</span><span class="stat-label">dias lançados</span></div>
     <div class="stat-card"><span class="stat-value">${state.x.length}</span><span class="stat-label">participantes Faixa X</span></div>

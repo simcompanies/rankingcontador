@@ -67,7 +67,7 @@ function renderDraftNewRows(div){
   wrap.innerHTML = draftNew[div].map((row,i)=>`
     <div class="launch-row launch-row-new">
       <input class="launch-name-input" type="text" placeholder="Novo participante"
-        value="${row.name}" oninput="draftNew.${div}[${i}].name=this.value; updateLaunchProgress();">
+        value="${escapeHtml(row.name, 'atributo')}" oninput="draftNew.${div}[${i}].name=this.value; updateLaunchProgress();">
       <input class="launch-input" type="text" inputmode="numeric" pattern="-?[0-9]*" placeholder="pts"
         value="${row.value}"
         oninput="draftNew.${div}[${i}].value=this.value; styleLaunchInput(this); updateLaunchProgress();"
@@ -106,7 +106,7 @@ function renderLaunchForm(){
     listEl.innerHTML = state[div].length
       ? state[div].map((p,i)=>`
         <div class="launch-row">
-          <span class="launch-name">${p.name}</span>
+          <span class="launch-name">${escapeHtml(p.name)}</span>
           <input class="launch-input" type="text" inputmode="numeric" pattern="-?[0-9]*" placeholder="—"
             oninput="draft.${div}[${i}]=this.value; styleLaunchInput(this); updateLaunchProgress();"
             onkeydown="if(event.key==='Enter'){event.preventDefault(); focusNextLaunch(this);}"

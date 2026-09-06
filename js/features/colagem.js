@@ -93,7 +93,7 @@ function renderPending(){
       ? `<span class="tag-known">já em Faixa ${e.knownDiv.toUpperCase()}</span>`
       : `<span class="tag-known" style="color:var(--y-color);">novo</span>`;
     return `<div class="pending-row">
-      <span class="pname">${e.name}</span>
+      <span class="pname">${escapeHtml(e.name)}</span>
       <span class="pval ${valClass}">${scoreTag(e.value)}</span>
       ${tag}
       <select onchange="pendingImport[${i}].div=this.value">

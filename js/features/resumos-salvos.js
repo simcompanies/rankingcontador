@@ -51,7 +51,7 @@ function renderResumosSalvos(){
         <span class="resumo-data">${data}</span>
         <button type="button" onclick="copiarResumoSalvo(${i})">Copiar</button>
       </div>
-      <pre class="resumo-body">${r.texto}</pre>
+      <pre class="resumo-body">${escapeHtml(r.texto)}</pre>
     </div>`;
   }).join('');
 }
@@ -74,7 +74,7 @@ function renderUltimoResumo(){
       <span class="resumo-data">${data}</span>
       <button type="button" onclick="copiarResumoSalvo(0)">Copiar</button>
     </div>
-    <pre class="resumo-body">${r.texto}</pre>
+    <pre class="resumo-body">${escapeHtml(r.texto)}</pre>
   </div>`;
 }
 

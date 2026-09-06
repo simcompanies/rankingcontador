@@ -50,14 +50,15 @@ function renderUsuarios(){
           if(!souEu){
             const proximoPapel = u.papel === 'administrador' ? 'membro' : 'administrador';
             const rotuloPapel = u.papel === 'administrador' ? '↓ tornar membro' : '↑ tornar admin';
-            acoes = `<button class="del-x-btn" onclick="handleAlterarPapel('${u.idUsuario}', '${proximoPapel}')" title="Alterar papel">${rotuloPapel}</button>`;
+            const idAtributo = escapeHtml(u.idUsuario, 'atributo');
+            acoes = `<button class="del-x-btn" onclick="handleAlterarPapel('${idAtributo}', '${proximoPapel}')" title="Alterar papel">${rotuloPapel}</button>`;
             if(u.resetPendente){
-              acoes += `<button class="del-x-btn" onclick="handleAdminEnviarReset('${u.idUsuario}')" title="Enviar código temporário">Enviar código</button>`;
+              acoes += `<button class="del-x-btn" onclick="handleAdminEnviarReset('${idAtributo}')" title="Enviar código temporário">Enviar código</button>`;
             }
-            acoes += `<button class="del-x-btn" onclick="handleRemoverUsuario('${u.idUsuario}')" title="Remover">✕</button>`;
+            acoes += `<button class="del-x-btn" onclick="handleRemoverUsuario('${idAtributo}')" title="Remover">✕</button>`;
           }
           return `<div class="user-row">
-            <span class="user-row-name">${u.nome} <span class="user-row-email">${u.email}</span> ${badge} ${pendente}</span>
+            <span class="user-row-name">${escapeHtml(u.nome)} <span class="user-row-email">${escapeHtml(u.email)}</span> ${badge} ${pendente}</span>
             <span class="row-btns">${acoes}</span>
           </div>`;
         }).join('')
@@ -71,8 +72,8 @@ function renderUsuarios(){
           const data = l.dataHora ? new Date(l.dataHora).toLocaleString('pt-BR') : '—';
           return `<div class="log-row">
             <span class="log-row-data">${data}</span>
-            <span class="log-row-usuario">${l.usuario}</span>
-            <span class="log-row-acao">${l.acao}</span>
+            <span class="log-row-usuario">${escapeHtml(l.usuario)}</span>
+            <span class="log-row-acao">${escapeHtml(l.acao)}</span>
           </div>`;
         }).join('')
       : '<div class="empty-hint">Nenhuma atividade registrada ainda.</div>';

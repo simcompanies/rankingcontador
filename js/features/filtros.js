@@ -122,7 +122,7 @@ function aplicarFiltroAnalises(){
     wrap.innerHTML = ranking.length
       ? ranking.map((p,i)=>`<div class="mini-rank-row">
           <span class="mini-rank-pos">${i+1}°</span>
-          <span class="mini-rank-name">${p.name}</span>
+          <span class="mini-rank-name">${escapeHtml(p.name)}</span>
           <span class="mini-rank-total ${p.total<0?'val-neg':p.total>0?'val-pos':''}">${ptsTag(p.total)}</span>
         </div>`).join('')
       : '<div class="empty-hint">Nenhum participante ainda.</div>';

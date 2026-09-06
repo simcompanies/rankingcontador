@@ -74,3 +74,38 @@ function exigirAdministrador(){
   if(!souAdmin()){ alert('Apenas administradores podem fazer essa alteração.'); return false; }
   return true;
 }
+
+/* --------------------------------------------------------------------------
+   Escape de saída para HTML — usado por toda função de renderização que
+   insere dado dinâmico (nome de participante, nome/e-mail de usuário,
+   texto de resumo salvo etc.) dentro de innerHTML via template string.
+
+   Sem isso, um nome de participante ou de usuário contendo algo como
+   `<img src=x onerror=...>` seria interpretado como HTML de verdade pelo
+   navegador (XSS armazenado) assim que qualquer tela redesenhasse aquele
+   nome — inclusive o painel de administração de Usuários, o que é
+   especialmente grave (rodaria com a sessão do administrador).
+
+   Use contexto:'texto' (padrão) para conteúdo de texto normal entre tags
+   (ex.: ${escapeHtml(p.name)} dentro de <td>...</td>), e contexto:'atributo'
+   quando o valor vai dentro de um atributo entre aspas (ex.: value="${...}"
+   ou dentro de um onclick="...('${...}')"), pois esse contexto também
+   precisa escapar aspas simples/duplas para não permitir que o valor
+   "escape" do atributo. -------------------------------------------------------------------------- */
+function escapeHtml(valor, contexto = 'texto'){
+  if(valor === null || valor === undefined) return '';
+
+  let resultado = String(valor)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  if(contexto === 'atributo'){
+    resultado = resultado
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
+      .replace(/`/g, '&#96;');
+  }
+
+  return resultado;
+}
