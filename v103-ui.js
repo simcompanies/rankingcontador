@@ -30,7 +30,7 @@
       'Preencher': {title:'Preencher lançamento', text:'Abre a aba oficial de preenchimento do dia. O formulário trabalha com as duas faixas e respeita os participantes e dias existentes no estado oficial.', actions:[['Abrir preenchimento',()=>callOfficial(()=>window.switchLaunchTab('form'))]]},
       'Colar dados': {title:'Colar dados', text:'Abre o fluxo oficial de colagem. O texto é interpretado, colocado em conferência e só depois aplicado ao dia e à faixa escolhidos.', actions:[['Abrir colagem',()=>callOfficial(()=>window.switchLaunchTab('paste'))]]},
       'OCR': {title:'Ler pontuação de um print', text:'Usa o mecanismo oficial de OCR para extrair os dados de um print e alimentar o mesmo fluxo de conferência da colagem.', actions:[['Selecionar imagem',()=>{ const el=document.getElementById('ocr-file-input'); if(el) el.click(); }]]},
-      'Resumo do dia': {title:'Resumo do dia', text:'Gera o texto do resumo usando a função oficial de resumo e permite copiar ou salvar o resultado no histórico.', actions:[['Ir para resumo',()=>scrollToId('summary-output')],['Gerar resumo',()=>callOfficial(()=>window.generateSummary()))]]},
+      'Resumo do dia': {title:'Resumo do dia', text:'Gera o texto do resumo usando a função oficial de resumo e permite copiar ou salvar o resultado no histórico.', actions:[['Ir para resumo',()=>scrollToId('summary-output')],['Gerar resumo',()=>callOfficial(()=>window.generateSummary())]]},
       'Dias lançados': {title:'Dias lançados', text:'Lista oficial para consultar e, quando autorizado, remover dias lançados. A remoção desloca os dias posteriores conforme a mecânica oficial.', actions:[['Abrir dias lançados',()=>scrollToId('day-list')]]}
     },
     config: {
@@ -38,7 +38,8 @@
       'Minha conta': {title:'Minha conta', text:'Exibe os dados da sessão atual e usa o fluxo oficial para solicitar uma nova senha.', actions:[['Abrir minha conta',()=>callOfficial(()=>window.mostrarView('conta'))]]},
       'Usuários': {title:'Usuários', text:'Painel administrativo oficial para listar usuários e, conforme a permissão, alterar papel, enviar código temporário ou remover usuários.', actions:[['Abrir usuários',()=>scrollToId('user-list')]]},
       'Atividade recente': {title:'Atividade recente', text:'Mostra os registros de atividade retornados pelo sistema oficial.', actions:[['Abrir atividade',()=>scrollToId('log-list')]]},
-      'Resumos salvos': {title:'Resumos salvos', text:'Consulta o histórico oficial persistido no servidor.', actions:[['Abrir histórico',()=>scrollToId('resumos-salvos-lista')]]}
+      'Resumos salvos': {title:'Resumos salvos', text:'Consulta o histórico oficial persistido no servidor.', actions:[['Abrir histórico',()=>scrollToId('resumos-salvos-lista')]]},
+      'Sair': {title:'Sair da conta', text:'Encerra a sessão atual usando o mecanismo oficial do projeto, limpando a sessão local e retornando à tela de entrada.', actions:[['Sair da conta',()=>callOfficial(()=>{ if(typeof window.handleLogout==='function') window.handleLogout(); })]]}
     }
   };
 
