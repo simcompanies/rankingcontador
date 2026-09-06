@@ -1,0 +1,27 @@
+<!-- ============================================================================
+     configuracoes-de-conta.html — "Minha conta" (aberta pelo topbar)
+     ----------------------------------------------------------------------------
+     Dados da sessão atual (nome/e-mail/papel) e o botão de solicitar troca
+     de senha — disponível para qualquer papel, não só administrador.
+
+     Injetado por inicializacao.js (carregarModulosHtml) dentro de
+     <div id="slot-configuracoes-conta"> em index.html.
+     Comportamento: configuracoes-de-conta.js.
+     Estilos: style.css, seção "Configurações de conta".
+     ============================================================================ -->
+
+<!-- ===================== Configurações de conta (aberta pelo topbar, qualquer papel) ===================== -->
+<section class="view hidden" id="view-conta">
+  <div class="panel">
+    <div class="panel-title">Configurações de conta</div>
+    <div class="conta-card" id="conta-info"></div>
+    <div id="conta-membro-area" class="hidden">
+      <div class="panel-hint">Esqueceu sua senha ou quer trocá-la? Solicite abaixo — um administrador vai liberar um código temporário de acesso por e-mail.</div>
+      <button type="button" id="solicitar-reset-btn" onclick="handleSolicitarReset()">Solicitar nova senha</button>
+      <div class="panel-hint" id="conta-reset-status" style="margin-top:10px; margin-bottom:0;"></div>
+    </div>
+    <div id="conta-admin-area" class="hidden">
+      <div class="panel-hint" style="margin-bottom:0;">Esqueceu sua própria senha? Saia da conta e use "Esqueceu sua senha?" na tela de login.</div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,830 @@
+/* ============================================================================
+   style.css
+   ----------------------------------------------------------------------------
+   Todo o CSS da aplicação "Ranking — Faixa X / Faixa Y", consolidado num só
+   lugar (antes vivia dentro de um <style> embutido em index.html).
+
+   Organização (o arquivo já era dividido em blocos comentados no original;
+   preservados abaixo na mesma ordem):
+     1. Variáveis de cor (:root) e reset básico
+     2. Casca do app: sidebar + topbar + área de conteúdo (com breakpoint mobile)
+     3. Painéis genéricos (cards reutilizados em várias telas)
+     4. Módulo 3 — Lançar Pontuação: abas "Preencher" e "Colar"
+     5. Board de ranking (Módulo 1 — tabelas de Faixa X / Faixa Y)
+     6. Resumo (texto gerado, botão copiar)
+     7. Módulo 0 — telas de login/cadastro/esqueci-senha + modal de nova senha
+     8. Badges de papel/conta, Módulo 2 (estatísticas + filtros),
+        Resumos Salvos, painel de Usuários e Configurações de conta
+
+   Nenhuma classe ou seletor foi renomeado nesta refatoração — o HTML de
+   cada módulo (modulo-0.html, modulo-1.html...) usa exatamente as mesmas
+   classes já usadas aqui.
+   ============================================================================ */
+
+  /* ---------- Paleta de cores (custom properties) e reset básico ---------- */
+  :root{
+    --bg: #12161d;
+    --panel: #1a2029;
+    --panel-2: #212938;
+    --panel-3: #262f40;
+    --line: #2a3242;
+    --text: #e7ecf2;
+    --muted: #8892a3;
+    --x-color: #2fd8a8;
+    --x-dim: #1a4a3f;
+    --y-color: #f5a83c;
+    --y-dim: #4a3a1a;
+    --neg: #ef5f6f;
+    --pos: #2fd8a8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Mono', monospace;
+    /* Respeita a "área segura" do aparelho (notch/entalhe e barra de
+       gestos) quando o app roda instalado como PWA em tela cheia
+       (display:standalone) — em navegador comum esses valores são 0px
+       e não mudam nada. */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  :focus-visible{ outline:2px solid var(--x-color); outline-offset:2px; }
+  .hidden{ display:none !important; }
+
+  /* ---------- Casca do app: sidebar + conteúdo ---------- */
+  .app-shell{ display:flex; align-items:stretch; min-height:100vh; max-width:1440px; margin:0 auto; }
+
+  .sidebar{
+    width:238px; flex-shrink:0; background:var(--panel); border-right:1px solid var(--line);
+    position:sticky; top:0; align-self:flex-start; height:100vh; overflow-y:auto;
+    transition:width .18s ease; z-index:20;
+  }
+  .sidebar.collapsed{ width:64px; }
+  .sidebar-head{
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    padding:16px 14px; border-bottom:1px solid var(--line);
+  }
+  .sidebar-brand{
+    font-family:'Oswald',sans-serif; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.05em; font-size:calc(13px * var(--font-scale, 1)); white-space:nowrap; overflow:hidden;
+  }
+  .sidebar.collapsed .sidebar-brand{ display:none; }
+  .sidebar-collapse-btn{
+    background:none; border:1px solid var(--line); border-radius:6px; color:var(--muted);
+    width:26px; height:26px; flex-shrink:0; cursor:pointer; font-size:calc(12px * var(--font-scale, 1)); padding:0;
+  }
+  .sidebar-collapse-btn:hover{ border-color:var(--x-color); color:var(--text); }
+  .sidebar-nav{ display:flex; flex-direction:column; padding:10px 0; }
+  .side-link{
+    display:flex; align-items:center; gap:12px; padding:11px 16px; width:100%;
+    background:none; border:none; border-left:3px solid transparent; border-radius:0;
+    color:var(--muted); font-family:'IBM Plex Mono', monospace; font-size:calc(12px * var(--font-scale, 1));
+    text-align:left; cursor:pointer;
+  }
+  .side-link:hover{ color:var(--text); background:var(--panel-2); }
+  .side-link.active{ color:var(--text); border-left-color:var(--x-color); background:var(--panel-2); font-weight:600; }
+  .side-icon{ font-size:calc(15px * var(--font-scale, 1)); width:18px; text-align:center; flex-shrink:0; }
+  .sidebar.collapsed .side-label{ display:none; }
+  .sidebar.collapsed .side-link{ justify-content:center; padding:11px 0; }
+
+  .sidebar-overlay{ display:none; }
+  .sidebar-toggle-mobile{ display:none; }
+
+  .main{ flex:1; min-width:0; padding:22px 24px 60px; }
+
+  .topbar{
+    position:relative; display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+    max-width:1100px; margin:0 auto 22px; padding-bottom:16px; border-bottom:1px solid var(--line);
+  }
+  .topbar-title-wrap{ flex:1; min-width:170px; }
+  .topbar-title{
+    font-family:'Oswald',sans-serif; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.05em; font-size:calc(20px * var(--font-scale, 1)); margin:0 0 4px;
+  }
+  .status-line{ font-size:calc(11px * var(--font-scale, 1)); color:var(--muted); display:inline-flex; align-items:center; gap:6px; }
+  .status-dot{ width:7px; height:7px; border-radius:50%; background:var(--x-color); display:inline-block; }
+
+  .identity-bar{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:calc(11.5px * var(--font-scale, 1)); }
+  .identity-status{ color:var(--muted); white-space:nowrap; }
+
+  .view{ max-width:1100px; margin:0 auto; }
+
+  /* ---------- Sidebar em modo mobile: vira um painel deslizante com overlay ---------- */
+  @media (max-width:880px){
+    .sidebar{
+      position:fixed; left:-100%; top:0; bottom:0; width:250px; height:100vh;
+      transition:left .22s ease; box-shadow:4px 0 24px rgba(0,0,0,0.5);
+    }
+    .sidebar.open{ left:0; }
+    .sidebar.collapsed{ width:250px; }
+    .sidebar.collapsed .side-label{ display:inline; }
+    .sidebar.collapsed .sidebar-brand{ display:inline; }
+    .sidebar.collapsed .side-link{ justify-content:flex-start; padding:11px 16px; }
+    .sidebar-overlay{ display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:19; }
+    .sidebar-overlay.show{ display:block; }
+    .sidebar-toggle-mobile{
+      display:inline-flex; align-items:center; justify-content:center;
+      width:34px; height:34px; background:var(--panel-2); border:1px solid var(--line);
+      border-radius:8px; color:var(--text); font-size:calc(16px * var(--font-scale, 1)); cursor:pointer; flex-shrink:0;
+    }
+    .main{ padding:16px 14px 50px; }
+  }
+
+  /* ---------- Painéis genéricos ---------- */
+  .panel{
+    max-width:1100px; margin:0 auto 20px;
+    background:var(--panel); border:1px solid var(--line); border-radius:12px;
+    padding:18px 20px;
+  }
+  .panel.accent-x{ border-top:3px solid var(--x-color); }
+  .panel.accent-y{ border-top:3px solid var(--y-color); }
+  .panel-title{
+    font-family:'Oswald',sans-serif; font-weight:600; text-transform:uppercase;
+    letter-spacing:0.05em; font-size:calc(14.5px * var(--font-scale, 1)); margin-bottom:4px;
+    display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+  }
+  .panel-title .day-tag{
+    font-family:'IBM Plex Mono', monospace; text-transform:none; letter-spacing:0;
+    font-weight:500; font-size:calc(11.5px * var(--font-scale, 1)); color:var(--muted);
+    background:var(--panel-2); border:1px solid var(--line); border-radius:20px; padding:2px 10px;
+  }
+  .panel-hint{ color:var(--muted); font-size:calc(11.5px * var(--font-scale, 1)); margin-bottom:14px; line-height:1.55; }
+  .refresh-btn{ background:none; border:none; color:var(--muted); cursor:pointer; font-size:calc(12px * var(--font-scale, 1)); padding:0; margin-left:auto; }
+  .refresh-btn:hover{ color:var(--x-color); }
+
+  .locked-msg{
+    color:var(--muted); font-size:calc(12px * var(--font-scale, 1)); background:var(--panel-2); border:1px dashed var(--line);
+    border-radius:8px; padding:10px 12px; margin-bottom:12px;
+  }
+
+  /* ---------- Lançar dia: abas ---------- */
+  .launch-tabs{ display:flex; gap:6px; margin-bottom:16px; }
+  .launch-tab{
+    background:var(--panel-2); border:1px solid var(--line); color:var(--muted);
+    padding:8px 14px; border-radius:8px; font-family:'IBM Plex Mono', monospace;
+    font-size:calc(12px * var(--font-scale, 1)); font-weight:600; cursor:pointer;
+  }
+  .launch-tab.active{ color:var(--text); border-color:var(--x-color); background:rgba(47,216,168,0.10); }
+  .launch-tab:hover{ border-color:var(--x-color); }
+
+  .launch-columns{ display:grid; grid-template-columns:1fr 1fr; gap:26px; }
+  @media (max-width:760px){ .launch-columns{ grid-template-columns:1fr; gap:20px; } }
+
+  .launch-col-head{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:6px; padding-bottom:8px; border-bottom:1px solid var(--line);
+  }
+  .launch-col-title{
+    font-family:'Oswald',sans-serif; font-weight:600; text-transform:uppercase;
+    font-size:calc(12.5px * var(--font-scale, 1)); letter-spacing:0.05em;
+  }
+  .launch-col.x .launch-col-title{ color:var(--x-color); }
+  .launch-col.y .launch-col-title{ color:var(--y-color); }
+  .launch-col-count{ color:var(--muted); font-size:calc(10.5px * var(--font-scale, 1)); }
+
+  .launch-list{ max-height:400px; overflow-y:auto; padding-right:6px; scrollbar-width:thin; }
+  .launch-list::-webkit-scrollbar{ width:8px; }
+  .launch-list::-webkit-scrollbar-track{ background:transparent; }
+  .launch-list::-webkit-scrollbar-thumb{ background:var(--line); border-radius:6px; }
+
+  .launch-row{
+    display:flex; align-items:center; gap:10px; padding:7px 0;
+    border-bottom:1px solid var(--line); font-size:calc(12.5px * var(--font-scale, 1));
+  }
+  .launch-row:last-child{ border-bottom:none; }
+  .launch-name{ flex:1; font-weight:600; }
+  .launch-input{
+    width:66px; background:var(--panel-2); border:1px solid var(--line); border-radius:6px;
+    color:var(--text); text-align:center; font-family:'IBM Plex Mono', monospace; font-size:calc(13px * var(--font-scale, 1));
+    padding:7px 4px;
+  }
+  .launch-input:focus{ outline:1px solid var(--x-color); }
+  .launch-input.val-pos{ color:var(--pos); border-color:var(--x-dim); }
+  .launch-input.val-neg{ color:var(--neg); border-color:#4a2229; }
+
+  .launch-row-new{ padding-top:8px; }
+  .launch-name-input{
+    flex:1; min-width:0; background:var(--panel-2); border:1px dashed var(--line); border-radius:6px;
+    color:var(--text); font-family:'IBM Plex Mono', monospace; font-size:calc(12.5px * var(--font-scale, 1)); padding:7px 9px;
+  }
+  .launch-add-row{ margin-top:10px; }
+  .launch-add-row button{ font-size:calc(11px * var(--font-scale, 1)); padding:6px 10px; }
+
+  .launch-footer{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    margin-top:18px; padding-top:14px; border-top:1px dashed var(--line); flex-wrap:wrap;
+  }
+  .launch-progress{ color:var(--muted); font-size:calc(11.5px * var(--font-scale, 1)); }
+  .launch-submit{
+    background:var(--x-color); color:#0b1310; border:1px solid var(--x-color); font-weight:700;
+    padding:10px 22px; border-radius:8px; font-size:calc(12.5px * var(--font-scale, 1)); letter-spacing:0.03em; cursor:pointer;
+  }
+  .launch-submit:hover{ filter:brightness(1.08); }
+  .launch-submit:disabled{ opacity:0.6; cursor:not-allowed; filter:none; }
+
+  /* ---------- Colar ---------- */
+  #paste-area{
+    width:100%; min-height:100px; resize:vertical;
+    background:var(--panel-2); border:1px solid var(--line); border-radius:6px;
+    color:var(--text); font-family:'IBM Plex Mono', monospace; font-size:calc(12.5px * var(--font-scale, 1));
+    padding:10px; line-height:1.6;
+  }
+  .paste-actions{ margin-top:10px; display:flex; gap:8px; }
+
+  .ocr-upload-box{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px;
+    padding:11px 13px; background:var(--panel-2); border:1px dashed var(--line); border-radius:8px;
+  }
+  .ocr-status-text{ color:var(--muted); font-size:calc(11px * var(--font-scale, 1)); }
+  .ocr-raw-wrap{ margin-bottom:14px; }
+  .ocr-raw-wrap summary{ font-size:calc(11.5px * var(--font-scale, 1)); }
+  .ocr-raw-wrap pre{ max-height:220px; overflow-y:auto; }
+
+  .pending-panel{
+    margin-top:16px; background:var(--panel-2); border:1px solid var(--y-color); border-radius:10px;
+    padding:14px 16px;
+  }
+  .pending-title{
+    font-family:'Oswald',sans-serif; font-weight:600; text-transform:uppercase;
+    letter-spacing:0.05em; font-size:calc(13px * var(--font-scale, 1)); margin-bottom:10px; color:var(--y-color);
+  }
+  .pending-row{
+    display:flex; align-items:center; gap:10px; padding:6px 0;
+    border-bottom:1px solid var(--line); font-size:calc(12.5px * var(--font-scale, 1));
+  }
+  .pending-row .pname{ flex:1; font-weight:600; }
+  .pending-row .pval{ width:50px; text-align:right; }
+  .pending-row .pval.val-pos{ color:var(--pos); }
+  .pending-row .pval.val-neg{ color:var(--neg); }
+  .pending-row select{
+    background:var(--panel-3); color:var(--text); border:1px solid var(--line);
+    border-radius:5px; font-family:'IBM Plex Mono', monospace; font-size:calc(12px * var(--font-scale, 1)); padding:4px 6px;
+  }
+  .pending-row .tag-known{ color:var(--muted); font-size:calc(10.5px * var(--font-scale, 1)); min-width:76px; text-align:right; white-space:nowrap; }
+  .pending-actions{ margin-top:12px; display:flex; gap:8px; }
+  .pending-controls{
+    display:flex; gap:18px; flex-wrap:wrap; align-items:center;
+    margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed var(--line);
+    font-size:calc(12px * var(--font-scale, 1)); color:var(--muted);
+  }
+  .pending-controls select{
+    background:var(--panel-3); color:var(--text); border:1px solid var(--line);
+    border-radius:5px; font-family:'IBM Plex Mono', monospace; font-size:calc(12px * var(--font-scale, 1));
+    padding:5px 7px; margin-left:6px;
+  }
+
+  /* ---------- Board de ranking ---------- */
+  .board{ display:grid; grid-template-columns:1fr 1fr; gap:20px; max-width:1100px; margin:0 auto 20px; }
+  @media (max-width:880px){ .board{grid-template-columns:1fr;} }
+
+  .division{ background:var(--panel); border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+  .division-head{ padding:14px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line); }
+  .division.x .division-head{ border-top:3px solid var(--x-color); }
+  .division.y .division-head{ border-top:3px solid var(--y-color); }
+  .division-title{ font-family:'Oswald',sans-serif; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; font-size:calc(15px * var(--font-scale, 1)); }
+  .division.x .division-title{ color:var(--x-color); }
+  .division.y .division-title{ color:var(--y-color); }
+  .division-range{ color:var(--muted); font-size:calc(11px * var(--font-scale, 1)); }
+
+  /* Arrastar para rolar horizontalmente com o mouse (ver enableDragScroll,
+     em renderizacao.js): cursor de "mão" em repouso e "segurando" durante o arraste. */
+  .table-wrap{ overflow-x:auto; cursor:grab; scrollbar-width:thin; scrollbar-color:var(--x-color) var(--panel-2); -webkit-overflow-scrolling:touch; touch-action:pan-x; }
+  .table-wrap.dragging{ cursor:grabbing; user-select:none; }
+  .table-wrap::-webkit-scrollbar{ height:10px; }
+  .table-wrap::-webkit-scrollbar-track{ background:var(--panel-2); border-radius:6px; }
+  .table-wrap::-webkit-scrollbar-thumb{ background:var(--line); border-radius:6px; }
+  .division.x .table-wrap::-webkit-scrollbar-thumb{ background:var(--x-dim); }
+  .division.y .table-wrap::-webkit-scrollbar-thumb{ background:var(--y-dim); }
+  .table-wrap::-webkit-scrollbar-thumb:hover{ background:var(--x-color); }
+  table{ border-collapse:collapse; width:100%; font-size:calc(12.5px * var(--font-scale, 1)); }
+  th,td{ padding:8px 10px; text-align:center; border-bottom:1px solid var(--line); white-space:nowrap; }
+  /* Cabeçalho da tabela fixo ao rolar verticalmente (sticky top) — combinado mais
+     abaixo com as duas primeiras colunas (rank e nome) fixas ao rolar horizontalmente
+     (sticky left), formando um "canto congelado" nas tabelas de ranking. */
+  th{
+    color:var(--muted); font-weight:500; font-size:calc(10.5px * var(--font-scale, 1)); text-transform:uppercase; letter-spacing:0.04em;
+    position:sticky; top:0; background:var(--panel);
+  }
+  tbody tr:hover td{ background:var(--panel-2); }
+  td.name{
+    text-align:left; font-weight:600; min-width:110px;
+    position:sticky; left:34px; z-index:2; background:var(--panel);
+    box-shadow:2px 0 4px rgba(0,0,0,0.35);
+  }
+  tbody tr:hover td.name, tbody tr:hover td.rank{ background:var(--panel-2); }
+  td.rank{
+    font-family:'Oswald',sans-serif; font-weight:700; color:var(--muted); width:34px;
+    position:sticky; left:0; z-index:2; background:var(--panel);
+  }
+  th.rank-h{ position:sticky; left:0; top:0; z-index:5; background:var(--panel); }
+  th.name-h{ position:sticky; left:34px; top:0; z-index:5; background:var(--panel); box-shadow:2px 0 4px rgba(0,0,0,0.35); }
+  tr.top1 td.rank{ color:#ffd35c; }
+  tr.top2 td.rank{ color:#cfd6e0; }
+  tr.top3 td.rank{ color:#d99a5c; }
+  tr.top1 td.name::before{ content:'🥇 '; }
+  tr.top2 td.name::before{ content:'🥈 '; }
+  tr.top3 td.name::before{ content:'🥉 '; }
+  td.total{ font-weight:700; }
+  .row-btns{ display:flex; gap:4px; justify-content:center; flex-wrap:wrap; }
+  input.score{
+    width:46px; background:var(--panel-2); border:1px solid var(--line); border-radius:5px;
+    color:var(--text); text-align:center; font-family:'IBM Plex Mono', monospace; font-size:calc(12px * var(--font-scale, 1)); padding:4px 2px;
+  }
+  input.score:focus{ outline:1px solid var(--x-color); }
+  .val-pos{ color:var(--pos); }
+  .val-neg{ color:var(--neg); }
+  .tiebadge{ display:inline-block; margin-left:6px; font-size:calc(9.5px * var(--font-scale, 1)); color:var(--muted); border:1px solid var(--line); border-radius:4px; padding:1px 5px; }
+  .row-actions{ padding:10px 16px; display:flex; gap:8px; border-top:1px solid var(--line); flex-wrap:wrap; }
+  button{
+    background:var(--panel-2); color:var(--text); border:1px solid var(--line); border-radius:6px;
+    padding:7px 12px; font-family:'IBM Plex Mono', monospace; font-size:calc(11.5px * var(--font-scale, 1)); cursor:pointer;
+  }
+  button:hover{ border-color:var(--x-color); }
+  .division.y button:hover{ border-color:var(--y-color); }
+  button.danger:hover{ border-color:var(--neg); }
+  .del-x-btn{ background:none;border:none;color:var(--muted);cursor:pointer;font-size:calc(14px * var(--font-scale, 1));padding:0 4px; }
+  .del-x-btn:hover{ color:var(--neg); }
+  .del-x-btn:disabled{ opacity:0.35; cursor:not-allowed; }
+  .empty-hint{ padding:16px; color:var(--muted); font-size:calc(12px * var(--font-scale, 1)); text-align:center; }
+  .rules-note{ color:var(--muted); font-size:calc(11px * var(--font-scale, 1)); line-height:1.6; }
+
+  /* ---------- Resumo ---------- */
+  .summary-row{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+  .summary-row label{ font-size:calc(12px * var(--font-scale, 1)); color:var(--muted); }
+  .summary-row select{
+    background:var(--panel-2); color:var(--text); border:1px solid var(--line);
+    border-radius:5px; font-family:'IBM Plex Mono', monospace; font-size:calc(12px * var(--font-scale, 1)); padding:6px 8px;
+  }
+  #summary-output{
+    width:100%; min-height:260px; resize:vertical;
+    background:var(--panel-2); border:1px solid var(--line); border-radius:6px;
+    color:var(--text); font-family:'IBM Plex Mono', monospace; font-size:calc(12.5px * var(--font-scale, 1));
+    padding:12px; line-height:1.55; white-space:pre-wrap;
+  }
+  .copy-flash{ color:var(--pos) !important; border-color:var(--pos) !important; }
+
+  /* ---------- Formulários genéricos (login / cadastro / conta) ---------- */
+  .campo{ display:flex; flex-direction:column; gap:6px; font-size:calc(11.5px * var(--font-scale, 1)); color:var(--muted); }
+  .campo input{
+    background:var(--panel-2); border:1px solid var(--line); border-radius:6px;
+    color:var(--text); font-family:'IBM Plex Mono', monospace; font-size:calc(13px * var(--font-scale, 1)); padding:10px 11px; width:100%;
+  }
+  .campo input:focus{ outline:1px solid var(--x-color); }
+  .auth-form{ display:flex; flex-direction:column; gap:14px; }
+  .auth-form .launch-submit{ width:100%; }
+  .auth-msg{ margin-top:14px; padding:10px 12px; border-radius:8px; font-size:calc(12px * var(--font-scale, 1)); line-height:1.5; border:1px solid var(--line); }
+  .auth-msg.ok{ border-color:var(--pos); color:var(--pos); background:rgba(47,216,168,0.08); }
+  .auth-msg.erro{ border-color:var(--neg); color:var(--neg); background:rgba(239,95,111,0.08); }
+
+  /* ---------- Módulo 0: tela de login ---------- */
+  .auth-gate{
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    padding:24px; background:var(--bg);
+  }
+  .auth-card{
+    width:100%; max-width:380px; background:var(--panel); border:1px solid var(--line);
+    border-radius:14px; padding:30px 26px; box-shadow:0 20px 50px rgba(0,0,0,0.35);
+  }
+  .auth-brand{
+    font-family:'Oswald',sans-serif; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.06em; font-size:calc(15px * var(--font-scale, 1)); color:var(--x-color); text-align:center; margin-bottom:22px;
+  }
+  .auth-view .panel-title{ justify-content:center; text-align:center; margin-bottom:14px; }
+  .auth-links{ display:flex; flex-direction:column; gap:9px; margin-top:18px; align-items:center; }
+  .link-btn{
+    background:none; border:none; color:var(--muted); font-family:'IBM Plex Mono', monospace;
+    font-size:calc(11.5px * var(--font-scale, 1)); text-decoration:underline; cursor:pointer; padding:2px;
+  }
+  .link-btn:hover{ color:var(--x-color); }
+
+  /* ---------- Modal (troca de senha obrigatória após código temporário) ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(6,8,12,0.72); z-index:80;
+    display:flex; align-items:center; justify-content:center; padding:20px;
+  }
+  .modal-card{
+    width:100%; max-width:380px; background:var(--panel); border:1px solid var(--line);
+    border-radius:14px; padding:26px 24px;
+  }
+
+  /* ---------- Papel / badges de conta ---------- */
+  .role-badge{
+    display:inline-block; font-size:calc(9.5px * var(--font-scale, 1)); text-transform:uppercase; letter-spacing:0.04em;
+    padding:2px 8px; border-radius:20px; border:1px solid var(--line); color:var(--muted); white-space:nowrap;
+  }
+  .role-badge.admin{ color:var(--x-color); border-color:var(--x-dim); background:rgba(47,216,168,0.08); }
+  .pending-reset-badge{
+    font-size:calc(9.5px * var(--font-scale, 1)); color:var(--y-color); border:1px solid var(--y-dim); border-radius:20px;
+    padding:2px 8px; white-space:nowrap;
+  }
+
+  /* ---------- Painel Estatísticas Gerais ---------- */
+  .stats-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:12px; margin-bottom:16px; }
+  .stat-card{ background:var(--panel-2); border:1px solid var(--line); border-radius:10px; padding:14px; display:flex; flex-direction:column; gap:4px; text-align:center; }
+  .stat-value{ font-family:'Oswald',sans-serif; font-weight:700; font-size:calc(26px * var(--font-scale, 1)); color:var(--x-color); }
+  .stat-value-sm{ font-size:calc(13px * var(--font-scale, 1)); line-height:1.3; }
+  .stat-label{ color:var(--muted); font-size:calc(10.5px * var(--font-scale, 1)); text-transform:uppercase; letter-spacing:0.04em; }
+
+  /* ---------- Filtros (Análises Gerais) ---------- */
+  .filtro-bar{ display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+  .filtro-modo-btn{ font-size:calc(11px * var(--font-scale, 1)); padding:6px 12px; }
+  .filtro-modo-btn.active{ color:var(--text); border-color:var(--x-color); background:rgba(47,216,168,0.10); }
+  .filtro-campos{
+    display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end; margin-bottom:16px;
+    padding:12px; background:var(--panel-2); border:1px solid var(--line); border-radius:10px;
+  }
+  .filtro-campos .campo{ min-width:130px; }
+  .filtro-campos input[type="date"]{
+    background:var(--panel-3); border:1px solid var(--line); border-radius:6px; color:var(--text);
+    font-family:'IBM Plex Mono', monospace; font-size:calc(12px * var(--font-scale, 1)); padding:8px 9px;
+  }
+  .filtro-dias-lista{ display:flex; flex-wrap:wrap; gap:6px; max-height:120px; overflow-y:auto; padding:2px; }
+  .filtro-dia-chip{
+    font-size:calc(11px * var(--font-scale, 1)); padding:5px 10px; border-radius:20px; border:1px solid var(--line);
+    color:var(--muted); background:var(--panel-3); cursor:pointer;
+  }
+  .filtro-dia-chip.selected{ color:var(--text); border-color:var(--x-color); background:rgba(47,216,168,0.14); }
+  .filtro-resultado-label{ color:var(--muted); font-size:calc(10.5px * var(--font-scale, 1)); font-weight:400; text-transform:none; letter-spacing:0; }
+  .mini-rank-list{ display:flex; flex-direction:column; }
+  .mini-rank-row{ display:flex; align-items:center; gap:10px; padding:7px 4px; border-bottom:1px solid var(--line); font-size:calc(12.5px * var(--font-scale, 1)); }
+  .mini-rank-row:last-child{ border-bottom:none; }
+  .mini-rank-pos{ width:22px; color:var(--muted); font-weight:700; font-family:'Oswald',sans-serif; }
+  .mini-rank-name{ flex:1; font-weight:600; }
+  .mini-rank-total{ font-weight:700; }
+
+  .day-list{ display:flex; flex-direction:column; }
+  .day-row{ display:flex; align-items:center; justify-content:space-between; padding:9px 4px; border-bottom:1px solid var(--line); font-size:calc(12.5px * var(--font-scale, 1)); }
+  .day-row:last-child{ border-bottom:none; }
+  .day-remove-btn{ font-size:calc(11px * var(--font-scale, 1)); }
+
+  /* ---------- Painel Resumos Salvos ---------- */
+  .resumo-card{ background:var(--panel-2); border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-bottom:12px; }
+  .resumo-header{ display:flex; align-items:center; gap:10px; margin-bottom:8px; flex-wrap:wrap; }
+  .resumo-data{ color:var(--muted); font-size:calc(11px * var(--font-scale, 1)); flex:1; }
+  .resumo-body{ white-space:pre-wrap; font-family:'IBM Plex Mono', monospace; font-size:calc(12px * var(--font-scale, 1)); line-height:1.5; margin:0; color:var(--text); }
+
+  /* ---------- Painel Usuários (Configurações Gerais) ---------- */
+  .user-list, .log-list{ display:flex; flex-direction:column; margin-bottom:4px; }
+  .user-row{ display:flex; align-items:center; justify-content:space-between; padding:10px 4px; border-bottom:1px solid var(--line); font-size:calc(12.5px * var(--font-scale, 1)); gap:10px; flex-wrap:wrap; }
+  .user-row:last-child{ border-bottom:none; }
+  .user-row-name{ font-weight:600; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .user-row-email{ color:var(--muted); font-weight:400; }
+  .add-user-form{ display:flex; gap:8px; margin-top:10px; }
+  .add-user-form input{
+    flex:1; background:var(--panel-2); border:1px dashed var(--line); border-radius:6px;
+    color:var(--text); font-family:'IBM Plex Mono', monospace; font-size:calc(12.5px * var(--font-scale, 1)); padding:8px 10px;
+  }
+  .log-row{ display:flex; gap:10px; padding:7px 4px; border-bottom:1px solid var(--line); font-size:calc(11.5px * var(--font-scale, 1)); flex-wrap:wrap; }
+  .log-row:last-child{ border-bottom:none; }
+  .log-row-data{ color:var(--muted); min-width:132px; }
+  .log-row-usuario{ font-weight:600; color:var(--x-color); }
+  .log-row-acao{ color:var(--text); flex:1; min-width:160px; }
+
+  /* ---------- Configurações de conta ---------- */
+  .conta-card{ display:flex; flex-direction:column; gap:7px; font-size:calc(12.5px * var(--font-scale, 1)); margin-bottom:14px; }
+  .conta-card .linha{ display:flex; gap:8px; align-items:center; }
+  .conta-card .linha .rotulo{ color:var(--muted); min-width:60px; }
+
+  /* ============================================================================
+     ACESSIBILIDADE (a11y.js + acessibilidade.js)
+     ----------------------------------------------------------------------------
+     Tudo abaixo responde às preferências aplicadas por a11y.js — via atributos
+     data-* no <html> (convenção A já usada neste arquivo) e, em paralelo, via
+     classes no <body> (convenção B, para compatibilidade com o resto do
+     projeto de origem do a11y.js) — mais o painel visual em si
+     (acessibilidade.js) que deixa o usuário mudar cada preferência.
+     A variável --font-scale já é usada em TODO font-size deste arquivo (ver
+     acima); as seções abaixo cobrem tema, contraste, leitura, espaçamento,
+     movimento, o filtro de daltonismo e o próprio painel.
+     ============================================================================ */
+
+  /* ---------- Paleta extra: cores de gráfico + RGB para o mapa de calor ---------- */
+  :root{
+    --chart-1: var(--x-color);
+    --chart-2: var(--y-color);
+    --chart-3: #7c9bf0;
+    --chart-4: #f083ae;
+    --chart-5: #c9a3f5;
+    --chart-6: #e3d34a;
+    --pos-rgb: 47,216,168;
+    --neg-rgb: 239,95,111;
+  }
+
+  /* ---------- Tema claro (data-theme="light" no <html> OU body.light-mode) ---------- */
+  :root[data-theme="light"],
+  body.light-mode{
+    --bg: #eef1f6;
+    --panel: #ffffff;
+    --panel-2: #f3f5f9;
+    --panel-3: #e7eaf1;
+    --line: #d9dee7;
+    --text: #171b24;
+    --muted: #5b6478;
+    --x-color: #0f9c78;
+    --x-dim: #d7f3e9;
+    --y-color: #b06a0d;
+    --y-dim: #fbe8c9;
+    --neg: #d1394b;
+    --pos: #0f9c78;
+    --pos-rgb: 15,156,120;
+    --neg-rgb: 209,57,75;
+    --chart-3: #3f5fcf;
+    --chart-4: #c93f74;
+    --chart-5: #8347c9;
+    --chart-6: #9c8a12;
+  }
+  :root[data-theme="light"] .launch-submit,
+  body.light-mode .launch-submit{ color:#eafff6; }
+  :root[data-theme="light"] .a11y-toggle-btn,
+  body.light-mode .a11y-toggle-btn{ color:#eafff6; }
+
+  /* ---------- Alto contraste (data-contrast="on" OU body.high-contrast) ---------- */
+  /* Sobre o tema escuro (padrão): preto puro + texto branco + linhas bem visíveis. */
+  :root[data-contrast="on"],
+  body.high-contrast{
+    --bg: #000000;
+    --panel: #0a0c10;
+    --panel-2: #14171d;
+    --panel-3: #1d222b;
+    --line: #7885a0;
+    --text: #ffffff;
+    --muted: #dbe1ec;
+  }
+  /* Sobre o tema claro: branco puro + texto preto + linhas bem escuras. */
+  :root[data-theme="light"][data-contrast="on"],
+  body.light-mode.high-contrast{
+    --bg: #ffffff;
+    --panel: #ffffff;
+    --panel-2: #eef0f4;
+    --panel-3: #e1e4ea;
+    --line: #1b202a;
+    --text: #000000;
+    --muted: #262c38;
+  }
+  :root[data-contrast="on"] .panel,
+  body.high-contrast .panel,
+  :root[data-contrast="on"] .division,
+  body.high-contrast .division,
+  :root[data-contrast="on"] .stat-card,
+  body.high-contrast .stat-card,
+  :root[data-contrast="on"] .destaque-card,
+  body.high-contrast .destaque-card,
+  :root[data-contrast="on"] input,
+  body.high-contrast input,
+  :root[data-contrast="on"] select,
+  body.high-contrast select,
+  :root[data-contrast="on"] button,
+  body.high-contrast button{
+    border-width:2px;
+  }
+  :root[data-contrast="on"] :focus-visible,
+  body.high-contrast :focus-visible{
+    outline-width:3px !important;
+  }
+
+  /* ---------- Leitura simplificada (data-reading="on" OU body.simple-read) ---------- */
+  :root[data-reading="on"] body,
+  body.simple-read{
+    line-height:1.8;
+  }
+  :root[data-reading="on"] .panel-hint,
+  body.simple-read .panel-hint,
+  :root[data-reading="on"] .rules-note,
+  body.simple-read .rules-note,
+  :root[data-reading="on"] .resumo-body,
+  body.simple-read .resumo-body,
+  :root[data-reading="on"] .log-row-acao,
+  body.simple-read .log-row-acao,
+  :root[data-reading="on"] .destaque-detalhe,
+  body.simple-read .destaque-detalhe,
+  :root[data-reading="on"] .auth-msg,
+  body.simple-read .auth-msg{
+    line-height:1.9;
+    letter-spacing:0.01em;
+  }
+  :root[data-reading="on"] .panel-title,
+  body.simple-read .panel-title{
+    letter-spacing:0.08em;
+  }
+
+  /* ---------- Espaçamento amplo (data-spacing="on" OU body.wide-spacing) ---------- */
+  :root[data-spacing="on"] .panel,
+  body.wide-spacing .panel{
+    padding:26px 28px;
+  }
+  :root[data-spacing="on"] .side-link,
+  body.wide-spacing .side-link{
+    padding:15px 16px;
+  }
+  :root[data-spacing="on"] button,
+  body.wide-spacing button{
+    padding:10px 16px;
+  }
+  :root[data-spacing="on"] .launch-row,
+  body.wide-spacing .launch-row,
+  :root[data-spacing="on"] .pending-row,
+  body.wide-spacing .pending-row,
+  :root[data-spacing="on"] .mini-rank-row,
+  body.wide-spacing .mini-rank-row,
+  :root[data-spacing="on"] .day-row,
+  body.wide-spacing .day-row,
+  :root[data-spacing="on"] .user-row,
+  body.wide-spacing .user-row,
+  :root[data-spacing="on"] .log-row,
+  body.wide-spacing .log-row{
+    padding-top:12px;
+    padding-bottom:12px;
+  }
+  :root[data-spacing="on"] th,
+  body.wide-spacing th,
+  :root[data-spacing="on"] td,
+  body.wide-spacing td{
+    padding:11px 13px;
+  }
+  :root[data-spacing="on"] body,
+  body.wide-spacing{
+    letter-spacing:0.015em;
+  }
+
+  /* ---------- Reduzir movimento (data-motion="on" OU body.reduce-motion) ---------- */
+  :root[data-motion="on"] *,
+  :root[data-motion="on"] *::before,
+  :root[data-motion="on"] *::after,
+  body.reduce-motion *,
+  body.reduce-motion *::before,
+  body.reduce-motion *::after{
+    transition-duration:0.001ms !important;
+    animation-duration:0.001ms !important;
+    animation-iteration-count:1 !important;
+    scroll-behavior:auto !important;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{
+      transition-duration:0.001ms !important;
+      animation-duration:0.001ms !important;
+      animation-iteration-count:1 !important;
+      scroll-behavior:auto !important;
+    }
+  }
+
+  /* ---------- Camada do filtro de daltonismo + defs do SVG (ver a11y.js) ---------- */
+  #colorblindOverlay{
+    position:fixed; inset:0; pointer-events:none; z-index:9998;
+  }
+  .a11y-svg-filtros{ position:absolute; width:0; height:0; overflow:hidden; }
+
+  /* ---------- Utilitário: visível só para leitor de tela ---------- */
+  .sr-only{
+    position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+    overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+  }
+
+  /* ============================================================================
+     MENU DE ACESSIBILIDADE — botão flutuante + painel (ver index.html e
+     acessibilidade.js). Fica por cima de tudo (inclusive da tela de login),
+     por isso o z-index bem alto.
+     ============================================================================ */
+  .a11y-toggle-btn{
+    position:fixed; right:20px; bottom:20px; z-index:9999;
+    width:52px; height:52px; border-radius:50%;
+    background:var(--x-color); color:#0b1310; border:none;
+    font-size:calc(21px * var(--font-scale, 1)); display:flex; align-items:center; justify-content:center;
+    cursor:pointer; box-shadow:0 10px 26px rgba(0,0,0,0.4);
+  }
+  .a11y-toggle-btn:hover{ filter:brightness(1.08); transform:translateY(-1px); }
+  .a11y-toggle-btn:focus-visible{ outline:2px solid var(--text); outline-offset:3px; }
+
+  .a11y-panel-overlay{
+    position:fixed; inset:0; background:rgba(6,8,12,0.55);
+    z-index:9999; display:flex; justify-content:flex-end;
+    opacity:0; visibility:hidden; pointer-events:none;
+    transition:opacity .18s ease, visibility 0s linear .18s;
+  }
+  .a11y-panel-overlay.open{
+    opacity:1; visibility:visible; pointer-events:auto;
+    transition:opacity .18s ease;
+  }
+  .a11y-panel{
+    width:100%; max-width:min(340px, 100vw); height:100%;
+    background:var(--panel); border-left:1px solid var(--line);
+    box-shadow:-10px 0 32px rgba(0,0,0,0.4);
+    transform:translateX(100%); transition:transform .22s ease;
+    display:flex; flex-direction:column;
+  }
+  .a11y-panel-overlay.open .a11y-panel{ transform:translateX(0); }
+
+  .a11y-panel-head{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:18px 20px; border-bottom:1px solid var(--line); flex-shrink:0;
+  }
+  .a11y-panel-titulo{
+    margin:0; font-family:'Oswald',sans-serif; font-weight:600; text-transform:uppercase;
+    letter-spacing:0.05em; font-size:calc(14.5px * var(--font-scale, 1));
+  }
+  .a11y-fechar-btn{
+    background:none; border:1px solid var(--line); border-radius:6px; color:var(--muted);
+    width:28px; height:28px; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; font-size:calc(13px * var(--font-scale, 1)); flex-shrink:0;
+    padding:0 !important; /* precisa vencer a regra de "espaçamento amplo" p/ <button>, ou o ✕ fica espremido num botão de 28px */
+  }
+  .a11y-fechar-btn:hover{ border-color:var(--neg); color:var(--text); }
+
+  .a11y-panel-body{
+    flex:1; overflow-y:auto; padding:18px 20px; display:flex; flex-direction:column; gap:20px;
+  }
+  .a11y-secao{ display:flex; flex-direction:column; gap:9px; }
+  .a11y-rotulo{
+    font-size:calc(11.5px * var(--font-scale, 1)); color:var(--muted); text-transform:uppercase; letter-spacing:0.04em;
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+  }
+  .a11y-rotulo .a11y-rotulo-valor{ color:var(--x-color); font-weight:600; text-transform:none; letter-spacing:0; }
+
+  .a11y-botoes-par{ display:flex; gap:8px; }
+  .a11y-opcao-btn{ flex:1; padding:9px 10px; font-size:calc(12px * var(--font-scale, 1)); }
+  .a11y-opcao-btn.active{ color:var(--text); border-color:var(--x-color); background:rgba(var(--pos-rgb), 0.12); }
+
+  .a11y-linha-switch{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    font-size:calc(12.5px * var(--font-scale, 1)); cursor:pointer;
+  }
+
+  .a11y-switch{
+    appearance:none; -webkit-appearance:none;
+    width:42px; height:24px; border-radius:999px;
+    background:var(--panel-3); border:1px solid var(--line);
+    position:relative; cursor:pointer; flex-shrink:0; margin:0;
+    transition:background .18s ease, border-color .18s ease;
+  }
+  .a11y-switch::before{
+    content:''; position:absolute; top:2px; left:2px;
+    width:18px; height:18px; border-radius:50%;
+    background:var(--muted); transition:transform .18s ease, background .18s ease;
+  }
+  .a11y-switch:checked{ background:var(--x-dim); border-color:var(--x-color); }
+  .a11y-switch:checked::before{ transform:translateX(18px); background:var(--x-color); }
+  .a11y-switch:focus-visible{ outline:2px solid var(--x-color); outline-offset:2px; }
+
+  .a11y-panel input[type="range"]{ width:100%; accent-color:var(--x-color); cursor:pointer; }
+  .a11y-panel select{
+    background:var(--panel-2); color:var(--text); border:1px solid var(--line);
+    border-radius:6px; font-family:'IBM Plex Mono', monospace; font-size:calc(12.5px * var(--font-scale, 1)); padding:8px 9px; width:100%;
+  }
+
+  .a11y-panel-rodape{ padding:16px 20px; border-top:1px solid var(--line); flex-shrink:0; }
+  .a11y-restaurar-btn{ width:100%; font-size:calc(11.5px * var(--font-scale, 1)); }
+
+  @media (max-width:420px){
+    .a11y-toggle-btn{ right:14px; bottom:14px; width:48px; height:48px; }
+  }
+
+  /* ============================================================================
+     DASHBOARD DE ANÁLISES — destaques, gráfico de evolução acumulada e mapa
+     de desempenho (ver analises-dashboard.js). Reaproveita .panel, .board,
+     .division e .table-wrap já existentes para ficar visualmente consistente
+     com o resto do app.
+     ============================================================================ */
+  .panel-sub{
+    font-size:calc(10.5px * var(--font-scale, 1)); color:var(--muted);
+    text-transform:none; letter-spacing:0; font-weight:400;
+  }
+
+  .destaques-grid{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:12px;
+  }
+  .destaque-card{
+    display:flex; gap:12px; align-items:flex-start;
+    background:var(--panel-2); border:1px solid var(--line); border-radius:10px; padding:14px 16px;
+  }
+  .destaque-icone{ font-size:calc(22px * var(--font-scale, 1)); line-height:1; }
+  .destaque-rotulo{ color:var(--muted); font-size:calc(10.5px * var(--font-scale, 1)); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:3px; }
+  .destaque-valor{ font-family:'Oswald',sans-serif; font-weight:700; font-size:calc(16px * var(--font-scale, 1)); margin-bottom:3px; }
+  .destaque-detalhe{ color:var(--muted); font-size:calc(11px * var(--font-scale, 1)); line-height:1.5; }
+
+  .chart-wrap{ padding:14px 16px 6px; }
+  .chart-svg{ width:100%; height:auto; display:block; overflow:visible; }
+  .chart-grid-line{ stroke:var(--line); stroke-width:1; }
+  .chart-zero-line{ stroke:var(--muted); stroke-width:1; stroke-dasharray:3 3; }
+  .chart-axis-label{ fill:var(--muted); font-family:'IBM Plex Mono', monospace; font-size:calc(9.5px * var(--font-scale, 1)); }
+  .chart-legend{ display:flex; flex-wrap:wrap; gap:9px 16px; margin-top:10px; padding-top:10px; border-top:1px dashed var(--line); }
+  .chart-legend-item{ display:inline-flex; align-items:center; gap:6px; font-size:calc(11px * var(--font-scale, 1)); color:var(--muted); }
+  .chart-legend-item b{ color:var(--text); font-weight:700; }
+  .chart-legend-dot{ width:9px; height:9px; border-radius:50%; display:inline-block; flex-shrink:0; }
+
+  .heat-table{ font-size:calc(11.5px * var(--font-scale, 1)); }
+  .heat-table th, .heat-table td{ padding:7px 9px; }
+  .heat-name-h{ text-align:left; }
+  .heat-name{
+    text-align:left; font-weight:600; min-width:112px;
+    position:sticky; left:0; z-index:2; background:var(--panel);
+    box-shadow:2px 0 4px rgba(0,0,0,0.35);
+  }
+  .heat-cell{ text-align:center; font-variant-numeric:tabular-nums; min-width:42px; color:var(--text); }
+  .heat-cell.heat-pos{ background-color:rgba(var(--pos-rgb), calc(0.14 + (var(--intensidade, 0) * 0.62))); }
+  .heat-cell.heat-neg{ background-color:rgba(var(--neg-rgb), calc(0.14 + (var(--intensidade, 0) * 0.62))); }
+  .heat-cell.heat-zero{ background:var(--panel-3); color:var(--muted); }
+  .heat-empty{ color:var(--line); }
+  .heat-scroll{ margin-bottom:4px; }
+  .heat-divider{ margin:18px 0 8px; }

@@ -1,0 +1,107 @@
+<!-- ============================================================================
+     modulo-3.html — Lançar Pontuação (Módulo 3, exclusivo de administrador)
+     ----------------------------------------------------------------------------
+     Duas abas: "Preencher" (formulário guiado, um campo por participante)
+     e "Colar" (importar texto em massa, com leitura opcional por OCR de
+     print), mais a geração do texto de resumo e a lista de dias lançados.
+
+     Injetado por inicializacao.js (carregarModulosHtml) dentro de
+     <div id="slot-modulo-3"> em index.html.
+     Comportamento: navegacao.js (switchLaunchTab), formulario-lancamento-dia.js,
+     colagem.js, colagem-ocr.js, texto-do-resumo.js, gerenciar-dias-lancados.js.
+     Estilos: style.css, seções "Lançar dia: abas", "Colar", "Resumo".
+     ============================================================================ -->
+
+<!-- ===================== MÓDULO 3: Lançar Pontuação ===================== -->
+<section class="view hidden" id="view-lancar">
+  <div class="panel accent-x launch-card" id="launch-card">
+    <div class="panel-title">Lançar pontuação do dia <span class="day-tag" id="launch-day-label">Dia —</span></div>
+    <div class="panel-hint">Preencha a pontuação de cada participante para fechar o dia, ou cole os dados prontos de outra fonte.</div>
+
+    <div class="launch-tabs">
+      <button type="button" class="launch-tab active" id="tab-form" onclick="switchLaunchTab('form')">✏️ Preencher</button>
+      <button type="button" class="launch-tab" id="tab-paste" onclick="switchLaunchTab('paste')">📋 Colar</button>
+    </div>
+
+    <div id="launch-view-form">
+      <div class="launch-columns">
+        <div class="launch-col x">
+          <div class="launch-col-head">
+            <span class="launch-col-title">Faixa X</span>
+            <span class="launch-col-count" id="launch-count-x"></span>
+          </div>
+          <div class="launch-list" id="launch-list-x"></div>
+          <div id="launch-new-x"></div>
+          <div class="launch-add-row"><button type="button" onclick="addDraftRow('x')">+ novo participante</button></div>
+        </div>
+        <div class="launch-col y">
+          <div class="launch-col-head">
+            <span class="launch-col-title">Faixa Y</span>
+            <span class="launch-col-count" id="launch-count-y"></span>
+          </div>
+          <div class="launch-list" id="launch-list-y"></div>
+          <div id="launch-new-y"></div>
+          <div class="launch-add-row"><button type="button" onclick="addDraftRow('y')">+ novo participante</button></div>
+        </div>
+      </div>
+      <div class="launch-footer">
+        <span class="launch-progress" id="launch-progress"></span>
+        <button type="button" class="launch-submit" id="launch-submit-btn" onclick="launchDayForm()">Lançar dia</button>
+      </div>
+    </div>
+
+    <div id="launch-view-paste" style="display:none;">
+      <div class="panel-hint" style="margin-top:0;">Um participante por vez, separados por <strong>ponto e vírgula</strong> ou por <strong>linha</strong>, no formato <strong>Nome, Pontuação</strong>. Exemplo: <em>João, 8; Maria, -1; Pedro, -1;</em> — também funciona colando um embaixo do outro. Depois de ler, escolha se é um dia novo ou se vai substituir um dia já lançado, e confira a faixa de cada participante antes de confirmar.</div>
+
+      <div class="ocr-upload-box">
+        <input type="file" id="ocr-file-input" accept="image/*" class="hidden" onchange="handleOcrFileSelected(event)">
+        <button type="button" id="ocr-upload-btn" onclick="document.getElementById('ocr-file-input').click()">📷 Ler pontuação de um print (OCR)</button>
+        <span class="ocr-status-text" id="ocr-status">Sobe o print do ranking do dia (ex.: Simco Tools) e a gente já calcula a pontuação de cada posição pra você.</span>
+      </div>
+      <div class="ocr-raw-wrap hidden" id="ocr-raw-wrap">
+        <details><summary class="link-btn" style="display:inline; cursor:pointer;">ver texto bruto reconhecido pelo OCR</summary>
+          <pre class="resumo-body" id="ocr-raw-text" style="margin-top:8px;"></pre>
+        </details>
+      </div>
+
+      <textarea id="paste-area" placeholder="João, 8;&#10;Maria, -1;&#10;Pedro, -1;"></textarea>
+      <div class="paste-actions">
+        <button onclick="processPaste()">Ler colagem</button>
+      </div>
+      <div class="pending-panel" id="pending-panel" style="display:none;">
+        <div class="pending-title">Confirmar lançamento dos dados colados</div>
+        <div class="pending-controls">
+          <label>Aplicar em: <select id="pending-day-select"></select></label>
+          <label>Faixa para todos: <select id="pending-bulk-div" onchange="applyBulkDiv(this.value)">
+            <option value="">— escolher —</option>
+            <option value="x">Faixa X</option>
+            <option value="y">Faixa Y</option>
+          </select></label>
+        </div>
+        <div id="pending-list"></div>
+        <div class="pending-actions">
+          <button onclick="confirmImport()">Lançar</button>
+          <button class="danger" onclick="cancelImport()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel accent-y">
+    <div class="panel-title">Resumir dia / acumulado</div>
+    <div class="panel-hint">Gera o texto pronto pra postar, no mesmo formato que você já usa. Atualiza sozinho sempre que você lança um dia novo.</div>
+    <div class="summary-row">
+      <label>Dia: <select id="summary-day" onchange="generateSummary()"></select></label>
+      <button onclick="generateSummary()">Gerar resumo</button>
+      <button onclick="copySummary()" id="copy-btn">Copiar</button>
+      <button onclick="handleSalvarResumoAtual()" id="save-resumo-btn" class="hidden">💾 Salvar no histórico</button>
+    </div>
+    <textarea id="summary-output" readonly placeholder="O texto aparece aqui assim que houver ao menos um dia lançado..."></textarea>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Gerenciar dias lançados</div>
+    <div class="panel-hint">Remova um dia específico se ele foi lançado por engano — os dias seguintes são renumerados automaticamente.</div>
+    <div class="day-list" id="day-list"></div>
+  </div>
+</section>

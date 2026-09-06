@@ -1,0 +1,74 @@
+<!-- ============================================================================
+     modulo-0.html — Tela de autenticação (Módulo 0)
+     ----------------------------------------------------------------------------
+     Contém os três sub-formulários (login / criar conta / esqueci a senha),
+     alternados por mostrarAuthView() em modulo-0.js.
+
+     Injetado por inicializacao.js (carregarModulosHtml) dentro de
+     <div id="slot-modulo-0"> em index.html.
+     Comportamento: modulo-0.js (formulários) + identidade.js (sessão).
+     Estilos: style.css, seção "Módulo 0: tela de login".
+     ============================================================================ -->
+
+<!-- ===================== MÓDULO 0: LOGIN ===================== -->
+<div class="auth-gate" id="auth-gate">
+  <div class="auth-card">
+    <div class="auth-brand">Ranking Geral</div>
+
+    <div class="auth-view" id="auth-view-login">
+      <div class="panel-title">Entrar</div>
+      <form class="auth-form" onsubmit="handleLogin(event)">
+        <label class="campo"><span>E-mail cadastrado</span>
+          <input type="email" id="login-email" required autocomplete="username">
+        </label>
+        <label class="campo"><span>Senha cadastrada</span>
+          <input type="password" id="login-senha" required autocomplete="current-password">
+        </label>
+        <button type="submit" class="launch-submit" id="login-btn">Entrar</button>
+      </form>
+      <div id="login-msg" class="auth-msg hidden"></div>
+      <div class="auth-links">
+        <button type="button" class="link-btn" onclick="mostrarAuthView('esqueci')">Esqueceu sua senha?</button>
+        <button type="button" class="link-btn" onclick="mostrarAuthView('cadastro')">Crie sua conta</button>
+      </div>
+    </div>
+
+    <div class="auth-view hidden" id="auth-view-cadastro">
+      <div class="panel-title">Crie sua conta</div>
+      <form class="auth-form" onsubmit="handleCadastro(event)">
+        <label class="campo"><span>Nome</span>
+          <input type="text" id="cadastro-nome" required autocomplete="name">
+        </label>
+        <label class="campo"><span>E-mail google</span>
+          <input type="email" id="cadastro-email" required autocomplete="username">
+        </label>
+        <label class="campo"><span>Senha</span>
+          <input type="password" id="cadastro-senha" required minlength="6" autocomplete="new-password">
+        </label>
+        <label class="campo"><span>Repetir senha</span>
+          <input type="password" id="cadastro-senha2" required minlength="6" autocomplete="new-password">
+        </label>
+        <button type="submit" class="launch-submit" id="cadastro-btn">Criar conta</button>
+      </form>
+      <div id="cadastro-msg" class="auth-msg hidden"></div>
+      <div class="auth-links">
+        <button type="button" class="link-btn" onclick="mostrarAuthView('login')">← Voltar para o login</button>
+      </div>
+    </div>
+
+    <div class="auth-view hidden" id="auth-view-esqueci">
+      <div class="panel-title">Esqueceu sua senha?</div>
+      <div class="panel-hint">Informe seu e-mail google cadastrado. Se ele existir, enviamos um código temporário — use-o no lugar da senha pra entrar, e você vai poder definir uma senha nova em seguida.</div>
+      <form class="auth-form" onsubmit="handleEsqueciSenha(event)">
+        <label class="campo"><span>E-mail google</span>
+          <input type="email" id="esqueci-email" required autocomplete="username">
+        </label>
+        <button type="submit" class="launch-submit" id="esqueci-btn">Enviar código</button>
+      </form>
+      <div id="esqueci-msg" class="auth-msg hidden"></div>
+      <div class="auth-links">
+        <button type="button" class="link-btn" onclick="mostrarAuthView('login')">← Voltar para o login</button>
+      </div>
+    </div>
+  </div>
+</div>

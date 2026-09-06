@@ -1,0 +1,32 @@
+{
+  "name": "Ranking Geral — Faixa X / Faixa Y",
+  "short_name": "Ranking Geral",
+  "description": "Lançamento e acompanhamento do ranking de pontuação por faixas (X/Y), com dashboard de análises.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#12161d",
+  "theme_color": "#12161d",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

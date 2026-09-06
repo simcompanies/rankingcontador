@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<script src="js/a11y/a11y.js"></script><!-- Memória de acessibilidade — PRIMEIRO script da página, ver a11y.js. -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#12161d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ranking Geral">
+<title>Ranking — Faixa X / Faixa Y</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icons/icon-192.png">
+<link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- ============================================================================
+       MENU DE ACESSIBILIDADE — botão flutuante + painel, e a camada do filtro
+       de daltonismo. Ficam aqui, direto no corpo de index.html (não são um
+       módulo buscado por fetch como os slots abaixo), de propósito: assim
+       funcionam mesmo na tela de login, antes de qualquer sessão existir.
+       Lógica de UI: acessibilidade.js. Lógica de estado/aplicação: a11y.js.
+       ============================================================================ -->
+  <button type="button" id="a11y-toggle-btn" class="a11y-toggle-btn" aria-haspopup="dialog" aria-expanded="false" aria-controls="a11y-panel" title="Acessibilidade">
+    <span aria-hidden="true">♿</span>
+    <span class="sr-only">Abrir menu de acessibilidade</span>
+  </button>
+
+  <div id="a11y-panel-overlay" class="a11y-panel-overlay">
+    <aside id="a11y-panel" class="a11y-panel" role="dialog" aria-modal="true" aria-labelledby="a11y-panel-titulo">
+      <div class="a11y-panel-head">
+        <h2 id="a11y-panel-titulo" class="a11y-panel-titulo">♿ Acessibilidade</h2>
+        <button type="button" id="a11y-fechar-btn" class="a11y-fechar-btn" aria-label="Fechar menu de acessibilidade">✕</button>
+      </div>
+      <div class="a11y-panel-body">
+
+        <div class="a11y-secao">
+          <span class="a11y-rotulo">Tema</span>
+          <div class="a11y-botoes-par">
+            <button type="button" class="a11y-opcao-btn" data-a11y-tema="dark" aria-pressed="false">🌙 Escuro</button>
+            <button type="button" class="a11y-opcao-btn" data-a11y-tema="light" aria-pressed="false">☀️ Claro</button>
+          </div>
+        </div>
+
+        <div class="a11y-secao">
+          <label class="a11y-linha-switch" for="a11y-contraste">
+            <span>Alto contraste</span>
+            <input type="checkbox" id="a11y-contraste" class="a11y-switch">
+          </label>
+        </div>
+
+        <div class="a11y-secao">
+          <label class="a11y-linha-switch" for="a11y-leitura">
+            <span>Leitura simplificada</span>
+            <input type="checkbox" id="a11y-leitura" class="a11y-switch">
+          </label>
+        </div>
+
+        <div class="a11y-secao">
+          <label class="a11y-linha-switch" for="a11y-espacamento">
+            <span>Espaçamento amplo</span>
+            <input type="checkbox" id="a11y-espacamento" class="a11y-switch">
+          </label>
+        </div>
+
+        <div class="a11y-secao">
+          <label class="a11y-linha-switch" for="a11y-movimento">
+            <span>Reduzir movimento</span>
+            <input type="checkbox" id="a11y-movimento" class="a11y-switch">
+          </label>
+        </div>
+
+        <div class="a11y-secao">
+          <label class="a11y-rotulo" for="a11y-fonte">Tamanho da fonte <span class="a11y-rotulo-valor" id="a11y-fonte-valor">100%</span></label>
+          <input type="range" id="a11y-fonte" min="0.75" max="1.5" step="0.05" value="1">
+        </div>
+
+        <div class="a11y-secao">
+          <label class="a11y-rotulo" for="a11y-daltonismo">Filtro de daltonismo</label>
+          <select id="a11y-daltonismo">
+            <option value="none">Nenhum</option>
+            <option value="protanopia">Protanopia</option>
+            <option value="deuteranopia">Deuteranopia</option>
+            <option value="tritanopia">Tritanopia</option>
+            <option value="acromatopsia">Acromatopsia</option>
+          </select>
+        </div>
+
+      </div>
+      <div class="a11y-panel-rodape">
+        <button type="button" id="a11y-restaurar-btn" class="a11y-restaurar-btn">↺ Restaurar padrão</button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Camada do filtro de daltonismo (ver a11y.js: aplicarDaltonismo) — cobre
+       a tela inteira sem capturar clique, com o filtro SVG escolhido aplicado
+       via backdrop-filter. -->
+  <div id="colorblindOverlay" aria-hidden="true"></div>
+  <svg class="a11y-svg-filtros" aria-hidden="true" focusable="false">
+    <defs>
+      <!-- Matrizes de aproximação padrão para cada tipo de daltonismo. -->
+      <filter id="f-protanopia" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="0.567,0.433,0,0,0  0.558,0.442,0,0,0  0,0.242,0.758,0,0  0,0,0,1,0"/>
+      </filter>
+      <filter id="f-deuteranopia" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="0.625,0.375,0,0,0  0.7,0.3,0,0,0  0,0.3,0.7,0,0  0,0,0,1,0"/>
+      </filter>
+      <filter id="f-tritanopia" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="0.95,0.05,0,0,0  0,0.433,0.567,0,0  0,0.475,0.525,0,0  0,0,0,1,0"/>
+      </filter>
+      <filter id="f-acromatopsia" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="0.299,0.587,0.114,0,0  0.299,0.587,0.114,0,0  0.299,0.587,0.114,0,0  0,0,0,1,0"/>
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- ============================================================================
+       Cada <div id="slot-..."> abaixo começa vazio e é preenchido em tempo de
+       execução por inicializacao.js (função carregarModulosHtml), que busca
+       (fetch) o .html correspondente e injeta seu conteúdo aqui dentro via
+       innerHTML. O resultado final no navegador é idêntico ao HTML que antes
+       ficava tudo junto neste mesmo arquivo — só a ORIGEM do markup mudou.
+       ============================================================================ -->
+
+  <!-- Módulo 0 (login) — preenchido com modulo-0.html -->
+  <div id="slot-modulo-0"></div>
+
+  <!-- Modal de troca de senha obrigatória — preenchido com troca-de-senha.html -->
+  <div id="slot-troca-senha"></div>
+
+  <!-- ============================================================================
+       Casca persistente do app (sidebar + topbar): sempre existe no DOM desde
+       o carregamento da página (só fica escondida via a classe "hidden" até o
+       login), então NÃO é um módulo buscado por fetch como os slots acima —
+       fica direto aqui em index.html, junto com a estrutura da página.
+       ============================================================================ -->
+<div class="app-shell hidden" id="app-shell">
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebarMobile(false)"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <span class="sidebar-brand">Ranking Geral</span>
+      <button type="button" class="sidebar-collapse-btn" id="sidebar-collapse-btn" onclick="toggleSidebarCollapse()" title="Recolher menu">«</button>
+    </div>
+    <nav class="sidebar-nav">
+      <button type="button" class="side-link active" data-view="faixas" onclick="mostrarView('faixas')">
+        <span class="side-icon">🏁</span><span class="side-label">Faixa X / Faixa Y</span>
+      </button>
+      <button type="button" class="side-link" data-view="analises" onclick="mostrarView('analises')">
+        <span class="side-icon">📊</span><span class="side-label">Análises Gerais</span>
+      </button>
+      <button type="button" class="side-link" data-view="lancar" data-papel="administrador" onclick="mostrarView('lancar')">
+        <span class="side-icon">📝</span><span class="side-label">Lançar Pontuação</span>
+      </button>
+      <button type="button" class="side-link" data-view="config" data-papel="administrador" onclick="mostrarView('config')">
+        <span class="side-icon">⚙️</span><span class="side-label">Configurações Gerais</span>
+      </button>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button type="button" class="sidebar-toggle-mobile" onclick="toggleSidebarMobile(true)" aria-label="Abrir menu">☰</button>
+      <div class="topbar-title-wrap">
+        <h1 class="topbar-title">Ranking Geral</h1>
+        <div class="status-line"><span class="status-dot" id="status-dot"></span><span id="sync-status">carregando...</span></div>
+      </div>
+
+      <div class="identity-bar" id="identity-bar">
+        <span class="identity-status" id="identity-status-texto"></span>
+        <button type="button" onclick="mostrarView('conta')">👤 Minha conta</button>
+        <button type="button" onclick="handleLogout()">Sair</button>
+      </div>
+    </header>
+
+    <!-- Módulo 1 (Faixa X / Faixa Y) — preenchido com modulo-1.html -->
+    <div id="slot-modulo-1"></div>
+
+    <!-- Módulo 2 (Análises Gerais) — preenchido com modulo-2.html -->
+    <div id="slot-modulo-2"></div>
+
+    <!-- Módulo 3 (Lançar Pontuação) — preenchido com modulo-3.html -->
+    <div id="slot-modulo-3"></div>
+
+    <!-- Módulo 4 (Configurações Gerais) — preenchido com modulo-4.html -->
+    <div id="slot-modulo-4"></div>
+
+    <!-- "Minha conta" — preenchido com configuracoes-de-conta.html -->
+    <div id="slot-configuracoes-conta"></div>
+  </div><!-- /.main -->
+</div><!-- /.app-shell -->
+
+  <!-- ============================================================================
+       Scripts, na ordem de dependência (ver o cabeçalho de cada arquivo para
+       detalhes). Scripts clássicos (sem type="module"): todas as funções ficam
+       no escopo global, exatamente como no arquivo monolítico original — nenhum
+       import/export foi introduzido, para não alterar como os onclick="..." e
+       demais funções se enxergam entre si.
+       ============================================================================ -->
+  <script src="js/core/config-api.js"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
+  <script src="js/core/estado-global.js"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
+  <script src="js/core/identidade.js"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
+  <script src="js/core/navegacao.js"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
+  <script src="js/core/sidebar.js"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->
+  <script src="js/a11y/acessibilidade.js"></script><!-- Painel de acessibilidade (UI) — liga os controles a window.A11Y, de a11y.js. -->
+  <script src="js/features/configuracoes-de-conta.js"></script><!-- Tela "Minha conta". -->
+  <script src="js/features/modulo-0.js"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
+  <script src="js/features/texto-do-resumo.js"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
+  <script src="js/features/colagem.js"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
+  <script src="js/features/colagem-ocr.js"></script><!-- Leitura de print via OCR — alimenta a mesma caixa de colagem.js. -->
+  <script src="js/features/planilha-mestra.js"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
+  <script src="js/features/participantes.js"></script><!-- CRUD de participante + cálculo de ranking (total/tiebreak/sort). -->
+  <script src="js/features/dias.js"></script><!-- Adicionar/remover um dia. -->
+  <script src="js/features/formulario-lancamento-dia.js"></script><!-- Aba "Preencher" do Lançar Pontuação. -->
+  <script src="js/features/analises-gerais.js"></script><!-- Cartões de estatística do Módulo 2. -->
+  <script src="js/features/filtros.js"></script><!-- Filtro por período/dias do Módulo 2. -->
+  <script src="js/features/analises-dashboard.js"></script><!-- Destaques + gráfico de evolução + mapa de desempenho (chamados de dentro de filtros.js). -->
+  <script src="js/features/gerenciar-dias-lancados.js"></script><!-- Lista de dias lançados (Módulos 3 e 4). -->
+  <script src="js/features/resumos-salvos.js"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
+  <script src="js/features/usuarios.js"></script><!-- Painel de administração de usuários (Módulo 4). -->
+  <script src="js/core/renderizacao.js"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
+  <script src="js/core/inicializacao.js"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
+</body>
+</html>
