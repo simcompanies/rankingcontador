@@ -7,47 +7,71 @@
    alimenta tanto o quadro de classificação (renderDivision, em
    renderizacao.js) quanto o texto de resumo (texto-do-resumo.js).
 
-   Depende de: estado-global.js (state), planilha-mestra.js (saveState),
-   renderizacao.js (render).
+   FAIXAS DINÂMICAS: `div`/`divId` deixou de significar só 'x' ou 'y' — pode
+   ser o id de qualquer faixa criada em Configurações Gerais (ver
+   faixas-dinamicas.js). Todas as funções abaixo mantêm exatamente os mesmos
+   NOMES e a mesma ASSINATURA de antes (addParticipant, removeParticipant,
+   renameParticipant, updateScore, total, tiebreakDay, sortDivision) — só a
+   implementação por dentro passou a usar obterDivisao(divId).participantes
+   em vez de state[div]. Isso é proposital: todo o resto do app (renderizacao.js,
+   analises-gerais.js, filtros.js, analises-dashboard.js, texto-do-resumo.js,
+   colagem.js) já chama essas funções por esses nomes e não precisou mudar
+   uma linha por causa desta refatoração.
+
+   Depende de: estado-global.js (state, obterDivisao), planilha-mestra.js
+   (saveState), renderizacao.js (render, renderDivision).
    ============================================================================ */
 
-// Cadastra um novo participante numa divisão (Faixa X ou Y), com pontuação zerada em todos os dias já lançados.
-function addParticipant(div){
+// Cadastra um novo participante numa faixa, com pontuação zerada em todos os dias já lançados.
+function addParticipant(divId){
   if(!exigirAdministrador()) return;
+  const div = obterDivisao(divId);
+  if(!div){ alert('Faixa não encontrada.'); return; }
+
   const name = prompt('Nome do participante:');
   if(!name) return;
-  const list = state[div];
-  list.push({ name: name.trim(), scores: Array(state.days).fill(null) });
+
+  if(!div.participantes) div.participantes = [];
+  div.participantes.push({ name: name.trim(), scores: Array(state.days).fill(null) });
   saveState(); render();
 }
 
-// Remove um participante de uma divisão (com confirmação do usuário).
-function removeParticipant(div, idx){
+// Remove um participante de uma faixa.
+function removeParticipant(divId, idx){
   if(!exigirAdministrador()) return;
-  state[div].splice(idx,1);
+  const div = obterDivisao(divId);
+  if(!div || !div.participantes) return;
+
+  div.participantes.splice(idx,1);
   saveState(); render();
 }
 
 // Renomeia um participante (prompt simples, com validação de nome vazio).
-function renameParticipant(div, idx){
+function renameParticipant(divId, idx){
   if(!exigirAdministrador()) return;
-  const current = state[div][idx].name;
+  const div = obterDivisao(divId);
+  if(!div || !div.participantes || !div.participantes[idx]) return;
+
+  const current = div.participantes[idx].name;
   const name = prompt('Novo nome:', current);
   if(!name || !name.trim() || name.trim() === current) return;
-  state[div][idx].name = name.trim();
+  div.participantes[idx].name = name.trim();
   saveState(); render();
 }
 
 // Atualiza a pontuação de um participante num dia específico (campo editável da tabela).
-function updateScore(div, idx, dayIdx, value){
+function updateScore(divId, idx, dayIdx, value){
   if(!exigirAdministrador()) return;
+  const div = obterDivisao(divId);
+  if(!div || !div.participantes || !div.participantes[idx]) return;
+
   let v = value.trim();
   let num = v === '' ? null : parseFloat(v);
   if(num !== null && isNaN(num)) num = null;
   if(num !== null && num > 10) num = 10; // ganho máximo diário
-  state[div][idx].scores[dayIdx] = num;
+  div.participantes[idx].scores[dayIdx] = num;
   saveState();
-  renderDivision(div);
+  renderDivision(divId);
 }
 
 /* --------------------------------------------------------------------------
@@ -69,9 +93,11 @@ function tiebreakDay(a,b){
   return null;
 }
 
-// Ordena os participantes de uma divisão por total acumulado, aplicando tiebreakDay em caso de empate.
-function sortDivision(div){
-  const list = state[div].map((p,i)=>({...p, idx:i, total: total(p)}));
+// Ordena os participantes de uma faixa por total acumulado, aplicando tiebreakDay em caso de empate.
+function sortDivision(divId){
+  const div = obterDivisao(divId);
+  const participantes = (div && div.participantes) || [];
+  const list = participantes.map((p,i)=>({...p, idx:i, total: total(p)}));
   list.sort((a,b)=>{
     if(b.total !== a.total) return b.total - a.total;
     const d = tiebreakDay(a,b);

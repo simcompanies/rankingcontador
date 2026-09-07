@@ -14,25 +14,16 @@
 /* --------------------------------------------------------------------------
    URL do Web App publicado a partir do Code.gs (Google Apps Script).
    É o ÚNICO endpoint que o front-end conhece: todas as ações (login,
-   salvar ranking, listar usuários, OCR etc.) passam por aqui, diferenciadas
+   salvar ranking, listar usuários etc.) passam por aqui, diferenciadas
    pelo campo "action" enviado no corpo/query da requisição.
    -------------------------------------------------------------------------- */
 const API_URL = 'https://script.google.com/macros/s/AKfycbzB-zCaIRIDt4amlwcQIRDzQUtot2NuNV47r0s-t6xitCk7gZvaORVM8gZ3GiBfnDJBYw/exec';
-
-// O Web App do Google Apps Script pode responder por um host
-// script.googleusercontent.com após o redirecionamento. Não use no-cors:
-// precisamos ler o JSON retornado pela API.
 
 /* Chamada autenticada/mutável (POST) — usada para toda ação que grava ou
    altera dado no backend (login, salvar ranking, criar usuário...).
    Recebe o payload já pronto (objeto JS) e devolve o JSON de resposta. */
 async function chamarAPI(payload){
-  const resposta = await fetch(API_URL, {
-    method: 'POST',
-    redirect: 'follow',
-    cache: 'no-store',
-    body: JSON.stringify(payload)
-  });
+  const resposta = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
   if(!resposta.ok) throw new Error('Erro de rede (HTTP ' + resposta.status + ')');
   return resposta.json();
 }
@@ -42,11 +33,7 @@ async function chamarAPI(payload){
    viram querystring via URLSearchParams. */
 async function chamarAPIGet(params){
   const query = new URLSearchParams(params).toString();
-  const resposta = await fetch(API_URL + '?' + query, {
-    method: 'GET',
-    redirect: 'follow',
-    cache: 'no-store'
-  });
+  const resposta = await fetch(API_URL + '?' + query);
   if(!resposta.ok) throw new Error('Erro de rede (HTTP ' + resposta.status + ')');
   return resposta.json();
 }
