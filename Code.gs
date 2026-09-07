@@ -41,7 +41,7 @@
  * atualizados juntos — um front-end novo com um Code.gs antigo (ou
  * vice-versa) vai falhar ao salvar/carregar. Depois de colar este arquivo
  * no editor do Apps Script, é preciso publicar uma NOVA VERSÃO do
- * deployment já existente (Implantar → Gerenciar implantações →  → Nova
+ * deployment já existente (Implantar → Gerenciar implantações → ✎ → Nova
  * versão → Implantar) — só salvar o arquivo no editor NÃO atualiza a URL já
  * publicada que o app usa (API_URL, em config-api.js).
  * A aba "Faixas" é criada automaticamente (com Faixa X/Faixa Y como

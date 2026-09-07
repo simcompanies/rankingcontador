@@ -31,9 +31,9 @@
 
     <div class="panel-hint" style="margin-top:2px;">Filtre o desempenho por período ou por dias específicos.</div>
     <div class="filtro-bar">
-      <button type="button" class="filtro-modo-btn active" id="filtro-modo-periodo" onclick="setFiltroModo('periodo')"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M7 3v4M17 3v4M3 9h18"></path><path d="M7 13h3M14 13h3M7 17h3"></path></svg></span>Por período</button>
-      <button type="button" class="filtro-modo-btn" id="filtro-modo-dias" onclick="setFiltroModo('dias')">Por dias específicos</button>
-      <button type="button" class="filtro-modo-btn" onclick="limparFiltroAnalises()"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M6 6l12 12M18 6L6 18"></path></svg></span>Limpar filtro</button>
+      <button type="button" class="filtro-modo-btn active" id="filtro-modo-periodo" onclick="setFiltroModo('periodo')">📅 Por período</button>
+      <button type="button" class="filtro-modo-btn" id="filtro-modo-dias" onclick="setFiltroModo('dias')">🔢 Por dias específicos</button>
+      <button type="button" class="filtro-modo-btn" onclick="limparFiltroAnalises()">✕ Limpar filtro</button>
     </div>
     <div class="filtro-campos" id="filtro-campos-periodo">
       <label class="campo"><span>De</span><input type="date" id="filtro-data-de" onchange="aplicarFiltroAnalises()"></label>
@@ -65,7 +65,7 @@
   </div>
 
   <div class="panel">
-    <div class="panel-title">Resumo do último dia <button type="button" class="refresh-btn" onclick="carregarResumosSeNecessario(true)" title="Atualizar"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 11a8 8 0 0 0-14.8-3L3 11"></path><path d="M3 5v6h6"></path><path d="M4 13a8 8 0 0 0 14.8 3L21 13"></path><path d="M21 19v-6h-6"></path></svg></span>Atualizar</button></div>
+    <div class="panel-title">Resumo do último dia <button type="button" class="refresh-btn" onclick="carregarResumosSeNecessario(true)" title="Atualizar">🔄 atualizar</button></div>
     <div class="panel-hint">Último resumo salvo no histórico — dados do dia mais recente lançado e do acumulado geral.</div>
     <div id="ultimo-resumo-wrap"><div class="empty-hint">Carregando...</div></div>
   </div>

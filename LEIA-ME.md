@@ -45,7 +45,7 @@ inicializacao.js                carrega os módulos HTML e inicia o app (ver aba
 
 ## Acessibilidade
 
-O botão Acessibilidade (canto inferior direito, em qualquer tela — inclusive no login)
+O botão ♿ (canto inferior direito, em qualquer tela — inclusive no login)
 abre um painel com tema claro/escuro, alto contraste, leitura simplificada,
 espaçamento amplo, redução de movimento, tamanho de fonte e um filtro de
 daltonismo (protanopia/deuteranopia/tritanopia/acromatopsia). Tudo é

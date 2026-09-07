@@ -137,8 +137,8 @@ function renderGerenciarFaixas(){
         <div class="faixa-stats">${qtd} participante${qtd === 1 ? '' : 's'}</div>
       </div>
       <div class="faixa-acoes">
-        <button type="button" onclick="handleRenomearFaixa('${div.id}')" ${admin ? '' : 'disabled'} title="Renomear">Renomear</button>
-        <button type="button" onclick="handleRemoverFaixa('${div.id}')" ${podeRemover ? '' : 'disabled'} title="Remover faixa">Remover</button>
+        <button type="button" onclick="handleRenomearFaixa('${div.id}')" ${admin ? '' : 'disabled'} title="Renomear">✎ renomear</button>
+        <button type="button" onclick="handleRemoverFaixa('${div.id}')" ${podeRemover ? '' : 'disabled'} title="Remover faixa">✕ remover</button>
       </div>
     </div>`;
   }).join('');
@@ -159,7 +159,7 @@ function handleCriarFaixa(){
   }
 }
 
-// Botão de renomear de um card de faixa: pede o novo título/intervalo via
+// Botão "✎ renomear" de um card de faixa: pede o novo título/intervalo via
 // prompt() (mesmo padrão usado em renameParticipant, participantes.js).
 function handleRenomearFaixa(divId){
   if(!exigirAdministrador()) return;
@@ -173,7 +173,7 @@ function handleRenomearFaixa(divId){
   renomearFaixa(divId, novoTitulo, novoIntervalo);
 }
 
-// Botão de remover de um card de faixa (confirmação já embutida em removerFaixa).
+// Botão "✕ remover" de um card de faixa (confirmação já embutida em removerFaixa).
 function handleRemoverFaixa(divId){
   removerFaixa(divId);
 }

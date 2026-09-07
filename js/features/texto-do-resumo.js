@@ -19,7 +19,7 @@
    ============================================================================ */
 
 /* --------------------------------------------------------------------------
-   Pequenos formatadores de texto: tag textual da colocação (1º, 2º etc.)
+   Pequenos formatadores de texto: tag textual da colocação (🥇, "2º" etc.)
    e tag textual da pontuação do dia (+10, -1, 0...).
    -------------------------------------------------------------------------- */
 function scoreTag(v){
@@ -32,8 +32,10 @@ function ptsTag(v){
   return `${v} ${abs === 1 ? 'pt' : 'pts'}`;
 }
 
-// Marcadores visuais não usam mais emojis; a estrutura textual das faixas
-// permanece intacta e cada bloco começa diretamente pelo título da faixa.
+// Emojis usados para "carimbar" cada bloco de faixa no texto — os dois
+// primeiros mantêm exatamente os mesmos emojis do formato original (Faixa X
+// = 📗, Faixa Y = 📘); a partir da 3ª faixa, repete o próximo da lista.
+const EMOJIS_FAIXA = ['📗','📘','📙','📕','📔','📓'];
 
 // Ordena os participantes de UMA faixa pela pontuação de UM dia específico
 // (não pelo acumulado) — usado para montar o resumo "do dia".
@@ -53,9 +55,9 @@ function rankDivisionForDay(divId, dayIdx){
 // Monta o bloco de texto de uma faixa (cabeçalho + uma linha por
 // participante) para um dado ranking já ordenado — reaproveitado tanto no
 // resumo "do dia" quanto no "acumulado".
-function buildDivisionBlock(title, range, entries, formatFn){
+function buildDivisionBlock(title, range, emoji, entries, formatFn){
   const bar = '━━━━━━━━━━━━━━━━━━';
-  let out = `${bar} \n${title}${range ? ` • ${range}` : ''} \n${bar}\n`;
+  let out = `${bar} \n${emoji} ${title} • ${range} \n${bar}\n`;
   out += entries.map((e, i) => `${i+1}° ${e.name} — ${formatFn(e)}`).join('\n');
   return out;
 }
@@ -65,18 +67,18 @@ function buildDivisionBlock(title, range, entries, formatFn){
 function textoResumoParaDia(dayIdx){
   const divisoes = obterTodasDivisoes();
 
-  let text = `RANKING DIA ${dayIdx+1}\n`;
+  let text = `🏆 RANKING DIA ${dayIdx+1}\n`;
   divisoes.forEach((div, i)=>{
     if(i > 0) text += '\n';
     const rankingDia = rankDivisionForDay(div.id, dayIdx);
-    text += buildDivisionBlock(div.titulo.toUpperCase(), div.intervalo || '', rankingDia, e => scoreTag(e.scores[dayIdx]));
+    text += buildDivisionBlock(div.titulo.toUpperCase(), div.intervalo || '', EMOJIS_FAIXA[i % EMOJIS_FAIXA.length], rankingDia, e => scoreTag(e.scores[dayIdx]));
   });
 
-  text += '\nRANKING ACUMULADO\n';
+  text += '\n🏆 RANKING ACUMULADO\n';
   divisoes.forEach((div, i)=>{
     if(i > 0) text += '\n';
     const acc = sortDivision(div.id);
-    text += buildDivisionBlock(div.titulo.toUpperCase(), div.intervalo || '', acc, e => ptsTag(e.total));
+    text += buildDivisionBlock(div.titulo.toUpperCase(), div.intervalo || '', EMOJIS_FAIXA[i % EMOJIS_FAIXA.length], acc, e => ptsTag(e.total));
   });
 
   return text;
@@ -133,7 +135,7 @@ async function handleSalvarResumoAtual(){
   const dayIdx = parseInt(document.getElementById('summary-day').value, 10);
   if(!document.getElementById('summary-output').value) generateSummary();
   const btn = document.getElementById('save-resumo-btn');
-  definirCarregando(btn, true, 'Salvar no histórico');
+  definirCarregando(btn, true, '💾 Salvar no histórico');
   try{
     const resposta = await chamarAPI({
       action:'salvarResumo', token:sessaoUsuario.token,
@@ -146,7 +148,7 @@ async function handleSalvarResumoAtual(){
     console.error(erro);
     alert('Erro de conexão ao salvar o resumo.');
   }finally{
-    definirCarregando(btn, false, 'Salvar no histórico');
+    definirCarregando(btn, false, '💾 Salvar no histórico');
   }
 }
 

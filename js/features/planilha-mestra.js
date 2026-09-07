@@ -64,7 +64,7 @@ async function loadState(){
     } else {
       state = estadoVazioPadrao();
     }
-    setStatus('sincronizado', true);
+    setStatus('sincronizado ✓', true);
   }catch(e){
     console.error("Erro ao carregar dados", e);
     state = estadoVazioPadrao();
@@ -101,7 +101,7 @@ async function syncToServer(){
       if(tratarErroSessaoOuPermissao(resposta)) return;
       throw new Error(resposta.erro || 'Falha ao salvar');
     }
-    setStatus('sincronizado', true);
+    setStatus('sincronizado ✓', true);
   }catch(e){
     console.error("Erro ao salvar no servidor", e);
     setStatus('erro ao sincronizar — suas últimas alterações podem não ter sido salvas', false);

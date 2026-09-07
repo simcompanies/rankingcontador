@@ -85,7 +85,7 @@ function renderDraftNewRows(divId){
         value="${escapeHtml(row.value)}"
         oninput="draftNew['${divId}'][${i}].value=this.value; styleLaunchInput(this); updateLaunchProgress();"
         onkeydown="if(event.key==='Enter'){event.preventDefault(); focusNextLaunch(this);}">
-      <button type="button" class="del-x-btn" onclick="removeDraftRow('${divId}', ${i})" title="Remover">Remover</button>
+      <button type="button" class="del-x-btn" onclick="removeDraftRow('${divId}', ${i})" title="Remover">✕</button>
     </div>
   `).join('');
 }

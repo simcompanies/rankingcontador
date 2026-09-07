@@ -44,7 +44,7 @@ function renderUsuarios(){
           const souEu = sessaoUsuario && String(u.idUsuario) === String(sessaoUsuario.idUsuario);
           const badge = `<span class="role-badge ${u.papel==='administrador'?'admin':''}">${u.papel}</span>`;
           const pendente = u.resetPendente
-            ? `<span class="pending-reset-badge">Solicitou nova senha</span>`
+            ? `<span class="pending-reset-badge">🔑 solicitou nova senha</span>`
             : '';
           let acoes = '<span class="empty-hint" style="padding:0;">é você</span>';
           if(!souEu){
@@ -54,7 +54,7 @@ function renderUsuarios(){
             if(u.resetPendente){
               acoes += `<button class="del-x-btn" onclick="handleAdminEnviarReset('${u.idUsuario}')" title="Enviar código temporário">Enviar código</button>`;
             }
-            acoes += `<button class="del-x-btn" onclick="handleRemoverUsuario('${u.idUsuario}')" title="Remover">Remover</button>`;
+            acoes += `<button class="del-x-btn" onclick="handleRemoverUsuario('${u.idUsuario}')" title="Remover">✕</button>`;
           }
           return `<div class="user-row">
             <span class="user-row-name">${escapeHtml(u.nome)} <span class="user-row-email">${escapeHtml(u.email)}</span> ${badge} ${pendente}</span>
