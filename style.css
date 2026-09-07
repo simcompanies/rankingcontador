@@ -2737,3 +2737,469 @@ body.light-mode .resumo-body{
 :root[data-contrast="on"] .a11y-opcao-btn.active,body.high-contrast .a11y-opcao-btn.active{background:#003d2f!important;border-color:#2fd8a8!important;color:#62f0c5!important;}
 :root[data-contrast="on"] .a11y-switch,body.high-contrast .a11y-switch{background:#050505!important;border-color:#b8c4d2!important;}
 :root[data-contrast="on"] .a11y-panel select,body.high-contrast .a11y-panel select{background:#050505!important;border-color:#b8c4d2!important;color:#fff!important;}
+
+/* ============================================================================
+   RANKING GERAL V9 — CONSISTÊNCIA DE PALETAS ENTRE MODOS
+   ---------------------------------------------------------------------------
+   Corrige os painéis que mantinham fundos/textos do tema escuro quando o
+   usuário ativava o tema claro ou o alto contraste. A mesma hierarquia visual
+   é preservada em todos os modos, alterando apenas superfícies, bordas, textos
+   e estados para manter contraste e semântica.
+   ============================================================================ */
+
+/* ---------- Tokens complementares por tema ---------- */
+:root{
+  --theme-page:var(--ux-bg);
+  --theme-surface:var(--ux-surface);
+  --theme-surface-2:var(--ux-surface-2);
+  --theme-surface-3:var(--ux-surface-3);
+  --theme-surface-4:var(--ux-surface-4);
+  --theme-line:var(--ux-line);
+  --theme-line-soft:var(--ux-line-soft);
+  --theme-text:var(--ux-text);
+  --theme-muted:var(--ux-muted);
+  --theme-subtle:var(--ux-subtle);
+  --theme-table-head:#111a24;
+  --theme-hover:rgba(255,255,255,.026);
+  --theme-inset:rgba(255,255,255,.012);
+  --theme-shadow:0 18px 45px rgba(0,0,0,.18);
+}
+
+:root[data-theme="light"],body.light-mode{
+  --theme-page:#edf2f7;
+  --theme-surface:#ffffff;
+  --theme-surface-2:#f5f7fa;
+  --theme-surface-3:#e9eef3;
+  --theme-surface-4:#dde5ec;
+  --theme-line:#d2dbe4;
+  --theme-line-soft:#e1e7ed;
+  --theme-text:#18222d;
+  --theme-muted:#5f6d7c;
+  --theme-subtle:#718092;
+  --theme-table-head:#eef3f7;
+  --theme-hover:rgba(31,80,70,.055);
+  --theme-inset:rgba(20,39,56,.022);
+  --theme-shadow:0 14px 34px rgba(25,43,60,.08);
+}
+
+/* ---------- Casca e superfícies fundamentais ---------- */
+:root[data-theme="light"] html,
+body.light-mode{background:var(--theme-page)!important;color:var(--theme-text)!important;}
+:root[data-theme="light"] body,
+body.light-mode{
+  background:
+    radial-gradient(900px 500px at 12% -10%,rgba(24,183,145,.045),transparent 62%),
+    radial-gradient(720px 460px at 100% 0,rgba(65,95,165,.035),transparent 60%),
+    linear-gradient(180deg,#edf2f7 0%,#e7edf3 100%)!important;
+  color:var(--theme-text)!important;
+}
+:root[data-theme="light"] .sidebar,
+body.light-mode .sidebar{background:rgba(250,252,254,.96)!important;border-color:var(--theme-line)!important;box-shadow:10px 0 28px rgba(27,44,59,.07)!important;}
+:root[data-theme="light"] .sidebar-head,
+body.light-mode .sidebar-head{border-color:var(--theme-line)!important;}
+:root[data-theme="light"] .sidebar-collapse-btn,
+body.light-mode .sidebar-collapse-btn{background:var(--theme-surface)!important;border-color:var(--theme-line)!important;color:var(--theme-muted)!important;}
+:root[data-theme="light"] .side-link,
+body.light-mode .side-link{color:var(--theme-muted)!important;}
+:root[data-theme="light"] .side-link:hover,
+body.light-mode .side-link:hover{background:var(--theme-surface-2)!important;color:var(--theme-text)!important;}
+:root[data-theme="light"] .side-link.active,
+body.light-mode .side-link.active{background:rgba(24,183,145,.075)!important;color:var(--theme-text)!important;border-left-color:var(--ux-primary)!important;}
+:root[data-theme="light"] .sidebar-section-label,
+body.light-mode .sidebar-section-label,
+:root[data-theme="light"] .sidebar-footer-note,
+body.light-mode .sidebar-footer-note{color:var(--theme-subtle)!important;}
+:root[data-theme="light"] .sidebar-footer,
+body.light-mode .sidebar-footer{border-color:var(--theme-line)!important;}
+
+:root[data-theme="light"] .topbar,
+body.light-mode .topbar{background:rgba(246,249,252,.90)!important;border-color:var(--theme-line)!important;box-shadow:0 8px 24px rgba(25,43,60,.055)!important;}
+:root[data-theme="light"] .topbar-title,
+body.light-mode .topbar-title,
+:root[data-theme="light"] .panel-title,
+body.light-mode .panel-title{color:var(--theme-text)!important;}
+:root[data-theme="light"] .status-line,
+body.light-mode .status-line,
+:root[data-theme="light"] .identity-status,
+body.light-mode .identity-status,
+:root[data-theme="light"] .panel-hint,
+body.light-mode .panel-hint,
+:root[data-theme="light"] .rules-note,
+body.light-mode .rules-note{color:var(--theme-muted)!important;}
+:root[data-theme="light"] .identity-status,
+body.light-mode .identity-status{background:rgba(255,255,255,.82)!important;border-color:var(--theme-line)!important;}
+:root[data-theme="light"] .identity-bar button,
+body.light-mode .identity-bar button{background:var(--theme-surface)!important;border-color:var(--theme-line)!important;color:var(--theme-text)!important;}
+
+/* ---------- Painel genérico ---------- */
+:root[data-theme="light"] .panel,
+body.light-mode .panel{
+  background:linear-gradient(180deg,#ffffff,#f8fafc)!important;
+  border-color:var(--theme-line)!important;
+  box-shadow:var(--theme-shadow)!important;
+}
+:root[data-theme="light"] .panel-sub,
+body.light-mode .panel-sub,
+:root[data-theme="light"] .locked-msg,
+body.light-mode .locked-msg,
+:root[data-theme="light"] .empty-hint,
+body.light-mode .empty-hint{
+  background:var(--theme-surface-2)!important;
+  border-color:var(--theme-line)!important;
+  color:var(--theme-muted)!important;
+}
+
+/* ---------- Ranking / divisões / tabelas ---------- */
+:root[data-theme="light"] .division,
+body.light-mode .division{
+  background:linear-gradient(180deg,#ffffff,#f6f9fb)!important;
+  border-color:var(--theme-line)!important;
+  box-shadow:var(--theme-shadow)!important;
+}
+:root[data-theme="light"] .division-head,
+body.light-mode .division-head{background:linear-gradient(180deg,rgba(23,47,68,.025),transparent)!important;border-color:var(--theme-line)!important;}
+:root[data-theme="light"] .division-range,
+body.light-mode .division-range{background:#f5f8fb!important;border-color:var(--theme-line)!important;color:var(--theme-muted)!important;}
+:root[data-theme="light"] .table-wrap,
+body.light-mode .table-wrap{background:rgba(255,255,255,.7)!important;scrollbar-color:#b8c4cf var(--theme-surface-2)!important;}
+:root[data-theme="light"] .table-wrap::-webkit-scrollbar-track,
+body.light-mode .table-wrap::-webkit-scrollbar-track{background:var(--theme-surface-2)!important;}
+:root[data-theme="light"] .table-wrap::-webkit-scrollbar-thumb,
+body.light-mode .table-wrap::-webkit-scrollbar-thumb{background:#b8c4cf!important;border-color:var(--theme-surface-2)!important;}
+:root[data-theme="light"] th,
+body.light-mode th,
+:root[data-theme="light"] td.name,
+body.light-mode td.name,
+:root[data-theme="light"] td.rank,
+body.light-mode td.rank,
+:root[data-theme="light"] th.name-h,
+body.light-mode th.name-h,
+:root[data-theme="light"] th.rank-h,
+body.light-mode th.rank-h,
+:root[data-theme="light"] .heat-table th,
+body.light-mode .heat-table th,
+:root[data-theme="light"] .heat-name,
+body.light-mode .heat-name{
+  background:var(--theme-table-head)!important;
+  color:var(--theme-subtle)!important;
+  border-color:var(--theme-line)!important;
+}
+:root[data-theme="light"] td,
+body.light-mode td{border-color:var(--theme-line-soft)!important;color:var(--theme-text)!important;}
+:root[data-theme="light"] tbody tr:hover td,
+body.light-mode tbody tr:hover td{background:var(--theme-hover)!important;}
+:root[data-theme="light"] tbody tr:hover td.name,
+body.light-mode tbody tr:hover td.name,
+:root[data-theme="light"] tbody tr:hover td.rank,
+body.light-mode tbody tr:hover td.rank{background:#edf5f2!important;}
+:root[data-theme="light"] .division .row-actions,
+body.light-mode .division .row-actions{background:rgba(25,48,67,.025)!important;border-color:var(--theme-line)!important;}
+
+/* ---------- Regras e cartões analíticos que tinham fundo escuro fixo ---------- */
+:root[data-theme="light"] #view-faixas>.panel:not(:first-child),
+body.light-mode #view-faixas>.panel:not(:first-child),
+:root[data-theme="light"] #view-analises>.panel:first-child,
+body.light-mode #view-analises>.panel:first-child,
+:root[data-theme="light"] #view-analises>.panel:nth-child(2),
+body.light-mode #view-analises>.panel:nth-child(2),
+:root[data-theme="light"] #view-analises>.panel:nth-child(3),
+body.light-mode #view-analises>.panel:nth-child(3),
+:root[data-theme="light"] #view-analises>.panel:nth-child(4),
+body.light-mode #view-analises>.panel:nth-child(4),
+:root[data-theme="light"] #view-analises>.panel:nth-child(5),
+body.light-mode #view-analises>.panel:nth-child(5){
+  background:linear-gradient(145deg,#ffffff,#f5f8fb)!important;
+  color:var(--theme-text)!important;
+  border-color:var(--theme-line)!important;
+}
+:root[data-theme="light"] .rules-note,
+body.light-mode .rules-note{background:#f4f7fa!important;border-color:var(--theme-line)!important;color:var(--theme-muted)!important;}
+:root[data-theme="light"] .stat-card,
+body.light-mode .stat-card,
+:root[data-theme="light"] .destaque-card,
+body.light-mode .destaque-card,
+:root[data-theme="light"] .faixa-card,
+body.light-mode .faixa-card,
+:root[data-theme="light"] .resumo-card,
+body.light-mode .resumo-card,
+:root[data-theme="light"] .conta-card,
+body.light-mode .conta-card{
+  background:linear-gradient(145deg,#f9fbfc,#eef3f7)!important;
+  border-color:var(--theme-line)!important;
+  color:var(--theme-text)!important;
+}
+:root[data-theme="light"] .destaque-icone,
+body.light-mode .destaque-icone{background:#e8eef3!important;}
+:root[data-theme="light"] .mini-rank-row:hover,
+body.light-mode .mini-rank-row:hover,
+:root[data-theme="light"] .user-row:hover,
+body.light-mode .user-row:hover,
+:root[data-theme="light"] .day-row:hover,
+body.light-mode .day-row:hover,
+:root[data-theme="light"] .log-row:hover,
+body.light-mode .log-row:hover{background:var(--theme-hover)!important;}
+
+/* ---------- Lançamentos / filtros / controles ---------- */
+:root[data-theme="light"] .launch-tabs,
+body.light-mode .launch-tabs,
+:root[data-theme="light"] .filtro-bar,
+body.light-mode .filtro-bar{background:var(--theme-surface)!important;border-color:var(--theme-line)!important;}
+:root[data-theme="light"] .launch-tab,
+body.light-mode .launch-tab,
+:root[data-theme="light"] .filtro-modo-btn,
+body.light-mode .filtro-modo-btn{color:var(--theme-muted)!important;}
+:root[data-theme="light"] .launch-tab.active,
+body.light-mode .launch-tab.active,
+:root[data-theme="light"] .filtro-modo-btn.active,
+body.light-mode .filtro-modo-btn.active{background:#e7f5f0!important;color:#107c61!important;border-color:#9edcc8!important;}
+:root[data-theme="light"] .launch-col,
+body.light-mode .launch-col{background:rgba(245,248,250,.78)!important;border-color:var(--theme-line)!important;}
+:root[data-theme="light"] .launch-col-head,
+body.light-mode .launch-col-head{background:#f2f6f9!important;border-color:var(--theme-line)!important;}
+:root[data-theme="light"] .launch-row,
+body.light-mode .launch-row{border-color:var(--theme-line-soft)!important;}
+:root[data-theme="light"] .filtro-campos,
+body.light-mode .filtro-campos{background:#f7f9fb!important;border-color:var(--theme-line)!important;}
+:root[data-theme="light"] .filtro-dia-chip,
+body.light-mode .filtro-dia-chip{background:#f1f5f8!important;border-color:var(--theme-line)!important;color:var(--theme-muted)!important;}
+:root[data-theme="light"] .filtro-dia-chip.active,
+body.light-mode .filtro-dia-chip.active{background:#e7f5f0!important;color:#107c61!important;border-color:#9edcc8!important;}
+:root[data-theme="light"] .gemini-leitura-box,
+body.light-mode .gemini-leitura-box,
+:root[data-theme="light"] .ocr-upload-box,
+body.light-mode .ocr-upload-box{background:#f6f8fa!important;border-color:var(--theme-line)!important;}
+:root[data-theme="light"] #paste-area,
+body.light-mode #paste-area,
+:root[data-theme="light"] #summary-output,
+body.light-mode #summary-output{background:#ffffff!important;border-color:var(--theme-line)!important;color:var(--theme-text)!important;}
+:root[data-theme="light"] .pending-panel,
+body.light-mode .pending-panel{background:#fff8e8!important;border-color:#e9c875!important;color:#6b5121!important;}
+
+/* ---------- Formulários, conta, resumo e autenticação ---------- */
+:root[data-theme="light"] .campo input,
+body.light-mode .campo input,
+:root[data-theme="light"] .campo select,
+body.light-mode .campo select,
+:root[data-theme="light"] .campo textarea,
+body.light-mode .campo textarea,
+:root[data-theme="light"] .add-user-form input,
+body.light-mode .add-user-form input,
+:root[data-theme="light"] .pending-controls select,
+body.light-mode .pending-controls select,
+:root[data-theme="light"] .summary-row select,
+body.light-mode .summary-row select,
+:root[data-theme="light"] .launch-input,
+body.light-mode .launch-input,
+:root[data-theme="light"] .launch-name-input,
+body.light-mode .launch-name-input,
+:root[data-theme="light"] input.score,
+body.light-mode input.score{
+  background:#f6f8fa!important;color:var(--theme-text)!important;border-color:var(--theme-line)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.75)!important;
+}
+:root[data-theme="light"] .resumo-card,
+body.light-mode .resumo-card{background:#fff!important;}
+:root[data-theme="light"] .resumo-header,
+body.light-mode .resumo-header{background:#f6f8fa!important;border-color:var(--theme-line)!important;}
+:root[data-theme="light"] .resumo-body,
+body.light-mode .resumo-body{background:#fbfcfd!important;color:var(--theme-text)!important;}
+:root[data-theme="light"] .conta-card .linha,
+body.light-mode .conta-card .linha,
+:root[data-theme="light"] #conta-membro-area,
+body.light-mode #conta-membro-area,
+:root[data-theme="light"] #conta-admin-area,
+body.light-mode #conta-admin-area{background:rgba(255,255,255,.66)!important;border-color:var(--theme-line-soft)!important;}
+:root[data-theme="light"] .auth-gate.ui-auth-gate,
+body.light-mode .auth-gate.ui-auth-gate{background:radial-gradient(700px 420px at 10% 0%,rgba(24,183,145,.05),transparent 60%),radial-gradient(650px 380px at 100% 100%,rgba(65,95,165,.04),transparent 58%),var(--theme-page)!important;}
+:root[data-theme="light"] .auth-card,
+body.light-mode .auth-card{background:linear-gradient(180deg,#ffffff,#f4f7fa)!important;border-color:var(--theme-line)!important;box-shadow:0 28px 70px rgba(24,42,58,.13)!important;}
+:root[data-theme="light"] .modal-card,
+body.light-mode .modal-card{background:linear-gradient(180deg,#ffffff,#f4f7fa)!important;border-color:var(--theme-line)!important;color:var(--theme-text)!important;}
+:root[data-theme="light"] .auth-links,
+body.light-mode .auth-links{border-color:var(--theme-line-soft)!important;}
+:root[data-theme="light"] .auth-links .link-btn,
+body.light-mode .auth-links .link-btn{color:var(--theme-muted)!important;}
+
+/* ---------- Alto contraste: duas variantes, sem misturar superfícies ---------- */
+:root[data-contrast="on"]{
+  --theme-line:#aeb7c3;
+  --theme-line-soft:#66717f;
+  --theme-hover:rgba(255,255,255,.08);
+  --theme-table-head:#06080b;
+  --theme-inset:transparent;
+}
+:root[data-contrast="on"] body,
+body.high-contrast{background:#000!important;color:#fff!important;}
+:root[data-contrast="on"] .sidebar,
+body.high-contrast .sidebar,
+:root[data-contrast="on"] .topbar,
+body.high-contrast .topbar,
+:root[data-contrast="on"] .panel,
+body.high-contrast .panel,
+:root[data-contrast="on"] .division,
+body.high-contrast .division,
+:root[data-contrast="on"] .stat-card,
+body.high-contrast .stat-card,
+:root[data-contrast="on"] .destaque-card,
+body.high-contrast .destaque-card,
+:root[data-contrast="on"] .faixa-card,
+body.high-contrast .faixa-card,
+:root[data-contrast="on"] .resumo-card,
+body.high-contrast .resumo-card,
+:root[data-contrast="on"] .conta-card,
+body.high-contrast .conta-card{
+  background:#050505!important;color:#fff!important;border-color:var(--theme-line)!important;box-shadow:none!important;
+}
+:root[data-contrast="on"] .division-head,
+body.high-contrast .division-head,
+:root[data-contrast="on"] th,
+body.high-contrast th,
+:root[data-contrast="on"] td.name,
+body.high-contrast td.name,
+:root[data-contrast="on"] td.rank,
+body.high-contrast td.rank,
+:root[data-contrast="on"] th.name-h,
+body.high-contrast th.name-h,
+:root[data-contrast="on"] th.rank-h,
+body.high-contrast th.rank-h,
+:root[data-contrast="on"] .heat-table th,
+body.high-contrast .heat-table th,
+:root[data-contrast="on"] .heat-name,
+body.high-contrast .heat-name{background:#000!important;color:#fff!important;border-color:var(--theme-line)!important;}
+:root[data-contrast="on"] .rules-note,
+body.high-contrast .rules-note,
+:root[data-contrast="on"] .panel-hint,
+body.high-contrast .panel-hint,
+:root[data-contrast="on"] .division-range,
+body.high-contrast .division-range{color:#fff!important;}
+:root[data-contrast="on"] .rules-note,
+body.high-contrast .rules-note{background:#090909!important;border-color:#8894a2!important;}
+:root[data-contrast="on"] .campo input,
+body.high-contrast .campo input,
+:root[data-contrast="on"] .campo select,
+body.high-contrast .campo select,
+:root[data-contrast="on"] .campo textarea,
+body.high-contrast .campo textarea,
+:root[data-contrast="on"] #paste-area,
+body.high-contrast #paste-area,
+:root[data-contrast="on"] #summary-output,
+body.high-contrast #summary-output,
+:root[data-contrast="on"] .launch-input,
+body.high-contrast .launch-input,
+:root[data-contrast="on"] .launch-name-input,
+body.high-contrast .launch-name-input,
+:root[data-contrast="on"] input.score,
+body.high-contrast input.score{background:#000!important;color:#fff!important;border-color:#b6c0cb!important;}
+:root[data-contrast="on"] .launch-tabs,
+body.high-contrast .launch-tabs,
+:root[data-contrast="on"] .filtro-bar,
+body.high-contrast .filtro-bar,
+:root[data-contrast="on"] .filtro-campos,
+body.high-contrast .filtro-campos{background:#000!important;border-color:#9ba6b2!important;}
+:root[data-contrast="on"] .launch-tab.active,
+body.high-contrast .launch-tab.active,
+:root[data-contrast="on"] .filtro-modo-btn.active,
+body.high-contrast .filtro-modo-btn.active,
+:root[data-contrast="on"] .filtro-dia-chip.active,
+body.high-contrast .filtro-dia-chip.active{background:#003d2f!important;color:#63f1c7!important;border-color:#2fd8a8!important;}
+
+:root[data-theme="light"][data-contrast="on"],
+body.light-mode.high-contrast{
+  --theme-page:#fff;
+  --theme-surface:#fff;
+  --theme-surface-2:#f7f7f7;
+  --theme-surface-3:#ececec;
+  --theme-surface-4:#ddd;
+  --theme-line:#171717;
+  --theme-line-soft:#555;
+  --theme-text:#000;
+  --theme-muted:#161616;
+  --theme-subtle:#222;
+  --theme-hover:rgba(0,0,0,.06);
+  --theme-table-head:#fff;
+}
+:root[data-theme="light"][data-contrast="on"] body,
+body.light-mode.high-contrast{background:#fff!important;color:#000!important;}
+:root[data-theme="light"][data-contrast="on"] .sidebar,
+body.light-mode.high-contrast .sidebar,
+:root[data-theme="light"][data-contrast="on"] .topbar,
+body.light-mode.high-contrast .topbar,
+:root[data-theme="light"][data-contrast="on"] .panel,
+body.light-mode.high-contrast .panel,
+:root[data-theme="light"][data-contrast="on"] .division,
+body.light-mode.high-contrast .division,
+:root[data-theme="light"][data-contrast="on"] .stat-card,
+body.light-mode.high-contrast .stat-card,
+:root[data-theme="light"][data-contrast="on"] .destaque-card,
+body.light-mode.high-contrast .destaque-card,
+:root[data-theme="light"][data-contrast="on"] .faixa-card,
+body.light-mode.high-contrast .faixa-card,
+:root[data-theme="light"][data-contrast="on"] .resumo-card,
+body.light-mode.high-contrast .resumo-card,
+:root[data-theme="light"][data-contrast="on"] .conta-card,
+body.light-mode.high-contrast .conta-card{background:#fff!important;color:#000!important;border-color:#171717!important;box-shadow:none!important;}
+:root[data-theme="light"][data-contrast="on"] .division-head,
+body.light-mode.high-contrast .division-head,
+:root[data-theme="light"][data-contrast="on"] th,
+body.light-mode.high-contrast th,
+:root[data-theme="light"][data-contrast="on"] td.name,
+body.light-mode.high-contrast td.name,
+:root[data-theme="light"][data-contrast="on"] td.rank,
+body.light-mode.high-contrast td.rank,
+:root[data-theme="light"][data-contrast="on"] th.name-h,
+body.light-mode.high-contrast th.name-h,
+:root[data-theme="light"][data-contrast="on"] th.rank-h,
+body.light-mode.high-contrast th.rank-h{background:#fff!important;color:#000!important;border-color:#171717!important;}
+:root[data-theme="light"][data-contrast="on"] .rules-note,
+body.light-mode.high-contrast .rules-note{background:#fafafa!important;color:#000!important;border-color:#171717!important;}
+:root[data-theme="light"][data-contrast="on"] .campo input,
+body.light-mode.high-contrast .campo input,
+:root[data-theme="light"][data-contrast="on"] .campo select,
+body.light-mode.high-contrast .campo select,
+:root[data-theme="light"][data-contrast="on"] .campo textarea,
+body.light-mode.high-contrast .campo textarea,
+:root[data-theme="light"][data-contrast="on"] #paste-area,
+body.light-mode.high-contrast #paste-area,
+:root[data-theme="light"][data-contrast="on"] #summary-output,
+body.light-mode.high-contrast #summary-output{background:#fff!important;color:#000!important;border-color:#171717!important;}
+
+/* ---------- Daltonismo: não muda a hierarquia de superfícies ---------- */
+:root[data-colorblind="protanopia"],
+:root[data-colorblind="deuteranopia"],
+:root[data-colorblind="tritanopia"],
+:root[data-colorblind="acromatopsia"]{
+  --ux-primary:#32d7ab;
+  --ux-red:#e36a6a;
+  --ux-yellow:#d8ad54;
+  --ux-blue:#6e8ee8;
+}
+/* O filtro do a11y.js é aplicado por uma camada independente; estes estados
+   mantêm a interface sem cores de fundo conflitantes antes da composição. */
+
+/* ---------- Regras específicas que ainda usavam literais escuros ---------- */
+:root[data-theme="light"] .faixas-adicionar,
+body.light-mode .faixas-adicionar{background:linear-gradient(145deg,#f7f9fb,#eef3f7)!important;border-color:#becbd6!important;}
+:root[data-theme="light"] .chart-legend-item,
+body.light-mode .chart-legend-item{background:rgba(20,40,56,.025)!important;}
+:root[data-theme="light"] .launch-row:hover,
+body.light-mode .launch-row:hover{background:rgba(20,40,56,.035)!important;}
+:root[data-theme="light"] .table-wrap,
+body.light-mode .table-wrap{border-color:var(--theme-line)!important;}
+
+/* ---------- Acessibilidade mantém a mesma família cromática do aplicativo ---------- */
+:root[data-theme="light"] .a11y-panel-overlay,
+body.light-mode .a11y-panel-overlay{background:rgba(28,41,53,.30)!important;}
+:root[data-theme="light"] .a11y-panel,
+body.light-mode .a11y-panel{background:linear-gradient(180deg,#ffffff,#f4f7fa)!important;color:#18222d!important;border-color:#d2dbe4!important;}
+:root[data-theme="light"] .a11y-panel-head,
+body.light-mode .a11y-panel-head{background:#fbfcfd!important;border-color:#dfe6ec!important;}
+:root[data-theme="light"] .a11y-opcao-btn,
+body.light-mode .a11y-opcao-btn{background:#f2f6f9!important;color:#617082!important;border-color:#d2dbe4!important;}
+:root[data-theme="light"] .a11y-opcao-btn.active,
+body.light-mode .a11y-opcao-btn.active{background:#e7f5f0!important;color:#0f8d6d!important;border-color:#9edcc8!important;}
+:root[data-theme="light"] .a11y-switch,
+body.light-mode .a11y-switch{background:#dfe6ec!important;border-color:#c6d0da!important;}
+:root[data-theme="light"] .a11y-switch:checked,
+body.light-mode .a11y-switch:checked{background:#ccefe4!important;border-color:#20b88f!important;}
+:root[data-theme="light"] .a11y-panel select,
+body.light-mode .a11y-panel select{background:#f2f6f9!important;color:#18222d!important;border-color:#d2dbe4!important;}
