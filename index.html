@@ -10,105 +10,81 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./assets/icons/icon-192.png">
 <link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
-<script src="./js/a11y/a11y.js?v=20260907-ui10"></script>
-<link rel="stylesheet" href="./assets/css/style.css?v=20260907-ui10">
-<link rel="stylesheet" href="./style.css?v=20260907-ui10-root" media="not all" id="style-fallback">
-  <meta name="app-build" content="20260907-ui8">
+<script src="./js/a11y/a11y.js?v=20260907-brand11"></script>
+<link rel="stylesheet" href="./assets/css/style.css?v=20260907-brand11">
+<link rel="stylesheet" href="./style.css?v=20260907-brand11-root" media="not all" id="style-fallback">
+  <meta name="app-build" content="20260907-brand11">
 <style id="screen-guard">
   #app-shell.hidden, body:not([data-app-screen="app"]) #app-shell { display:none !important; }
   body[data-app-screen="app"] #slot-modulo-0 { display:none !important; }
 
 </style>
 <style id="rg-startup-critical">
-  #rg-startup{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:
-    radial-gradient(620px 460px at 50% 42%,rgba(47,216,168,.07),transparent 62%),
-    linear-gradient(180deg,#071019 0%,#09121b 55%,#070d14 100%);
-    color:#eef5fa;overflow:hidden;opacity:1;visibility:visible;transition:opacity .48s ease,visibility .48s ease}
+  #rg-startup{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:radial-gradient(640px 520px at 50% 44%,rgba(0,160,192,.10),transparent 62%),linear-gradient(180deg,#071019 0%,#08121b 60%,#050b11 100%);color:#eef5fa;overflow:hidden;opacity:1;visibility:visible;transition:opacity .6s ease,visibility .6s ease}
   #rg-startup.rg-startup-hide{opacity:0;visibility:hidden;pointer-events:none}
-  .rg-build-field{position:absolute;inset:0;pointer-events:none;opacity:.42;background:
-    linear-gradient(rgba(115,145,176,.035) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(115,145,176,.035) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(circle at center,black 0 28%,transparent 74%);-webkit-mask-image:radial-gradient(circle at center,black 0 28%,transparent 74%)}
-  .rg-build-glow{position:absolute;width:min(62vw,640px);height:min(62vw,640px);border-radius:50%;background:radial-gradient(circle,rgba(47,216,168,.12),transparent 65%);filter:blur(6px);animation:rgBuildGlow 6s ease-in-out both}
-  .rg-build-wrap{position:relative;width:min(92vw,650px);height:min(92vh,650px);display:grid;place-items:center}
-  .rg-build-logo{width:min(62vw,440px);height:auto;overflow:visible;filter:drop-shadow(0 22px 50px rgba(0,0,0,.42))}
-  .rg-build-guides{fill:none;stroke:rgba(121,150,176,.18);stroke-width:1;vector-effect:non-scaling-stroke}
-  .rg-build-guide-dash{fill:none;stroke:rgba(121,150,176,.24);stroke-width:1;stroke-dasharray:5 8;vector-effect:non-scaling-stroke;animation:rgDash 2.2s linear infinite}
-  .rg-build-ring{fill:none;stroke:#2fd8a8;stroke-width:9;stroke-linecap:round;stroke-dasharray:780;stroke-dashoffset:780;vector-effect:non-scaling-stroke;animation:rgStroke 1.15s cubic-bezier(.22,1,.36,1) .15s forwards}
-  .rg-build-ring2{fill:none;stroke:#6f92e8;stroke-width:4;stroke-linecap:round;stroke-dasharray:620;stroke-dashoffset:620;opacity:.8;vector-effect:non-scaling-stroke;animation:rgStroke 1.05s cubic-bezier(.22,1,.36,1) .55s forwards}
-  .rg-bar{transform-box:fill-box;transform-origin:center bottom;transform:scaleY(0);animation:rgBarIn .72s cubic-bezier(.18,1,.3,1) var(--d) forwards}
-  .rg-bar-x{fill:#2fd8a8}.rg-bar-y{fill:#6f92e8}.rg-bar-m{fill:#d9aa58}
-  .rg-letter{fill:none;stroke:#eef5fa;stroke-width:18;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:600;stroke-dashoffset:600;vector-effect:non-scaling-stroke;animation:rgStroke .95s cubic-bezier(.22,1,.36,1) var(--d) forwards}
-  .rg-letter-g{stroke:#2fd8a8;stroke-width:17;}
-  .rg-arrow{fill:none;stroke:#2fd8a8;stroke-width:14;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:420;stroke-dashoffset:420;vector-effect:non-scaling-stroke;animation:rgStroke .92s cubic-bezier(.22,1,.36,1) 3.25s forwards}
-  .rg-arrow-head{fill:#2fd8a8;opacity:0;animation:rgFadeIn .24s ease 4.05s forwards}
-  .rg-arrow-down{fill:none;stroke:#df7b85;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:170;stroke-dashoffset:170;vector-effect:non-scaling-stroke;animation:rgStroke .52s ease 3.65s forwards}
-  .rg-podium rect,.rg-podium circle{opacity:0;animation:rgFadeUp .5s cubic-bezier(.22,1,.36,1) var(--d) forwards}
-  .rg-final-mark{opacity:0;transform:scale(.92);transform-origin:center;animation:rgFinal 1s cubic-bezier(.18,1,.3,1) 4.9s forwards}
-  .rg-final-mark img{display:none}
-  .rg-wordmark{position:absolute;left:50%;bottom:8%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;opacity:0;animation:rgFadeUp .7s ease 4.95s forwards}
-  .rg-wordmark-main{font-size:clamp(20px,3vw,30px);font-weight:950;letter-spacing:.18em;color:#f1f6fa}
-  .rg-wordmark-accent{color:#2fd8a8}
+  .rg-build-field{position:absolute;inset:0;pointer-events:none;opacity:.35;background:linear-gradient(rgba(120,150,180,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(120,150,180,.035) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(circle at center,black 0 30%,transparent 74%);-webkit-mask-image:radial-gradient(circle at center,black 0 30%,transparent 74%)}
+  .rg-build-glow{position:absolute;width:min(72vw,720px);height:min(72vw,720px);border-radius:50%;background:radial-gradient(circle,rgba(0,160,192,.16),transparent 67%);filter:blur(8px);animation:rgBuildGlow 6s ease-in-out both}
+  .rg-build-wrap{position:relative;width:min(92vw,660px);height:min(92vh,720px);display:grid;place-items:center}
+  .rg-exact-build{position:relative;width:min(72vw,520px);aspect-ratio:1;filter:drop-shadow(0 24px 54px rgba(0,0,0,.45));transform:scale(.94)}
+  .rg-piece{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transform:translate3d(0,0,0) scale(.92);transform-origin:center;will-change:transform,opacity,clip-path;}
+  .rg-piece-ring{clip-path:circle(52% at 50% 50%);animation:rgPieceIn .8s cubic-bezier(.18,1,.3,1) .15s forwards}
+  .rg-piece-bars{clip-path:polygon(20% 7%,82% 7%,82% 47%,20% 47%);animation:rgPieceIn .72s cubic-bezier(.18,1,.3,1) 1.05s forwards}
+  .rg-piece-core{clip-path:polygon(10% 23%,91% 22%,91% 69%,10% 70%);animation:rgPieceIn .75s cubic-bezier(.18,1,.3,1) 2.05s forwards}
+  .rg-piece-arrow{clip-path:polygon(7% 37%,92% 18%,94% 65%,8% 62%);animation:rgPieceIn .72s cubic-bezier(.18,1,.3,1) 3.05s forwards}
+  .rg-piece-podium{clip-path:polygon(19% 68%,83% 68%,88% 99%,14% 99%);animation:rgPieceIn .62s cubic-bezier(.18,1,.3,1) 4.05s forwards}
+  .rg-piece-final{opacity:0;transform:scale(.985);animation:rgFinalExact .9s cubic-bezier(.18,1,.3,1) 4.95s forwards}
+  .rg-scanline{position:absolute;left:8%;right:8%;height:2px;top:8%;background:linear-gradient(90deg,transparent,#49dff6,transparent);opacity:0;filter:drop-shadow(0 0 10px rgba(73,223,246,.8));animation:rgScan 1.35s ease-in-out .55s 4}
+  .rg-wordmark{position:absolute;left:50%;bottom:8.5%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;opacity:0;animation:rgFadeUp .75s ease 5.15s forwards}
+  .rg-wordmark-main{font-size:clamp(22px,3vw,32px);font-weight:950;letter-spacing:.17em;color:#eef5fa}
+  .rg-wordmark-accent{color:#00a0c0}
   .rg-wordmark-sub{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:#75899d}
-  .rg-build-status{position:absolute;left:50%;bottom:3.5%;transform:translateX(-50%);display:flex;align-items:center;gap:7px;color:#7890a6;font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.85}
-  .rg-build-status i{display:block;width:6px;height:6px;border-radius:50%;background:#2fd8a8;box-shadow:0 0 0 4px rgba(47,216,168,.08);animation:rgPulse 1.05s ease-in-out infinite}
-  @keyframes rgStroke{to{stroke-dashoffset:0}}
-  @keyframes rgBarIn{to{transform:scaleY(1)}}
-  @keyframes rgFadeIn{to{opacity:1}}
-  @keyframes rgFadeUp{0%{opacity:0;transform:translateY(18px)}100%{opacity:1;transform:translateY(0)}}
-  @keyframes rgFinal{0%{opacity:0;transform:scale(.92)}65%{opacity:1;transform:scale(1.02)}100%{opacity:1;transform:scale(1)}}
-  @keyframes rgBuildGlow{0%,100%{transform:scale(.86);opacity:.45}50%{transform:scale(1.05);opacity:.9}}
-  @keyframes rgDash{to{stroke-dashoffset:-26}}
+  .rg-build-status{position:absolute;left:50%;bottom:3.5%;transform:translateX(-50%);display:flex;align-items:center;gap:7px;color:#7890a6;font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.88}
+  .rg-build-status i{display:block;width:6px;height:6px;border-radius:50%;background:#00a0c0;box-shadow:0 0 0 4px rgba(0,160,192,.10);animation:rgPulse 1.05s ease-in-out infinite}
+  @keyframes rgPieceIn{0%{opacity:0;transform:translateY(14px) scale(.9);filter:blur(5px)}70%{opacity:1;filter:blur(0)}100%{opacity:1;transform:none}}
+  @keyframes rgFinalExact{0%{opacity:0;transform:scale(.93);filter:brightness(.7) saturate(.8)}55%{opacity:1;transform:scale(1.02);filter:brightness(1.08) saturate(1.08)}100%{opacity:1;transform:scale(1);filter:none}}
+  @keyframes rgFadeUp{0%{opacity:0;transform:translate(-50%,18px)}100%{opacity:1;transform:translate(-50%,0)}}
+  @keyframes rgBuildGlow{0%,100%{transform:scale(.86);opacity:.35}50%{transform:scale(1.04);opacity:.92}}
+  @keyframes rgScan{0%{opacity:0;transform:translateY(0)}18%{opacity:1}82%{opacity:1}100%{opacity:0;transform:translateY(440px)}}
   @keyframes rgPulse{50%{opacity:.32;transform:scale(.75)}}
   .rg-reduced-motion #rg-startup *{animation:none!important;transition:none!important}
-  .rg-reduced-motion .rg-final-mark{opacity:1;transform:none}
-  .rg-reduced-motion .rg-wordmark{opacity:1;transform:translateX(-50%)}
-  @media (max-width:760px){
-    .rg-build-wrap{width:96vw;height:78vh}.rg-build-logo{width:min(78vw,390px)}
-    .rg-wordmark{bottom:11%}.rg-build-status{bottom:5.5%;font-size:9px}.rg-build-field{background-size:34px 34px}
-  }
+  .rg-reduced-motion .rg-piece{opacity:0}
+  .rg-reduced-motion .rg-piece-final,.rg-reduced-motion .rg-wordmark{opacity:1;transform:translateX(-50%)}
+  .rg-reduced-motion .rg-piece-final{transform:scale(1)}
+  .adaptive-logo .logo-variant{display:none}
+  .adaptive-logo .logo-dark{display:inline-flex}
+  :root[data-theme="light"][data-contrast="off"] .adaptive-logo .logo-dark{display:none}
+  :root[data-theme="light"][data-contrast="off"] .adaptive-logo .logo-light{display:inline-flex}
+  :root[data-theme="dark"][data-contrast="on"] .adaptive-logo .logo-dark{display:none}
+  :root[data-theme="dark"][data-contrast="on"] .adaptive-logo .logo-hc-dark{display:inline-flex}
+  :root[data-theme="light"][data-contrast="on"] .adaptive-logo .logo-dark{display:none}
+  :root[data-theme="light"][data-contrast="on"] .adaptive-logo .logo-hc-light{display:inline-flex}
+  :root[data-colorblind]:not([data-colorblind="none"]) .adaptive-logo .logo-variant{display:none}
+  :root[data-colorblind]:not([data-colorblind="none"]) .adaptive-logo .logo-colorblind{display:inline-flex}
+  :root[data-colorblind="acromatopsia"] .adaptive-logo .logo-variant{display:none}
+  :root[data-colorblind="acromatopsia"] .adaptive-logo .logo-achrom{display:inline-flex}
+  .adaptive-logo .logo-variant img{display:block;width:100%;height:100%;object-fit:contain}
+  .auth-brand.adaptive-logo .logo-variant{width:72px;height:72px;flex:none}
+  .sidebar-brand.adaptive-logo .logo-variant{width:38px;height:38px;flex:none}
+  @media(max-width:760px){.rg-build-wrap{width:96vw;height:78vh}.rg-exact-build{width:min(82vw,430px)}.rg-wordmark{bottom:11%}.rg-build-status{bottom:5.5%;font-size:9px}}
 </style>
 <script>document.addEventListener('DOMContentLoaded',function(){var main=document.querySelector('link[href^="./assets/css/style.css"]');var fb=document.getElementById('style-fallback');if(main&&fb){main.addEventListener('error',function(){fb.media='all'});}});</script>
 </head>
 <body>
 
-  <!-- Splash de inicialização: construção visual do logotipo. -->
+  <!-- Splash de inicialização: construção da logo oficial por camadas. -->
   <div id="rg-startup" aria-hidden="true">
     <div class="rg-build-field"></div>
     <div class="rg-build-glow"></div>
     <div class="rg-build-wrap">
-      <svg class="rg-build-logo" viewBox="0 0 600 600" role="img" aria-label="Construindo o logotipo Ranking Geral">
-        <circle class="rg-build-guides" cx="300" cy="290" r="212"></circle>
-        <circle class="rg-build-guide-dash" cx="300" cy="290" r="238"></circle>
-        <path class="rg-build-ring" d="M 300 74 A 216 216 0 0 1 494 194"></path>
-        <path class="rg-build-ring2" d="M 494 386 A 216 216 0 0 1 106 386"></path>
-
-        <g>
-          <rect class="rg-bar rg-bar-x" x="154" y="244" width="42" height="150" rx="7" style="--d:1.05s"></rect>
-          <rect class="rg-bar rg-bar-y" x="213" y="184" width="42" height="210" rx="7" style="--d:1.25s"></rect>
-          <rect class="rg-bar rg-bar-x" x="272" y="126" width="42" height="268" rx="7" style="--d:1.45s"></rect>
-          <rect class="rg-bar rg-bar-y" x="331" y="92" width="42" height="302" rx="7" style="--d:1.65s"></rect>
-        </g>
-
-        <path class="rg-letter" d="M166 418 V246 C166 216 184 199 214 199 H249 C286 199 305 217 305 249 C305 281 286 298 249 298 H166 M247 298 L312 420" style="--d:2.15s"></path>
-        <path class="rg-letter rg-letter-g" d="M449 278 H381 C348 278 329 300 329 335 C329 371 350 396 383 396 H447 V339 H399" style="--d:2.75s"></path>
-
-        <path class="rg-arrow" d="M188 436 C240 408 293 374 342 327 C381 289 415 248 453 214"></path>
-        <path class="rg-arrow-head" d="M432 202 L476 199 L460 242 Z"></path>
-        <path class="rg-arrow-down" d="M165 453 C143 434 133 415 127 391"></path>
-
-        <g class="rg-podium">
-          <circle cx="267" cy="457" r="15" style="--d:4.05s"></circle>
-          <rect x="246" y="476" width="42" height="30" rx="6" fill="#173149" style="--d:4.1s"></rect>
-          <circle cx="304" cy="451" r="15" fill="#2fd8a8" style="--d:4.25s"></circle>
-          <rect x="283" y="470" width="42" height="36" rx="6" fill="#2fd8a8" style="--d:4.3s"></rect>
-          <circle cx="341" cy="457" r="15" style="--d:4.4s"></circle>
-          <rect x="320" y="476" width="42" height="30" rx="6" fill="#173149" style="--d:4.45s"></rect>
-        </g>
-
-        <g class="rg-final-mark">
-          <circle cx="300" cy="290" r="219" fill="none" stroke="rgba(47,216,168,.22)" stroke-width="2"></circle>
-        </g>
-      </svg>
+      <div class="rg-exact-build" aria-hidden="true">
+        <img class="rg-piece rg-piece-ring" src="./assets/brand/logo-oficial-dark.png" alt="">
+        <img class="rg-piece rg-piece-bars" src="./assets/brand/logo-oficial-dark.png" alt="">
+        <img class="rg-piece rg-piece-core" src="./assets/brand/logo-oficial-dark.png" alt="">
+        <img class="rg-piece rg-piece-arrow" src="./assets/brand/logo-oficial-dark.png" alt="">
+        <img class="rg-piece rg-piece-podium" src="./assets/brand/logo-oficial-dark.png" alt="">
+        <img class="rg-piece rg-piece-final" src="./assets/brand/logo-oficial-dark.png" alt="">
+        <div class="rg-scanline"></div>
+      </div>
       <div class="rg-wordmark">
         <div class="rg-wordmark-main">RANKING <span class="rg-wordmark-accent">GERAL</span></div>
         <div class="rg-wordmark-sub">classificação em movimento</div>
@@ -243,7 +219,7 @@
 <!-- ===================== MÓDULO 0: LOGIN ===================== -->
 <div class="auth-gate ui-auth-gate" id="auth-gate">
   <div class="auth-card">
-    <div class="auth-brand auth-brand-logo"><img src="./assets/logo-ranking-geral.png" alt=""><span>Ranking Geral</span></div>
+    <div class="auth-brand auth-brand-logo adaptive-logo" data-logo-family="ranking-geral"><span class="logo-variant logo-dark"><img src="./assets/brand/logo-oficial-dark.png" alt=""></span><span class="logo-variant logo-light"><img src="./assets/brand/logo-oficial-light.png" alt=""></span><span class="logo-variant logo-hc-dark"><img src="./assets/brand/logo-oficial-contraste-escuro.png" alt=""></span><span class="logo-variant logo-hc-light"><img src="./assets/brand/logo-oficial-contraste-claro.png" alt=""></span><span class="logo-variant logo-colorblind"><img src="./assets/brand/logo-oficial-daltonismo.png" alt=""></span><span class="logo-variant logo-achrom"><img src="./assets/brand/logo-oficial-acromatopsia.png" alt=""></span><span>Ranking Geral</span></div>
 
     <div class="auth-view" id="auth-view-login">
       <div class="panel-title">Entrar</div>
@@ -351,7 +327,7 @@
 
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-head">
-      <span class="sidebar-brand"><span class="brand-mark brand-mark-image" aria-hidden="true"><img src="./assets/logo-ranking-geral.png" alt=""></span><span>Ranking Geral</span></span>
+      <span class="sidebar-brand adaptive-logo" data-logo-family="ranking-geral"><span class="brand-mark brand-mark-image logo-variant logo-dark" aria-hidden="true"><img src="./assets/brand/logo-oficial-dark.png" alt=""></span><span class="brand-mark brand-mark-image logo-variant logo-light" aria-hidden="true"><img src="./assets/brand/logo-oficial-light.png" alt=""></span><span class="brand-mark brand-mark-image logo-variant logo-hc-dark" aria-hidden="true"><img src="./assets/brand/logo-oficial-contraste-escuro.png" alt=""></span><span class="brand-mark brand-mark-image logo-variant logo-hc-light" aria-hidden="true"><img src="./assets/brand/logo-oficial-contraste-claro.png" alt=""></span><span class="brand-mark brand-mark-image logo-variant logo-colorblind" aria-hidden="true"><img src="./assets/brand/logo-oficial-daltonismo.png" alt=""></span><span class="brand-mark brand-mark-image logo-variant logo-achrom" aria-hidden="true"><img src="./assets/brand/logo-oficial-acromatopsia.png" alt=""></span><span>Ranking Geral</span></span>
       <button type="button" class="sidebar-collapse-btn" id="sidebar-collapse-btn" onclick="toggleSidebarCollapse()" title="Recolher menu" aria-label="Recolher menu"><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"></path></svg></span></button>
     </div>
     <div class="sidebar-section-label">Principal</div>
@@ -461,29 +437,29 @@
   setTimeout(esconderAgora,duracao);
 })();
 </script>
-  <script src="./js/core/config-api.js?v=20260907-ui10"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
-  <script src="./js/core/estado-global.js?v=20260907-ui10"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
-  <script src="./js/features/faixas-dinamicas.js?v=20260907-ui10"></script><!-- Gerenciamento de faixas dinâmicas. -->
-  <script src="./js/core/identidade.js?v=20260907-ui10"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
-  <script src="./js/core/navegacao.js?v=20260907-ui10"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
-  <script src="./js/core/sidebar.js?v=20260907-ui10"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->
-  <script src="./js/a11y/acessibilidade.js?v=20260907-ui10"></script><!-- Painel de acessibilidade (UI) — liga os controles a window.A11Y, de a11y.js. -->
-  <script src="./js/features/configuracoes-de-conta.js?v=20260907-ui10"></script><!-- Tela "Minha conta". -->
-  <script src="./js/features/modulo-0.js?v=20260907-ui10"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
-  <script src="./js/features/texto-do-resumo.js?v=20260907-ui10"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
-  <script src="./js/features/colagem.js?v=20260907-ui10"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
-  <script src="./js/features/colagem-ocr.js?v=20260907-ui10"></script><!-- Leitura de print via OCR — alimenta a mesma caixa de colagem.js. -->
-  <script src="./js/features/planilha-mestra.js?v=20260907-ui10"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
-  <script src="./js/features/participantes.js?v=20260907-ui10"></script><!-- CRUD de participante + cálculo de ranking (total/tiebreak/sort). -->
-  <script src="./js/features/dias.js?v=20260907-ui10"></script><!-- Adicionar/remover um dia. -->
-  <script src="./js/features/formulario-lancamento-dia.js?v=20260907-ui10"></script><!-- Aba "Preencher" do Lançar Pontuação. -->
-  <script src="./js/features/analises-gerais.js?v=20260907-ui10"></script><!-- Cartões de estatística do Módulo 2. -->
-  <script src="./js/features/filtros.js?v=20260907-ui10"></script><!-- Filtro por período/dias do Módulo 2. -->
-  <script src="./js/features/analises-dashboard.js?v=20260907-ui10"></script><!-- Destaques + gráfico de evolução + mapa de desempenho (chamados de dentro de filtros.js). -->
-  <script src="./js/features/gerenciar-dias-lancados.js?v=20260907-ui10"></script><!-- Lista de dias lançados (Módulos 3 e 4). -->
-  <script src="./js/features/resumos-salvos.js?v=20260907-ui10"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
-  <script src="./js/features/usuarios.js?v=20260907-ui10"></script><!-- Painel de administração de usuários (Módulo 4). -->
-  <script src="./js/core/renderizacao.js?v=20260907-ui10"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
-  <script src="./js/core/inicializacao.js?v=20260907-ui10"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
+  <script src="./js/core/config-api.js?v=20260907-brand11"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
+  <script src="./js/core/estado-global.js?v=20260907-brand11"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
+  <script src="./js/features/faixas-dinamicas.js?v=20260907-brand11"></script><!-- Gerenciamento de faixas dinâmicas. -->
+  <script src="./js/core/identidade.js?v=20260907-brand11"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
+  <script src="./js/core/navegacao.js?v=20260907-brand11"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
+  <script src="./js/core/sidebar.js?v=20260907-brand11"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->
+  <script src="./js/a11y/acessibilidade.js?v=20260907-brand11"></script><!-- Painel de acessibilidade (UI) — liga os controles a window.A11Y, de a11y.js. -->
+  <script src="./js/features/configuracoes-de-conta.js?v=20260907-brand11"></script><!-- Tela "Minha conta". -->
+  <script src="./js/features/modulo-0.js?v=20260907-brand11"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
+  <script src="./js/features/texto-do-resumo.js?v=20260907-brand11"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
+  <script src="./js/features/colagem.js?v=20260907-brand11"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
+  <script src="./js/features/colagem-ocr.js?v=20260907-brand11"></script><!-- Leitura de print via OCR — alimenta a mesma caixa de colagem.js. -->
+  <script src="./js/features/planilha-mestra.js?v=20260907-brand11"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
+  <script src="./js/features/participantes.js?v=20260907-brand11"></script><!-- CRUD de participante + cálculo de ranking (total/tiebreak/sort). -->
+  <script src="./js/features/dias.js?v=20260907-brand11"></script><!-- Adicionar/remover um dia. -->
+  <script src="./js/features/formulario-lancamento-dia.js?v=20260907-brand11"></script><!-- Aba "Preencher" do Lançar Pontuação. -->
+  <script src="./js/features/analises-gerais.js?v=20260907-brand11"></script><!-- Cartões de estatística do Módulo 2. -->
+  <script src="./js/features/filtros.js?v=20260907-brand11"></script><!-- Filtro por período/dias do Módulo 2. -->
+  <script src="./js/features/analises-dashboard.js?v=20260907-brand11"></script><!-- Destaques + gráfico de evolução + mapa de desempenho (chamados de dentro de filtros.js). -->
+  <script src="./js/features/gerenciar-dias-lancados.js?v=20260907-brand11"></script><!-- Lista de dias lançados (Módulos 3 e 4). -->
+  <script src="./js/features/resumos-salvos.js?v=20260907-brand11"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
+  <script src="./js/features/usuarios.js?v=20260907-brand11"></script><!-- Painel de administração de usuários (Módulo 4). -->
+  <script src="./js/core/renderizacao.js?v=20260907-brand11"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
+  <script src="./js/core/inicializacao.js?v=20260907-brand11"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
 </body>
 </html>
