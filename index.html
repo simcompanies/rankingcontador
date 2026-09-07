@@ -7,9 +7,10 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./assets/icons/icon-192.png">
 <link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
-<link rel="stylesheet" href="./assets/css/style.css?v=20260907-ghfinal1">
-<link rel="stylesheet" href="./style.css?v=20260907-ghfinal1-root" media="not all" id="style-fallback">
-  <meta name="app-build" content="20260907-ghfinal1">
+<script src="./js/a11y/a11y.js?v=20260907-login1"></script>
+<link rel="stylesheet" href="./assets/css/style.css?v=20260907-login1">
+<link rel="stylesheet" href="./style.css?v=20260907-login1-root" media="not all" id="style-fallback">
+  <meta name="app-build" content="20260907-login1">
 <script>document.addEventListener('DOMContentLoaded',function(){var main=document.querySelector('link[href^="./assets/css/style.css"]');var fb=document.getElementById('style-fallback');if(main&&fb){main.addEventListener('error',function(){fb.media='all'});}});</script>
 </head>
 <body>
@@ -124,10 +125,118 @@
        ============================================================================ -->
 
   <!-- Módulo 0 (login) — preenchido com modulo-0.html -->
-  <div id="slot-modulo-0"></div>
+  <div id="slot-modulo-0">
+<!-- ============================================================================
+     modulo-0.html — Tela de autenticação (Módulo 0)
+     ----------------------------------------------------------------------------
+     Contém os três sub-formulários (login / criar conta / esqueci a senha),
+     alternados por mostrarAuthView() em modulo-0.js.
+
+     Injetado por inicializacao.js (carregarModulosHtml) dentro de
+     <div id="slot-modulo-0"> em index.html.
+     Comportamento: modulo-0.js (formulários) + identidade.js (sessão).
+     Estilos: style.css, seção "Módulo 0: tela de login".
+     ============================================================================ -->
+
+<!-- ===================== MÓDULO 0: LOGIN ===================== -->
+<div class="auth-gate ui-auth-gate" id="auth-gate">
+  <div class="auth-card">
+    <div class="auth-brand">Ranking Geral</div>
+
+    <div class="auth-view" id="auth-view-login">
+      <div class="panel-title">Entrar</div>
+      <form class="auth-form" onsubmit="handleLogin(event)">
+        <label class="campo"><span>E-mail cadastrado</span>
+          <input type="email" id="login-email" required autocomplete="username">
+        </label>
+        <label class="campo"><span>Senha cadastrada</span>
+          <input type="password" id="login-senha" required autocomplete="current-password">
+        </label>
+        <button type="submit" class="launch-submit" id="login-btn">Entrar</button>
+      </form>
+      <div id="login-msg" class="auth-msg hidden"></div>
+      <div class="auth-links">
+        <button type="button" class="link-btn" onclick="mostrarAuthView('esqueci')">Esqueceu sua senha?</button>
+        <button type="button" class="link-btn" onclick="mostrarAuthView('cadastro')">Crie sua conta</button>
+      </div>
+    </div>
+
+    <div class="auth-view hidden" id="auth-view-cadastro">
+      <div class="panel-title">Crie sua conta</div>
+      <form class="auth-form" onsubmit="handleCadastro(event)">
+        <label class="campo"><span>Nome</span>
+          <input type="text" id="cadastro-nome" required autocomplete="name">
+        </label>
+        <label class="campo"><span>E-mail google</span>
+          <input type="email" id="cadastro-email" required autocomplete="username">
+        </label>
+        <label class="campo"><span>Senha</span>
+          <input type="password" id="cadastro-senha" required minlength="6" autocomplete="new-password">
+        </label>
+        <label class="campo"><span>Repetir senha</span>
+          <input type="password" id="cadastro-senha2" required minlength="6" autocomplete="new-password">
+        </label>
+        <button type="submit" class="launch-submit" id="cadastro-btn">Criar conta</button>
+      </form>
+      <div id="cadastro-msg" class="auth-msg hidden"></div>
+      <div class="auth-links">
+        <button type="button" class="link-btn" onclick="mostrarAuthView('login')">← Voltar para o login</button>
+      </div>
+    </div>
+
+    <div class="auth-view hidden" id="auth-view-esqueci">
+      <div class="panel-title">Esqueceu sua senha?</div>
+      <div class="panel-hint">Informe seu e-mail google cadastrado. Se ele existir, enviamos um código temporário — use-o no lugar da senha pra entrar, e você vai poder definir uma senha nova em seguida.</div>
+      <form class="auth-form" onsubmit="handleEsqueciSenha(event)">
+        <label class="campo"><span>E-mail google</span>
+          <input type="email" id="esqueci-email" required autocomplete="username">
+        </label>
+        <button type="submit" class="launch-submit" id="esqueci-btn">Enviar código</button>
+      </form>
+      <div id="esqueci-msg" class="auth-msg hidden"></div>
+      <div class="auth-links">
+        <button type="button" class="link-btn" onclick="mostrarAuthView('login')">← Voltar para o login</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
 
   <!-- Modal de troca de senha obrigatória — preenchido com troca-de-senha.html -->
-  <div id="slot-troca-senha"></div>
+  <div id="slot-troca-senha">
+<!-- ============================================================================
+     troca-de-senha.html — Modal de troca de senha obrigatória
+     ----------------------------------------------------------------------------
+     Aparece sobre qualquer tela quando o backend indica precisaTrocarSenha
+     (após login com senha temporária) — aberto/fechado por
+     abrirModalNovaSenha()/fecharModalNovaSenha() em modulo-0.js.
+
+     Injetado por inicializacao.js (carregarModulosHtml) dentro de
+     <div id="slot-troca-senha"> em index.html.
+     Comportamento: modulo-0.js (handleDefinirNovaSenha).
+     Estilos: style.css, seção "Modal (troca de senha obrigatória...)".
+     ============================================================================ -->
+
+<!-- ===================== TROCA DE SENHA OBRIGATÓRIA (após código temporário) ===================== -->
+<div class="modal-overlay hidden ui-modal" id="modal-nova-senha">
+  <div class="modal-card">
+    <div class="panel-title">Defina sua nova senha</div>
+    <div class="panel-hint">Você entrou com um código temporário. Defina uma senha nova pra continuar.</div>
+    <form class="auth-form" onsubmit="handleDefinirNovaSenha(event)">
+      <label class="campo"><span>Nova senha</span>
+        <input type="password" id="nova-senha-1" required minlength="6" autocomplete="new-password">
+      </label>
+      <label class="campo"><span>Repetir nova senha</span>
+        <input type="password" id="nova-senha-2" required minlength="6" autocomplete="new-password">
+      </label>
+      <button type="submit" class="launch-submit" id="nova-senha-btn">Salvar nova senha</button>
+    </form>
+    <div id="nova-senha-msg" class="auth-msg hidden"></div>
+  </div>
+</div>
+
+</div>
 
   <!-- ============================================================================
        Casca persistente do app (sidebar + topbar): sempre existe no DOM desde
@@ -200,29 +309,29 @@
        import/export foi introduzido, para não alterar como os onclick="..." e
        demais funções se enxergam entre si.
        ============================================================================ -->
-  <script src="./js/core/config-api.js?v=20260907-ghfix2"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
-  <script src="./js/core/estado-global.js?v=20260907-ghfix2"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
-  <script src="./js/features/faixas-dinamicas.js?v=20260907-ghfix2"></script><!-- Gerenciamento de faixas dinâmicas. -->
-  <script src="./js/core/identidade.js?v=20260907-ghfix2"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
-  <script src="./js/core/navegacao.js?v=20260907-ghfix2"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
-  <script src="./js/core/sidebar.js?v=20260907-ghfix2"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->
-  <script src="./js/a11y/acessibilidade.js?v=20260907-ghfix2"></script><!-- Painel de acessibilidade (UI) — liga os controles a window.A11Y, de a11y.js. -->
-  <script src="./js/features/configuracoes-de-conta.js?v=20260907-ghfix2"></script><!-- Tela "Minha conta". -->
-  <script src="./js/features/modulo-0.js?v=20260907-ghfix2"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
-  <script src="./js/features/texto-do-resumo.js?v=20260907-ghfix2"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
-  <script src="./js/features/colagem.js?v=20260907-ghfix2"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
-  <script src="./js/features/colagem-ocr.js?v=20260907-ghfix2"></script><!-- Leitura de print via OCR — alimenta a mesma caixa de colagem.js. -->
-  <script src="./js/features/planilha-mestra.js?v=20260907-ghfix2"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
-  <script src="./js/features/participantes.js?v=20260907-ghfix2"></script><!-- CRUD de participante + cálculo de ranking (total/tiebreak/sort). -->
-  <script src="./js/features/dias.js?v=20260907-ghfix2"></script><!-- Adicionar/remover um dia. -->
-  <script src="./js/features/formulario-lancamento-dia.js?v=20260907-ghfix2"></script><!-- Aba "Preencher" do Lançar Pontuação. -->
-  <script src="./js/features/analises-gerais.js?v=20260907-ghfix2"></script><!-- Cartões de estatística do Módulo 2. -->
-  <script src="./js/features/filtros.js?v=20260907-ghfix2"></script><!-- Filtro por período/dias do Módulo 2. -->
-  <script src="./js/features/analises-dashboard.js?v=20260907-ghfix2"></script><!-- Destaques + gráfico de evolução + mapa de desempenho (chamados de dentro de filtros.js). -->
-  <script src="./js/features/gerenciar-dias-lancados.js?v=20260907-ghfix2"></script><!-- Lista de dias lançados (Módulos 3 e 4). -->
-  <script src="./js/features/resumos-salvos.js?v=20260907-ghfix2"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
-  <script src="./js/features/usuarios.js?v=20260907-ghfix2"></script><!-- Painel de administração de usuários (Módulo 4). -->
-  <script src="./js/core/renderizacao.js?v=20260907-ghfix2"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
-  <script src="./js/core/inicializacao.js?v=20260907-ghfix2"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
+  <script src="./js/core/config-api.js?v=20260907-login1"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
+  <script src="./js/core/estado-global.js?v=20260907-login1"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
+  <script src="./js/features/faixas-dinamicas.js?v=20260907-login1"></script><!-- Gerenciamento de faixas dinâmicas. -->
+  <script src="./js/core/identidade.js?v=20260907-login1"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
+  <script src="./js/core/navegacao.js?v=20260907-login1"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
+  <script src="./js/core/sidebar.js?v=20260907-login1"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->
+  <script src="./js/a11y/acessibilidade.js?v=20260907-login1"></script><!-- Painel de acessibilidade (UI) — liga os controles a window.A11Y, de a11y.js. -->
+  <script src="./js/features/configuracoes-de-conta.js?v=20260907-login1"></script><!-- Tela "Minha conta". -->
+  <script src="./js/features/modulo-0.js?v=20260907-login1"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
+  <script src="./js/features/texto-do-resumo.js?v=20260907-login1"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
+  <script src="./js/features/colagem.js?v=20260907-login1"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
+  <script src="./js/features/colagem-ocr.js?v=20260907-login1"></script><!-- Leitura de print via OCR — alimenta a mesma caixa de colagem.js. -->
+  <script src="./js/features/planilha-mestra.js?v=20260907-login1"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
+  <script src="./js/features/participantes.js?v=20260907-login1"></script><!-- CRUD de participante + cálculo de ranking (total/tiebreak/sort). -->
+  <script src="./js/features/dias.js?v=20260907-login1"></script><!-- Adicionar/remover um dia. -->
+  <script src="./js/features/formulario-lancamento-dia.js?v=20260907-login1"></script><!-- Aba "Preencher" do Lançar Pontuação. -->
+  <script src="./js/features/analises-gerais.js?v=20260907-login1"></script><!-- Cartões de estatística do Módulo 2. -->
+  <script src="./js/features/filtros.js?v=20260907-login1"></script><!-- Filtro por período/dias do Módulo 2. -->
+  <script src="./js/features/analises-dashboard.js?v=20260907-login1"></script><!-- Destaques + gráfico de evolução + mapa de desempenho (chamados de dentro de filtros.js). -->
+  <script src="./js/features/gerenciar-dias-lancados.js?v=20260907-login1"></script><!-- Lista de dias lançados (Módulos 3 e 4). -->
+  <script src="./js/features/resumos-salvos.js?v=20260907-login1"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
+  <script src="./js/features/usuarios.js?v=20260907-login1"></script><!-- Painel de administração de usuários (Módulo 4). -->
+  <script src="./js/core/renderizacao.js?v=20260907-login1"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
+  <script src="./js/core/inicializacao.js?v=20260907-login1"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
 </body>
 </html>

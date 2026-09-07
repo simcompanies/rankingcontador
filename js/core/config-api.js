@@ -23,9 +23,33 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbzB-zCaIRIDt4amlwcQIRDz
    altera dado no backend (login, salvar ranking, criar usuário...).
    Recebe o payload já pronto (objeto JS) e devolve o JSON de resposta. */
 async function chamarAPI(payload){
-  const resposta = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
-  if(!resposta.ok) throw new Error('Erro de rede (HTTP ' + resposta.status + ')');
-  return resposta.json();
+  const controlador = new AbortController();
+  const timer = setTimeout(() => controlador.abort(), 30000);
+  try{
+    const resposta = await fetch(API_URL, {
+      method: 'POST',
+      mode: 'cors',
+      credentials: 'omit',
+      redirect: 'follow',
+      cache: 'no-store',
+      headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+      body: JSON.stringify(payload),
+      signal: controlador.signal
+    });
+    if(!resposta.ok) throw new Error('Erro de rede (HTTP ' + resposta.status + ')');
+    const texto = await resposta.text();
+    try{
+      return JSON.parse(texto);
+    }catch(parseErro){
+      console.error('Resposta inválida da API:', texto);
+      throw new Error('A API respondeu em formato inválido.');
+    }
+  }catch(erro){
+    if(erro && erro.name === 'AbortError') throw new Error('A API demorou mais de 30 segundos para responder.');
+    throw erro;
+  }finally{
+    clearTimeout(timer);
+  }
 }
 
 /* Chamada de leitura (GET) — usada para ações que só consultam dado
@@ -33,9 +57,21 @@ async function chamarAPI(payload){
    viram querystring via URLSearchParams. */
 async function chamarAPIGet(params){
   const query = new URLSearchParams(params).toString();
-  const resposta = await fetch(API_URL + '?' + query);
+  const resposta = await fetch(API_URL + '?' + query, {
+    method: 'GET',
+    mode: 'cors',
+    credentials: 'omit',
+    redirect: 'follow',
+    cache: 'no-store'
+  });
   if(!resposta.ok) throw new Error('Erro de rede (HTTP ' + resposta.status + ')');
-  return resposta.json();
+  const texto = await resposta.text();
+  try{
+    return JSON.parse(texto);
+  }catch(parseErro){
+    console.error('Resposta GET inválida da API:', texto);
+    throw new Error('A API respondeu em formato inválido.');
+  }
 }
 
 /* --------------------------------------------------------------------------

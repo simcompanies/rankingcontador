@@ -37,7 +37,8 @@ async function handleLogin(event){
   definirCarregando(btn, true, 'Entrar');
   try{
     const resposta = await chamarAPI({ action:'login', email:email, senha:senha });
-    if(!resposta.sucesso){ mostrarMsg('login-msg', resposta.erro || 'Não foi possível entrar.', false); return; }
+    if(!resposta || !resposta.sucesso){ mostrarMsg('login-msg', (resposta && (resposta.erro || resposta.mensagem)) || 'E-mail ou senha incorretos.', false); return; }
+    if(!resposta.dados || !resposta.dados.token){ throw new Error('A API não devolveu um token de sessão.'); }
     document.getElementById('login-senha').value = '';
     aplicarSessao(resposta.dados);
     if(resposta.dados.precisaTrocarSenha) abrirModalNovaSenha();

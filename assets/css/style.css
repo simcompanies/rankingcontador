@@ -1962,3 +1962,10 @@ input.score:focus{border-color:var(--ux-primary)!important;box-shadow:0 0 0 3px 
 .sidebar-collapse-btn .ui-icon svg{transition:transform .18s ease;}
 .sidebar.collapsed .sidebar-collapse-btn .ui-icon svg{transform:rotate(180deg);}
 .side-icon svg{stroke-linecap:round;stroke-linejoin:round;}
+
+
+/* AUTH STABILITY PATCH 2026-09-07 */
+.hidden{display:none !important;}
+.auth-msg{white-space:pre-wrap;line-height:1.45;}
+.auth-msg.erro{border:1px solid rgba(255,99,99,.25);}
+.auth-msg.ok{border:1px solid rgba(50,215,171,.25);}

@@ -51,10 +51,16 @@ async function carregarModulosHtml(){
   await Promise.all(MODULOS_HTML.map(async function(modulo){
     const el = document.getElementById(modulo.slot);
     if(!el) return;
+
+    // Login e troca de senha são críticos para o primeiro carregamento.
+    // Eles já vêm embutidos no index.html para não depender de fetch assíncrono.
+    if((modulo.slot === 'slot-modulo-0' && document.getElementById('auth-gate')) ||
+       (modulo.slot === 'slot-troca-senha' && document.getElementById('modal-nova-senha'))) return;
+
     try{
-      let resposta = await fetch(modulo.arquivo, { cache: 'no-store' });
+      let resposta = await fetch('./' + modulo.arquivo, { cache: 'no-store', credentials: 'same-origin' });
       if(!resposta.ok && modulo.fallback){
-        resposta = await fetch(modulo.fallback, { cache: 'no-store' });
+        resposta = await fetch('./' + modulo.fallback, { cache: 'no-store', credentials: 'same-origin' });
       }
       if(!resposta.ok) throw new Error('HTTP ' + resposta.status);
       el.innerHTML = await resposta.text();
