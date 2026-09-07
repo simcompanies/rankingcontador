@@ -2647,7 +2647,7 @@ body.light-mode .resumo-body{
 
 
 /* ============================================================================
-   BRANDING / STARTUP V7
+   STATIC LOGIN BRANDING
    ============================================================================ */
 .brand-mark-image{overflow:hidden;padding:4px!important;background:linear-gradient(135deg,#10293e,#0a1723)!important}
 .brand-mark-image img{width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 3px 8px rgba(47,216,168,.18))}

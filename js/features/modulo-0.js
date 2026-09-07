@@ -41,9 +41,7 @@ async function handleLogin(event){
     if(!resposta.dados || !resposta.dados.token){ throw new Error('A API não devolveu um token de sessão.'); }
     document.getElementById('login-senha').value = '';
     aplicarSessao(resposta.dados);
-    window.rgStartup?.status('Entrando no ambiente');
     if(resposta.dados.precisaTrocarSenha) abrirModalNovaSenha();
-    setTimeout(() => window.rgStartup?.hide(), 420);
   }catch(erro){
     console.error(erro);
     mostrarMsg('login-msg', 'Erro de conexão. Verifique a URL da API (API_URL) e sua internet.', false);
@@ -67,8 +65,6 @@ async function handleCadastro(event){
     const resposta = await chamarAPI({ action:'cadastrar', nome:nome, email:email, senha:senha, confirmarSenha:senha2 });
     if(!resposta.sucesso){ mostrarMsg('cadastro-msg', resposta.erro || 'Não foi possível criar a conta.', false); return; }
     aplicarSessao(resposta.dados);
-    window.rgStartup?.status('Ambiente pronto');
-    setTimeout(() => window.rgStartup?.hide(), 420);
   }catch(erro){
     console.error(erro);
     mostrarMsg('cadastro-msg', 'Erro de conexão. Verifique a URL da API (API_URL) e sua internet.', false);
