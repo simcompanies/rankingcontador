@@ -3203,3 +3203,103 @@ body.light-mode .a11y-switch{background:#dfe6ec!important;border-color:#c6d0da!i
 body.light-mode .a11y-switch:checked{background:#ccefe4!important;border-color:#20b88f!important;}
 :root[data-theme="light"] .a11y-panel select,
 body.light-mode .a11y-panel select{background:#f2f6f9!important;color:#18222d!important;border-color:#d2dbe4!important;}
+
+
+/* ============================================================
+   V11B — LOGIN + CONSTRUÇÃO REAL DA LOGO OFICIAL
+   ============================================================ */
+.auth-brand.auth-brand-logo{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:12px!important;
+  width:100%!important;
+  margin:0 0 28px!important;
+  color:var(--ux-text,#eef5fa)!important;
+  text-transform:none!important;
+  letter-spacing:-.03em!important;
+  font-size:30px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  text-align:center!important;
+}
+.auth-brand.auth-brand-logo::after{content:none!important;display:none!important;}
+.auth-brand.auth-brand-logo img{
+  width:108px!important;
+  height:108px!important;
+  object-fit:contain!important;
+  display:block!important;
+  filter:drop-shadow(0 16px 28px rgba(0,0,0,.26));
+}
+.auth-brand.auth-brand-logo span{
+  display:block!important;
+  white-space:nowrap!important;
+  font-family:inherit!important;
+  font-size:clamp(25px,4vw,32px)!important;
+  line-height:1!important;
+  color:var(--ux-text,#eef5fa)!important;
+  font-weight:900!important;
+  letter-spacing:-.035em!important;
+}
+@media(max-width:560px){
+  .auth-brand.auth-brand-logo img{width:92px!important;height:92px!important;}
+  .auth-brand.auth-brand-logo span{font-size:25px!important;}
+}
+
+#rg-startup{
+  position:fixed;inset:0;z-index:99999;display:grid;place-items:center;overflow:hidden;
+  background:
+    radial-gradient(560px 420px at 50% 43%,rgba(47,216,168,.11),transparent 66%),
+    radial-gradient(460px 340px at 50% 48%,rgba(111,146,232,.07),transparent 68%),
+    linear-gradient(180deg,#071019 0%,#08131c 52%,#070d14 100%);
+  color:#eef5fa;opacity:1;visibility:visible;transition:opacity .55s ease,visibility .55s ease;
+}
+#rg-startup.rg-startup-hide{opacity:0;visibility:hidden;pointer-events:none}
+.rg-build-wrap{position:relative;width:min(90vw,640px);height:min(90vh,640px);display:grid;place-items:center}
+.rg-build-field{position:absolute;inset:0;pointer-events:none;opacity:.4;background:
+  linear-gradient(rgba(115,145,176,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(115,145,176,.035) 1px,transparent 1px);
+  background-size:46px 46px;mask-image:radial-gradient(circle at center,black 0 25%,transparent 73%);-webkit-mask-image:radial-gradient(circle at center,black 0 25%,transparent 73%);
+}
+.rg-logo-construction{position:relative;width:min(62vw,390px);aspect-ratio:1;filter:drop-shadow(0 26px 52px rgba(0,0,0,.42));}
+.rg-logo-piece,.rg-logo-final{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;pointer-events:none;}
+.rg-logo-piece img,.rg-logo-final img{width:100%;height:100%;object-fit:contain;display:block;}
+.rg-logo-piece{opacity:0;will-change:transform,opacity,clip-path,filter;}
+.rg-piece-left{clip-path:inset(0 48% 0 0);transform:translateX(-120px) rotate(-7deg) scale(.92);animation:rgPieceLeft 1.15s cubic-bezier(.22,1,.36,1) .45s forwards;}
+.rg-piece-top{clip-path:inset(0 0 48% 0);transform:translateY(-110px) rotate(5deg) scale(.88);animation:rgPieceTop 1.10s cubic-bezier(.22,1,.36,1) .75s forwards;}
+.rg-piece-right{clip-path:inset(0 0 0 48%);transform:translateX(120px) rotate(7deg) scale(.92);animation:rgPieceRight 1.15s cubic-bezier(.22,1,.36,1) 1.05s forwards;}
+.rg-piece-bottom{clip-path:inset(48% 0 0 0);transform:translateY(125px) rotate(-5deg) scale(.9);animation:rgPieceBottom 1.20s cubic-bezier(.22,1,.36,1) 1.25s forwards;}
+.rg-piece-center{clip-path:circle(33% at 50% 50%);transform:scale(.22) rotate(-35deg);animation:rgPieceCenter 1.00s cubic-bezier(.16,1,.3,1) 1.85s forwards;}
+.rg-logo-final{opacity:0;transform:scale(.86);animation:rgLogoFinal 1.15s cubic-bezier(.18,1,.3,1) 2.55s forwards;}
+.rg-logo-final img{animation:rgFinalDrift 2.2s ease-in-out 3.3s infinite alternate;}
+.rg-build-orbit{position:absolute;left:50%;top:43%;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;}
+.rg-orbit-a{width:min(55vw,410px);height:min(55vw,410px);border:1px solid rgba(47,216,168,.35);border-right-color:transparent;border-bottom-color:transparent;opacity:0;animation:rgOrbitA 4.8s cubic-bezier(.22,1,.36,1) .15s forwards;}
+.rg-orbit-b{width:min(64vw,490px);height:min(64vw,490px);border:1px dashed rgba(111,146,232,.22);border-left-color:transparent;border-top-color:transparent;opacity:0;animation:rgOrbitB 5.2s linear .2s forwards;}
+.rg-build-sweep{position:absolute;left:50%;top:11%;width:min(70vw,520px);height:2px;transform:translateX(-50%) scaleX(0);transform-origin:center;opacity:.7;background:linear-gradient(90deg,transparent,#2fd8a8 18%,#fff 50%,#6f92e8 82%,transparent);box-shadow:0 0 20px rgba(47,216,168,.3);animation:rgSweep 4.9s ease-in-out .65s forwards;}
+.rg-build-progress{position:absolute;left:50%;bottom:10.2%;transform:translateX(-50%);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#6d849b;opacity:.95;white-space:nowrap;}
+.rg-wordmark{position:absolute;left:50%;bottom:15%;transform:translateX(-50%) translateY(16px);opacity:0;white-space:nowrap;animation:rgWordmark 1s cubic-bezier(.22,1,.36,1) 4.2s forwards;}
+.rg-wordmark-main{font-size:clamp(22px,3vw,31px);font-weight:950;letter-spacing:.16em;color:#f1f6fa;}
+.rg-wordmark-accent{color:#2fd8a8}
+.rg-build-status{position:absolute;left:50%;bottom:5.2%;transform:translateX(-50%);display:flex;align-items:center;gap:7px;color:#6f859a;font-size:10px;letter-spacing:.11em;text-transform:uppercase;}
+.rg-build-status i{width:7px;height:7px;border-radius:50%;background:#2fd8a8;box-shadow:0 0 0 5px rgba(47,216,168,.08);animation:rgStatusPulse .8s ease-in-out infinite;}
+@keyframes rgPieceLeft{0%{opacity:0;transform:translateX(-120px) rotate(-7deg) scale(.92);filter:blur(8px)}55%{opacity:1}100%{opacity:.96;transform:none;filter:none}}
+@keyframes rgPieceTop{0%{opacity:0;transform:translateY(-110px) rotate(5deg) scale(.88);filter:blur(8px)}55%{opacity:1}100%{opacity:.96;transform:none;filter:none}}
+@keyframes rgPieceRight{0%{opacity:0;transform:translateX(120px) rotate(7deg) scale(.92);filter:blur(8px)}55%{opacity:1}100%{opacity:.96;transform:none;filter:none}}
+@keyframes rgPieceBottom{0%{opacity:0;transform:translateY(125px) rotate(-5deg) scale(.9);filter:blur(8px)}55%{opacity:1}100%{opacity:.96;transform:none;filter:none}}
+@keyframes rgPieceCenter{0%{opacity:0;transform:scale(.22) rotate(-35deg);filter:blur(10px)}55%{opacity:1}100%{opacity:1;transform:scale(1) rotate(0);filter:none}}
+@keyframes rgLogoFinal{0%{opacity:0;transform:scale(.86)}45%{opacity:1;transform:scale(1.05)}72%{transform:scale(.985)}100%{opacity:1;transform:scale(1)}}
+@keyframes rgFinalDrift{0%{transform:translate3d(-1px,1px,0) rotate(-.5deg)}100%{transform:translate3d(1px,-1px,0) rotate(.5deg)}}
+@keyframes rgOrbitA{0%{opacity:0;transform:translate(-50%,-50%) rotate(-120deg) scale(.4)}18%{opacity:.8}100%{opacity:.2;transform:translate(-50%,-50%) rotate(260deg) scale(1)}}
+@keyframes rgOrbitB{0%{opacity:0;transform:translate(-50%,-50%) rotate(20deg) scale(.7)}25%{opacity:.65}100%{opacity:.12;transform:translate(-50%,-50%) rotate(380deg) scale(1.05)}}
+@keyframes rgSweep{0%{transform:translateX(-50%) scaleX(0);opacity:0}25%{transform:translateX(-50%) scaleX(1);opacity:.9}60%{transform:translateX(-50%) scaleX(.25);opacity:.55}100%{transform:translateX(-50%) scaleX(1);opacity:0}}
+@keyframes rgWordmark{to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes rgStatusPulse{50%{transform:scale(.72);opacity:.35}}
+.rg-reduced-motion #rg-startup *{animation:none!important;transition:none!important}
+.rg-reduced-motion .rg-logo-piece{opacity:0!important}
+.rg-reduced-motion .rg-logo-final{opacity:1!important;transform:none!important}
+.rg-reduced-motion .rg-wordmark{opacity:1!important;transform:translateX(-50%)!important}
+@media(max-width:760px){
+  .rg-build-wrap{width:95vw;height:82vh}.rg-logo-construction{width:min(76vw,330px)}
+  .rg-wordmark{bottom:16%;}.rg-build-progress{bottom:11.5%;font-size:9px}.rg-build-status{bottom:6.5%;font-size:9px}
+}
+
