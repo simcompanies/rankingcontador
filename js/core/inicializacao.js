@@ -39,6 +39,7 @@ const MODULOS_HTML = [
   { arquivo: 'modules/modulo-2.html',               fallback: 'modulo-2.html',               slot: 'slot-modulo-2' },
   { arquivo: 'modules/modulo-3.html',               fallback: 'modulo-3.html',               slot: 'slot-modulo-3' },
   { arquivo: 'modules/modulo-4.html',               fallback: 'modulo-4.html',               slot: 'slot-modulo-4' },
+  { arquivo: 'modules/conteudo.html',               fallback: 'conteudo.html',               slot: 'slot-conteudo' },
   { arquivo: 'modules/configuracoes-de-conta.html', fallback: 'configuracoes-de-conta.html', slot: 'slot-configuracoes-conta' },
 ];
 
