@@ -12,7 +12,7 @@
    baixarem a versão nova em vez de continuarem presos no cache antigo.
    ============================================================================ */
 
-const CACHE_NAME = 'ranking-geral-v3';
+const CACHE_NAME = 'ranking-geral-v7';
 
 const APP_SHELL = [
   './',
@@ -26,6 +26,13 @@ const APP_SHELL = [
   './modules/modulo-3.html',
   './modules/modulo-4.html',
   './modules/configuracoes-de-conta.html',
+  './modulo-0.html',
+  './troca-de-senha.html',
+  './modulo-1.html',
+  './modulo-2.html',
+  './modulo-3.html',
+  './modulo-4.html',
+  './configuracoes-de-conta.html',
   './js/a11y/a11y.js',
   './js/a11y/acessibilidade.js',
   './js/core/config-api.js',

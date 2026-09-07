@@ -23,7 +23,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbzB-zCaIRIDt4amlwcQIRDz
    altera dado no backend (login, salvar ranking, criar usuário...).
    Recebe o payload já pronto (objeto JS) e devolve o JSON de resposta. */
 async function chamarAPI(payload){
-  const resposta = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload), redirect: 'follow', cache: 'no-store' });
+  const resposta = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
   if(!resposta.ok) throw new Error('Erro de rede (HTTP ' + resposta.status + ')');
   return resposta.json();
 }
@@ -33,7 +33,7 @@ async function chamarAPI(payload){
    viram querystring via URLSearchParams. */
 async function chamarAPIGet(params){
   const query = new URLSearchParams(params).toString();
-  const resposta = await fetch(API_URL + '?' + query, { redirect: 'follow', cache: 'no-store' });
+  const resposta = await fetch(API_URL + '?' + query);
   if(!resposta.ok) throw new Error('Erro de rede (HTTP ' + resposta.status + ')');
   return resposta.json();
 }
