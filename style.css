@@ -3351,100 +3351,68 @@ V13 — LOGIN RESPONSIVO POR LIMITE REAL DA TELA / GRID 5x5
 
 
 
+
 /* ============================================================
-   V19 — CONSTRUÇÃO CINÉTICA ORGÂNICA DA LOGO OFICIAL
+   V21 — KINETIC BUILD / CONSTRUÇÃO FLUIDA DA LOGO OFICIAL
    ------------------------------------------------------------
-   A marca é tratada como uma única composição vetorial, mas cada
-   grupo mantém sua geometria oficial. O movimento é contínuo,
-   sobreposto e sem rotação mecânica: as peças emergem, elevam-se,
-   cruzam o ponto de descanso e assentam suavemente no desenho final.
+   Direção baseada em build-up, stagger, ease-out e settle: a marca
+   não "encaixa" como peças mecânicas; ela cresce, desliza e ganha
+   forma em uma continuidade visual única.
    ============================================================ */
 #rg-startup{
-  position:fixed!important; inset:0!important; z-index:99999!important;
-  display:grid!important; place-items:center!important; overflow:hidden!important;
-  background:#071019!important;
-  opacity:1!important; visibility:visible!important; pointer-events:auto!important;
-  transition:opacity .70s cubic-bezier(.22,1,.36,1),visibility .70s linear!important;
+  position:fixed!important;inset:0!important;z-index:99999!important;
+  display:grid!important;place-items:center!important;overflow:hidden!important;
+  background:#071019!important;color:#f4f8fa!important;
+  opacity:1!important;visibility:visible!important;pointer-events:auto!important;
+  transition:opacity .72s cubic-bezier(.22,1,.36,1),visibility .72s linear!important;
 }
 #rg-startup.rg-startup-hide{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
-#rg-startup .rg-startup-stage{width:min(90vw,760px);height:min(88vh,760px);display:grid;place-items:center}
-#rg-startup .rg-vector-lockup{position:relative;width:min(74vw,560px);aspect-ratio:1;display:grid;place-items:center;filter:drop-shadow(0 26px 50px rgba(0,0,0,.30))}
+#rg-startup .rg-startup-stage{width:min(94vw,820px);height:min(90vh,820px);display:grid;place-items:center}
+#rg-startup .rg-kinetic-lockup{position:relative;width:min(70vw,570px);aspect-ratio:1;display:grid;place-items:center}
+#rg-startup .rg-kinetic-svg{position:relative;width:100%;height:100%;z-index:2;filter:drop-shadow(0 24px 44px rgba(0,0,0,.28));}
+#rg-startup .rg-kinetic-logo{width:100%;height:100%;overflow:visible;shape-rendering:geometricPrecision}
+#rg-startup .rg-kin-part{opacity:0;transform-box:view-box;transform-origin:50% 50%;will-change:transform,opacity}
+#rg-startup .rg-soft-glow{opacity:0;transform-box:view-box;transform-origin:50% 50%;animation:rg21-glow 1.7s ease-out .25s forwards}
+#rg-startup .rg-kinetic-halo{position:absolute;inset:11%;border:1px solid rgba(1,170,202,.10);border-radius:50%;transform:scale(.72);opacity:0;z-index:0;animation:rg21-halo 1.8s cubic-bezier(.16,1,.3,1) .05s forwards}
+#rg-startup .rg-kinetic-halo::after{content:"";position:absolute;inset:7%;border-radius:50%;border:1px solid rgba(154,125,255,.08);transform:rotate(-18deg);}
 
-/* ============================================================
-   V20 — CONSTRUÇÃO CINÉTICA LIMPA DA LOGO OFICIAL
-   A geometria vetorial continua sendo a da marca oficial. A animação
-   não faz rastreio por clip-path nem mascara os contornos, evitando os
-   artefatos causados pelos polígonos pixelizados. Cada peça é elevada
-   para a sua posição final com movimento contínuo e sobreposição suave.
-   ============================================================ */
-#rg-startup{position:fixed!important;inset:0!important;z-index:99999!important;display:grid!important;place-items:center!important;overflow:hidden!important;background:#071019!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;transition:opacity .72s cubic-bezier(.22,1,.36,1),visibility .72s linear!important}
-#rg-startup.rg-startup-hide{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
-#rg-startup .rg-startup-stage{width:min(90vw,760px);height:min(88vh,760px);display:grid;place-items:center}
-#rg-startup .rg-vector-lockup{position:relative;width:min(74vw,560px);aspect-ratio:1;display:grid;place-items:center;filter:drop-shadow(0 26px 50px rgba(0,0,0,.30))}
-#rg-startup .rg-vector-logo{width:100%;height:100%;overflow:visible;shape-rendering:geometricPrecision}
-#rg-startup .rg-vector-glow,#rg-startup .rg-vector-sheen{display:none!important}
-#rg-startup .rg-v-layer{opacity:0;transform-box:fill-box;transform-origin:50% 100%;will-change:transform,opacity;}
+/* Ordem: estrutura circular → crescimento → letras → vetores → base. */
+#rg-startup #kin-arc_cyan{animation:rg21-rise-left 1.40s cubic-bezier(.16,1,.3,1) .10s forwards}
+#rg-startup #kin-arc_violet{animation:rg21-rise-right 1.40s cubic-bezier(.16,1,.3,1) .18s forwards}
+#rg-startup #kin-bar-1{animation:rg21-bar 1.05s cubic-bezier(.16,1,.3,1) .54s forwards}
+#rg-startup #kin-bar-2{animation:rg21-bar 1.08s cubic-bezier(.16,1,.3,1) .62s forwards}
+#rg-startup #kin-bar-3{animation:rg21-bar 1.10s cubic-bezier(.16,1,.3,1) .70s forwards}
+#rg-startup #kin-bar-4{animation:rg21-bar 1.12s cubic-bezier(.16,1,.3,1) .78s forwards}
+#rg-startup #kin-bar-5{animation:rg21-bar 1.14s cubic-bezier(.16,1,.3,1) .86s forwards}
+#rg-startup #kin-r{animation:rg21-form-left 1.28s cubic-bezier(.16,1,.3,1) 1.02s forwards}
+#rg-startup #kin-g{animation:rg21-form-right 1.30s cubic-bezier(.16,1,.3,1) 1.15s forwards}
+#rg-startup #kin-arrow_down{animation:rg21-diag-down 1.05s cubic-bezier(.16,1,.3,1) 1.72s forwards}
+#rg-startup #kin-arrow_up{animation:rg21-diag-up 1.15s cubic-bezier(.16,1,.3,1) 1.82s forwards}
+#rg-startup #kin-podium{animation:rg21-podium 1.40s cubic-bezier(.16,1,.3,1) 2.05s forwards}
 
-/* Uma única linguagem de movimento: elevação + encaixe suave. As peças
-   entram com intervalos curtos e sobrepostos para parecerem parte de um
-   mesmo gesto, não uma montagem mecânica. */
-#rg-startup #arc_cyan{animation:v20-rise-left 1.55s cubic-bezier(.16,1,.3,1) .12s both}
-#rg-startup #arc_violet{animation:v20-rise-right 1.55s cubic-bezier(.16,1,.3,1) .22s both}
-#rg-startup #bar-1{animation:v20-rise 1.25s cubic-bezier(.16,1,.3,1) .42s both}
-#rg-startup #bar-2{animation:v20-rise 1.28s cubic-bezier(.16,1,.3,1) .50s both}
-#rg-startup #bar-3{animation:v20-rise 1.31s cubic-bezier(.16,1,.3,1) .58s both}
-#rg-startup #bar-4{animation:v20-rise 1.34s cubic-bezier(.16,1,.3,1) .66s both}
-#rg-startup #bar-5{animation:v20-rise 1.37s cubic-bezier(.16,1,.3,1) .74s both}
-#rg-startup #r{animation:v20-rise-left 1.48s cubic-bezier(.16,1,.3,1) .92s both}
-#rg-startup #g{animation:v20-rise-right 1.48s cubic-bezier(.16,1,.3,1) 1.04s both}
-#rg-startup #arrow_down{animation:v20-rise-diagonal 1.34s cubic-bezier(.16,1,.3,1) 1.42s both}
-#rg-startup #arrow_up{animation:v20-rise-diagonal 1.42s cubic-bezier(.16,1,.3,1) 1.52s both}
-#rg-startup #podium{animation:v20-rise 1.48s cubic-bezier(.16,1,.3,1) 1.76s both}
-#rg-startup .rg-vector-logo{animation:v20-finish .92s cubic-bezier(.34,1.18,.64,1) 3.86s both}
-#rg-startup .rg-wordmark{position:absolute;left:50%;bottom:-10.5%;transform:translate(-50%,14px);opacity:0;white-space:nowrap;font-size:clamp(21px,3vw,32px);font-weight:900;letter-spacing:.12em;color:#f4f8fa;text-shadow:0 14px 30px rgba(0,0,0,.30);animation:v20-word 1.00s cubic-bezier(.16,1,.3,1) 4.55s both}
-#rg-startup .rg-wordmark b{color:#01AACA;font-weight:950}
+#rg-startup .rg-kinetic-logo{animation:rg21-lockup 1.00s cubic-bezier(.22,1.25,.36,1) 4.25s both}
+#rg-startup .rg-kinetic-wordmark{position:absolute;left:50%;bottom:-9.5%;transform:translate(-50%,14px);opacity:0;z-index:3;white-space:nowrap;font-size:clamp(22px,3vw,32px);font-weight:950;letter-spacing:.10em;text-shadow:0 10px 26px rgba(0,0,0,.34);animation:rg21-word 1.00s cubic-bezier(.16,1,.3,1) 4.85s forwards}
+#rg-startup .rg-kinetic-wordmark span{color:#f4f8fa}.rg-kinetic-wordmark b{color:#01AACA;font-weight:950}
 
-@keyframes v20-rise{
-  0%{opacity:0;transform:translate3d(0,95px,0) scale(.985)}
-  46%{opacity:1;transform:translate3d(0,18px,0) scale(1)}
-  78%{transform:translate3d(0,-4px,0) scale(1.006)}
-  100%{opacity:1;transform:translate3d(0,0,0) scale(1)}
-}
-@keyframes v20-rise-left{
-  0%{opacity:0;transform:translate3d(-34px,88px,0) scale(.985)}
-  44%{opacity:1;transform:translate3d(-8px,17px,0) scale(1)}
-  77%{transform:translate3d(2px,-4px,0) scale(1.006)}
-  100%{opacity:1;transform:none}
-}
-@keyframes v20-rise-right{
-  0%{opacity:0;transform:translate3d(34px,88px,0) scale(.985)}
-  44%{opacity:1;transform:translate3d(8px,17px,0) scale(1)}
-  77%{transform:translate3d(-2px,-4px,0) scale(1.006)}
-  100%{opacity:1;transform:none}
-}
-@keyframes v20-rise-diagonal{
-  0%{opacity:0;transform:translate3d(-48px,72px,0) scale(.975)}
-  42%{opacity:1;transform:translate3d(-10px,17px,0) scale(1)}
-  76%{transform:translate3d(2px,-4px,0) scale(1.006)}
-  100%{opacity:1;transform:none}
-}
-@keyframes v20-finish{
-  0%{transform:scale(1)}
-  40%{transform:scale(1.008)}
-  72%{transform:scale(.9985)}
-  100%{transform:scale(1)}
-}
-@keyframes v20-word{
-  0%{opacity:0;transform:translate(-50%,16px);letter-spacing:.18em}
-  65%{opacity:1;transform:translate(-50%,-1px);letter-spacing:.075em}
-  100%{opacity:1;transform:translate(-50%,0);letter-spacing:.10em}
-}
+@keyframes rg21-halo{0%{opacity:0;transform:scale(.72)}35%{opacity:.85;transform:scale(.96)}72%{opacity:.28;transform:scale(1.02)}100%{opacity:.10;transform:scale(1)}}
+@keyframes rg21-glow{0%{opacity:0;transform:scale(.76)}45%{opacity:.22;transform:scale(1.00)}100%{opacity:.08;transform:scale(1.08)}}
+@keyframes rg21-rise-left{0%{opacity:0;transform:translate(-26px,72px) scale(.965)}45%{opacity:1}76%{transform:translate(-3px,7px) scale(1.006)}100%{opacity:1;transform:none}}
+@keyframes rg21-rise-right{0%{opacity:0;transform:translate(28px,76px) scale(.965)}45%{opacity:1}76%{transform:translate(3px,7px) scale(1.006)}100%{opacity:1;transform:none}}
+@keyframes rg21-bar{0%{opacity:0;transform:translateY(82px) scaleY(.18);transform-origin:50% 100%}38%{opacity:1}78%{transform:translateY(-3px) scaleY(1.012)}100%{opacity:1;transform:none}}
+@keyframes rg21-form-left{0%{opacity:0;transform:translate(-42px,58px) scale(.96)}40%{opacity:1}74%{transform:translate(-2px,5px) scale(1.008)}100%{opacity:1;transform:none}}
+@keyframes rg21-form-right{0%{opacity:0;transform:translate(42px,60px) scale(.96)}40%{opacity:1}74%{transform:translate(2px,5px) scale(1.008)}100%{opacity:1;transform:none}}
+@keyframes rg21-diag-down{0%{opacity:0;transform:translate(-34px,42px) rotate(-4deg) scale(.90)}38%{opacity:1}76%{transform:translate(1px,-2px) rotate(0) scale(1.012)}100%{opacity:1;transform:none}}
+@keyframes rg21-diag-up{0%{opacity:0;transform:translate(-22px,45px) rotate(-2deg) scale(.92)}38%{opacity:1}78%{transform:translate(2px,-3px) rotate(0) scale(1.01)}100%{opacity:1;transform:none}}
+@keyframes rg21-podium{0%{opacity:0;transform:translateY(72px) scale(.95);transform-origin:50% 100%}35%{opacity:1}72%{transform:translateY(-4px) scale(1.008)}100%{opacity:1;transform:none}}
+@keyframes rg21-lockup{0%{transform:scale(1)}35%{transform:scale(1.016)}68%{transform:scale(.997)}100%{transform:scale(1)}}
+@keyframes rg21-word{0%{opacity:0;transform:translate(-50%,14px);letter-spacing:.18em}58%{opacity:1;transform:translate(-50%,-1px);letter-spacing:.09em}100%{opacity:1;transform:translate(-50%,0);letter-spacing:.10em}}
+
 @media(max-width:760px){
-  #rg-startup .rg-startup-stage{width:94vw;height:82vh}
-  #rg-startup .rg-vector-lockup{width:min(82vw,430px)}
-  #rg-startup .rg-wordmark{bottom:-9%;font-size:19px;letter-spacing:.06em}
+  #rg-startup .rg-startup-stage{width:94vw;height:84vh}
+  #rg-startup .rg-kinetic-lockup{width:min(78vw,430px)}
+  #rg-startup .rg-kinetic-wordmark{bottom:-10%;font-size:19px;letter-spacing:.07em}
 }
 .rg-reduced-motion #rg-startup *{animation:none!important;transition:none!important}
-.rg-reduced-motion #rg-startup .rg-v-layer{opacity:1!important;transform:none!important}
-.rg-reduced-motion #rg-startup .rg-vector-glow,#rg-startup .rg-vector-sheen{display:none!important}
-.rg-reduced-motion #rg-startup .rg-wordmark{opacity:1!important;transform:translate(-50%,0)!important}
+.rg-reduced-motion #rg-startup .rg-kin-part{opacity:1!important;transform:none!important}
+.rg-reduced-motion #rg-startup .rg-soft-glow,.rg-reduced-motion #rg-startup .rg-kinetic-halo{display:none!important}
+.rg-reduced-motion #rg-startup .rg-kinetic-wordmark{opacity:1!important;transform:translate(-50%,0)!important}
