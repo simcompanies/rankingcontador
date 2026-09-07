@@ -3349,44 +3349,143 @@ V13 — LOGIN RESPONSIVO POR LIMITE REAL DA TELA / GRID 5x5
   .auth-links{margin-top:12px!important;padding-top:10px!important;}
 }
 
-/* ============================================================
-   V17 — CONSTRUÇÃO CINÉTICA FIEL À LOGO OFICIAL
-   As peças abaixo são recortes da própria logo oficial, preservando
-   exatamente sua geometria, proporções e acabamento visual.
-   ============================================================ */
-#rg-startup{position:fixed!important;inset:0!important;z-index:99999!important;display:grid!important;place-items:center!important;overflow:hidden!important;background:radial-gradient(circle at 50% 46%,rgba(0,197,220,.10),transparent 38%),radial-gradient(circle at 50% 58%,rgba(92,70,220,.10),transparent 50%),#071019!important;color:#eef6fa!important;opacity:1!important;visibility:visible!important;transition:opacity .55s ease,visibility .55s ease!important}
-#rg-startup.rg-startup-hide{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
-#rg-startup .rg-startup-stage{position:relative;width:min(86vw,650px);height:min(86vh,650px);display:grid;place-items:center}
-#rg-startup .rg-build-logo{position:relative;width:min(74vw,520px);aspect-ratio:1;filter:drop-shadow(0 26px 48px rgba(0,0,0,.36))}
-#rg-startup .rg-piece,#rg-startup .rg-official-final{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:contain;will-change:transform,opacity,clip-path;pointer-events:none}
-#rg-startup .rg-piece{opacity:0;transform:translate3d(0,110px,0) scale(.985);transform-origin:50% 100%;clip-path:inset(0 0 100% 0)}
-#rg-startup .rg-piece-arc-left{animation:rg17-rise-arc .85s cubic-bezier(.16,.92,.25,1.08) .25s forwards}
-#rg-startup .rg-piece-arc-right{animation:rg17-rise-arc .85s cubic-bezier(.16,.92,.25,1.08) .45s forwards}
-#rg-startup .rg-piece-bar-1{animation:rg17-rise-bar .66s cubic-bezier(.18,.95,.28,1.06) .85s forwards}
-#rg-startup .rg-piece-bar-2{animation:rg17-rise-bar .72s cubic-bezier(.18,.95,.28,1.06) 1.00s forwards}
-#rg-startup .rg-piece-bar-3{animation:rg17-rise-bar .78s cubic-bezier(.18,.95,.28,1.06) 1.15s forwards}
-#rg-startup .rg-piece-bar-4{animation:rg17-rise-bar .84s cubic-bezier(.18,.95,.28,1.06) 1.30s forwards}
-#rg-startup .rg-piece-r{animation:rg17-rise-r 1.05s cubic-bezier(.17,.93,.24,1.06) 1.65s forwards}
-#rg-startup .rg-piece-g{animation:rg17-rise-g 1.05s cubic-bezier(.17,.93,.24,1.06) 2.05s forwards}
-#rg-startup .rg-piece-arrow-down{animation:rg17-rise-arrow .68s cubic-bezier(.16,.94,.26,1.08) 2.45s forwards}
-#rg-startup .rg-piece-arrow-up{animation:rg17-rise-arrow 1.00s cubic-bezier(.16,.94,.26,1.08) 2.62s forwards}
-#rg-startup .rg-piece-podium{animation:rg17-rise-podium 1.05s cubic-bezier(.14,.96,.24,1.05) 3.05s forwards}
-#rg-startup .rg-piece-center{opacity:0;transform:scale(.6);clip-path:circle(0% at 50% 50%);animation:rg17-center .72s cubic-bezier(.2,.9,.25,1.06) 3.75s forwards}
-#rg-startup .rg-official-final{opacity:0;transform:scale(.985);animation:rg17-final 1.0s cubic-bezier(.2,.86,.22,1) 4.35s forwards}
-#rg-startup .rg-wordmark{position:absolute;left:50%;bottom:-2.5%;transform:translate(-50%,18px);opacity:0;white-space:nowrap;font-size:clamp(22px,3.4vw,32px);font-weight:900;letter-spacing:.08em;color:#f2f7fa;text-shadow:0 12px 28px rgba(0,0,0,.34);animation:rg17-word .75s cubic-bezier(.2,.9,.25,1) 5.15s forwards}
-#rg-startup .rg-wordmark::first-letter{color:#f2f7fa}
-@keyframes rg17-rise-arc{0%{opacity:0;transform:translate3d(0,95px,0) scale(.98);clip-path:inset(100% 0 0 0)}45%{opacity:1;clip-path:inset(32% 0 0 0)}100%{opacity:1;transform:translate3d(0,0,0) scale(1);clip-path:inset(0 0 0 0)}}
-@keyframes rg17-rise-bar{0%{opacity:0;transform:translate3d(0,120px,0) scaleY(.02);clip-path:inset(100% 0 0 0)}55%{opacity:1}100%{opacity:1;transform:translate3d(0,0,0) scaleY(1);clip-path:inset(0 0 0 0)}}
-@keyframes rg17-rise-r{0%{opacity:0;transform:translate3d(-18px,125px,0) rotate(-2.5deg) scale(.96);clip-path:inset(100% 0 0 0)}55%{opacity:1;clip-path:inset(18% 0 0 0)}100%{opacity:1;transform:translate3d(0,0,0) rotate(0) scale(1);clip-path:inset(0)}}
-@keyframes rg17-rise-g{0%{opacity:0;transform:translate3d(20px,120px,0) rotate(2.5deg) scale(.96);clip-path:inset(100% 0 0 0)}55%{opacity:1;clip-path:inset(18% 0 0 0)}100%{opacity:1;transform:translate3d(0,0,0) rotate(0) scale(1);clip-path:inset(0)}}
-@keyframes rg17-rise-arrow{0%{opacity:0;transform:translate3d(-18px,105px,0) rotate(7deg) scale(.94);clip-path:inset(100% 0 0 0)}60%{opacity:1;clip-path:inset(10% 0 0 0)}100%{opacity:1;transform:translate3d(0,0,0) rotate(0) scale(1);clip-path:inset(0)}}
-@keyframes rg17-rise-podium{0%{opacity:0;transform:translate3d(0,130px,0) scale(.97);clip-path:inset(100% 0 0 0)}55%{opacity:1;clip-path:inset(24% 0 0 0)}82%{transform:translate3d(0,-5px,0) scale(1.01)}100%{opacity:1;transform:translate3d(0,0,0) scale(1);clip-path:inset(0)}}
-@keyframes rg17-center{0%{opacity:0;transform:scale(.62);clip-path:circle(0% at 50% 50%)}65%{opacity:.9}100%{opacity:.9;transform:scale(1);clip-path:circle(53% at 50% 50%)}}
-@keyframes rg17-final{0%{opacity:0;transform:scale(.985);filter:brightness(1.35) saturate(1.15)}55%{opacity:.62;transform:scale(1.006);filter:brightness(1.12) saturate(1.06)}100%{opacity:1;transform:scale(1);filter:none}}
-@keyframes rg17-word{0%{opacity:0;transform:translate(-50%,18px);clip-path:inset(0 50% 0 50%)}100%{opacity:1;transform:translate(-50%,0);clip-path:inset(0 0 0 0)}}
-@media(max-width:760px){#rg-startup .rg-startup-stage{width:94vw;height:82vh}#rg-startup .rg-build-logo{width:min(82vw,390px)}#rg-startup .rg-wordmark{bottom:-4%;font-size:20px;letter-spacing:.055em}}
-.rg-reduced-motion #rg-startup *{animation:none!important;transition:none!important}
-.rg-reduced-motion #rg-startup .rg-official-final{opacity:1!important;transform:none!important}
-.rg-reduced-motion #rg-startup .rg-wordmark{opacity:1!important;transform:translate(-50%,0)!important}
 
-.rg-reduced-motion #rg-startup .rg-wordmark{opacity:1!important;transform:translateX(-50%)!important}
+
+/* ============================================================
+   V18 — CONSTRUÇÃO CINÉTICA VETORIAL DA LOGO OFICIAL
+   Uma única linha do tempo. Cada elemento é um vetor independente.
+   Não existe PNG final sobreposto durante a construção.
+   ============================================================ */
+#rg-startup{
+  position:fixed!important; inset:0!important; z-index:99999!important;
+  display:grid!important; place-items:center!important; overflow:hidden!important;
+  background:
+    radial-gradient(circle at 50% 46%,rgba(1,170,202,.11),transparent 36%),
+    radial-gradient(circle at 50% 56%,rgba(1,36,67,.22),transparent 60%),
+    #071019!important;
+  opacity:1!important; visibility:visible!important; pointer-events:auto!important;
+  transition:opacity .58s cubic-bezier(.22,1,.36,1),visibility .58s linear!important;
+}
+#rg-startup.rg-startup-hide{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+#rg-startup .rg-startup-stage{width:min(88vw,720px);height:min(88vh,720px);display:grid;place-items:center}
+#rg-startup .rg-vector-lockup{position:relative;width:min(76vw,560px);aspect-ratio:1;display:grid;place-items:center;filter:drop-shadow(0 30px 60px rgba(0,0,0,.35))}
+#rg-startup .rg-vector-logo{width:100%;height:100%;overflow:visible;shape-rendering:geometricPrecision}
+#rg-startup .rg-vector-glow{opacity:0;transform-box:view-box;transform-origin:50% 50%;animation:rg18-glow .95s ease-out 3.6s forwards}
+#rg-startup .rg-v-layer{opacity:0;transform-box:fill-box;transform-origin:center;will-change:transform,opacity,clip-path;}
+
+/* Arcos — entram por baixo e fazem uma trajetória curva curta antes do encaixe. */
+#rg-startup #arc_cyan{animation:rg18-arc-left 1.05s cubic-bezier(.16,1,.3,1) .10s forwards}
+#rg-startup #arc_violet{animation:rg18-arc-right 1.05s cubic-bezier(.16,1,.3,1) .22s forwards}
+
+/* Barras — cada barra nasce da própria base, em sequência sobreposta. */
+#rg-startup #bar-1{animation:rg18-bar 1.00s cubic-bezier(.16,1,.3,1) .48s forwards}
+#rg-startup #bar-2{animation:rg18-bar 1.00s cubic-bezier(.16,1,.3,1) .62s forwards}
+#rg-startup #bar-3{animation:rg18-bar 1.00s cubic-bezier(.16,1,.3,1) .76s forwards}
+#rg-startup #bar-4{animation:rg18-bar 1.00s cubic-bezier(.16,1,.3,1) .90s forwards}
+#rg-startup #bar-5{animation:rg18-bar 1.00s cubic-bezier(.16,1,.3,1) 1.04s forwards}
+
+/* R e G — trajetória diagonal suave, sem rotação mecânica. */
+#rg-startup #r{animation:rg18-r 1.18s cubic-bezier(.16,1,.3,1) 1.35s forwards}
+#rg-startup #g{animation:rg18-g 1.18s cubic-bezier(.16,1,.3,1) 1.62s forwards}
+
+/* Setas — entram seguindo uma curva curta, como se fossem traçadas no ar. */
+#rg-startup #arrow_down{animation:rg18-arrow-down 1.00s cubic-bezier(.16,1,.3,1) 2.05s forwards}
+#rg-startup #arrow_up{animation:rg18-arrow-up 1.18s cubic-bezier(.16,1,.3,1) 2.22s forwards}
+
+/* Base social — sobe como conjunto e assenta com leve elasticidade. */
+#rg-startup #podium{animation:rg18-podium 1.22s cubic-bezier(.16,1,.3,1) 2.55s forwards}
+
+/* Fechamento: pequena aproximação simultânea, sem “pulso” contínuo. */
+#rg-startup .rg-vector-logo{animation:rg18-settle 1.05s cubic-bezier(.16,1,.3,1) 4.12s both}
+#rg-startup .rg-vector-sheen{
+  position:absolute;inset:8% 5%;border-radius:50%;pointer-events:none;opacity:0;
+  background:linear-gradient(105deg,transparent 34%,rgba(255,255,255,.10) 48%,transparent 61%);
+  mix-blend-mode:screen;transform:translateX(-130%);animation:rg18-sheen .72s ease-out 4.85s forwards;
+}
+#rg-startup .rg-wordmark{
+  position:absolute;left:50%;bottom:-10.5%;transform:translate(-50%,20px);opacity:0;
+  white-space:nowrap;font-size:clamp(21px,3vw,32px);font-weight:900;letter-spacing:.10em;
+  color:#f4f8fa;text-shadow:0 14px 30px rgba(0,0,0,.36);
+  animation:rg18-word .82s cubic-bezier(.16,1,.3,1) 5.15s forwards;
+}
+#rg-startup .rg-wordmark b{color:#01AACA;font-weight:950}
+
+@keyframes rg18-arc-left{
+  0%{opacity:0;transform:translate3d(-24px,105px,0) rotate(-8deg) scale(.93);clip-path:inset(100% 0 0 0)}
+  58%{opacity:1;clip-path:inset(18% 0 0 0)}
+  78%{transform:translate3d(0,-5px,0) rotate(.6deg) scale(1.012);clip-path:inset(3% 0 0 0)}
+  100%{opacity:1;transform:none;clip-path:inset(0)}
+}
+@keyframes rg18-arc-right{
+  0%{opacity:0;transform:translate3d(26px,112px,0) rotate(8deg) scale(.93);clip-path:inset(100% 0 0 0)}
+  58%{opacity:1;clip-path:inset(18% 0 0 0)}
+  78%{transform:translate3d(0,-5px,0) rotate(-.6deg) scale(1.012);clip-path:inset(3% 0 0 0)}
+  100%{opacity:1;transform:none;clip-path:inset(0)}
+}
+@keyframes rg18-bar{
+  0%{opacity:0;transform:translate3d(0,150px,0) scaleY(.06);clip-path:inset(100% 0 0 0)}
+  52%{opacity:1;clip-path:inset(12% 0 0 0)}
+  78%{transform:translate3d(0,-7px,0) scaleY(1.025);clip-path:inset(2% 0 0 0)}
+  100%{opacity:1;transform:translate3d(0,0,0) scaleY(1);clip-path:inset(0)}
+}
+@keyframes rg18-r{
+  0%{opacity:0;transform:translate3d(-62px,118px,0) scale(.95);clip-path:inset(100% 0 0 0)}
+  52%{opacity:1;clip-path:inset(16% 0 0 0)}
+  76%{transform:translate3d(3px,-7px,0) scale(1.014);clip-path:inset(3% 0 0 0)}
+  100%{opacity:1;transform:none;clip-path:inset(0)}
+}
+@keyframes rg18-g{
+  0%{opacity:0;transform:translate3d(64px,120px,0) scale(.95);clip-path:inset(100% 0 0 0)}
+  52%{opacity:1;clip-path:inset(16% 0 0 0)}
+  76%{transform:translate3d(-3px,-7px,0) scale(1.014);clip-path:inset(3% 0 0 0)}
+  100%{opacity:1;transform:none;clip-path:inset(0)}
+}
+@keyframes rg18-arrow-down{
+  0%{opacity:0;transform:translate3d(-76px,88px,0) rotate(-9deg) scale(.88);clip-path:inset(100% 0 0 0)}
+  52%{opacity:1;clip-path:inset(15% 0 0 0)}
+  78%{transform:translate3d(2px,-5px,0) rotate(.5deg) scale(1.02);clip-path:inset(2% 0 0 0)}
+  100%{opacity:1;transform:none;clip-path:inset(0)}
+}
+@keyframes rg18-arrow-up{
+  0%{opacity:0;transform:translate3d(-112px,105px,0) rotate(10deg) scale(.90);clip-path:inset(100% 0 0 0)}
+  48%{opacity:1;clip-path:inset(14% 0 0 0)}
+  76%{transform:translate3d(4px,-8px,0) rotate(-.4deg) scale(1.018);clip-path:inset(2% 0 0 0)}
+  100%{opacity:1;transform:none;clip-path:inset(0)}
+}
+@keyframes rg18-podium{
+  0%{opacity:0;transform:translate3d(0,150px,0) scale(.95);clip-path:inset(100% 0 0 0)}
+  52%{opacity:1;clip-path:inset(17% 0 0 0)}
+  78%{transform:translate3d(0,-9px,0) scale(1.016);clip-path:inset(2% 0 0 0)}
+  100%{opacity:1;transform:none;clip-path:inset(0)}
+}
+@keyframes rg18-glow{
+  0%{opacity:0;transform:scale(.78)}
+  100%{opacity:1;transform:scale(1.05)}
+}
+@keyframes rg18-settle{
+  0%{transform:scale(1)}
+  35%{transform:scale(1.008)}
+  62%{transform:scale(.997)}
+  100%{transform:scale(1)}
+}
+@keyframes rg18-sheen{
+  0%{opacity:0;transform:translateX(-130%)}
+  20%{opacity:.0}
+  44%{opacity:.65}
+  100%{opacity:0;transform:translateX(130%)}
+}
+@keyframes rg18-word{
+  0%{opacity:0;transform:translate(-50%,22px);letter-spacing:.18em}
+  65%{opacity:1;transform:translate(-50%,-2px);letter-spacing:.08em}
+  100%{opacity:1;transform:translate(-50%,0);letter-spacing:.10em}
+}
+@media(max-width:760px){
+  #rg-startup .rg-startup-stage{width:94vw;height:82vh}
+  #rg-startup .rg-vector-lockup{width:min(82vw,430px)}
+  #rg-startup .rg-wordmark{bottom:-9%;font-size:19px;letter-spacing:.06em}
+}
+.rg-reduced-motion #rg-startup *{animation:none!important;transition:none!important}
+.rg-reduced-motion #rg-startup .rg-v-layer{opacity:1!important;transform:none!important;clip-path:none!important}
+.rg-reduced-motion #rg-startup .rg-vector-glow{opacity:1!important;transform:none!important}
+.rg-reduced-motion #rg-startup .rg-vector-sheen{display:none!important}
+.rg-reduced-motion #rg-startup .rg-wordmark{opacity:1!important;transform:translate(-50%,0)!important}
