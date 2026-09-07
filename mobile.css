@@ -67,3 +67,24 @@ body.v105-sheet-open{overflow:hidden!important}
   .stats-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;overflow:visible!important;}
   .stats-grid>.stat-card{min-width:0!important;flex:initial!important;}
 }
+/* V112 — lista contextual compacta: fechada até o segundo toque no menu */
+@media(max-width:880px){
+  #v102-context-bar.hidden{display:none!important}
+  #v102-context-bar.v102-context-open{display:flex!important}
+  #v102-context-bar{
+    bottom:58px;
+    padding:6px 10px;
+    gap:6px;
+    min-height:46px;
+    max-height:58px;
+  }
+  #v102-context-bar .v102-context-btn{
+    flex:0 0 auto!important;
+    min-width:0!important;
+    width:auto!important;
+    min-height:34px;
+    padding:7px 10px;
+    font-size:11px;
+    border-radius:8px!important;
+  }
+}
