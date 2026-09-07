@@ -8,6 +8,3 @@ A duração nominal é de aproximadamente 6,6 segundos; o fluxo de login/API per
 
 
 V19: construção cinética orgânica baseada na geometria vetorial oficial, sem as animações mecânicas das versões anteriores.
-
-
-V21: nova direção de animação cinética fluida, baseada em build-up, stagger e easing de marca; sem sobreposição de animações legadas.
