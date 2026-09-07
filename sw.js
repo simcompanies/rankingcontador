@@ -12,7 +12,7 @@
    baixarem a versão nova em vez de continuarem presos no cache antigo.
    ============================================================================ */
 
-const CACHE_NAME = 'ranking-geral-v110';
+const CACHE_NAME = 'ranking-geral-v111';
 
 const APP_SHELL = [
   './',
@@ -77,32 +77,13 @@ self.addEventListener('activate', (evento) => {
 self.addEventListener('fetch', (evento) => {
   const url = new URL(evento.request.url);
 
-  // Só intercepta GET do mesmo domínio. API externa e requisições não-GET
-  // seguem diretamente pela rede.
-  if (evento.request.method !== 'GET' || url.origin !== self.location.origin) return;
-
-  // HTML e módulos: REDE PRIMEIRO. Isso impede que uma versão antiga do
-  // Service Worker deixe a página inicial presa em um index desatualizado.
-  const isHtml = evento.request.mode === 'navigate' ||
-                 url.pathname.endsWith('.html') ||
-                 url.pathname.endsWith('/');
-
-  if (isHtml) {
-    evento.respondWith(
-      fetch(evento.request)
-        .then((respostaRede) => {
-          if (respostaRede && respostaRede.ok) {
-            const copia = respostaRede.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(evento.request, copia));
-          }
-          return respostaRede;
-        })
-        .catch(() => caches.match(evento.request))
-    );
+  // Só intercepta GET do mesmo domínio (o app shell). Chamadas à API do
+  // Google Apps Script (outro domínio) e requisições não-GET passam direto
+  // pela rede, sem cache — são sempre lançamento/leitura de dado ao vivo.
+  if (evento.request.method !== 'GET' || url.origin !== self.location.origin) {
     return;
   }
 
-  // CSS/JS/imagens: cache-first com atualização em segundo plano.
   evento.respondWith(
     caches.match(evento.request).then((respostaCache) => {
       const buscaRede = fetch(evento.request)
@@ -114,6 +95,9 @@ self.addEventListener('fetch', (evento) => {
           return respostaRede;
         })
         .catch(() => respostaCache);
+
+      // "Stale-while-revalidate": mostra o cache na hora (se existir) e
+      // atualiza em segundo plano; sem cache, espera a rede.
       return respostaCache || buscaRede;
     })
   );

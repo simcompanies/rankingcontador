@@ -46,26 +46,24 @@ body.v105-sheet-open{overflow:hidden!important}
 @keyframes v105-sheet-up{from{transform:translateY(18px);opacity:.6}to{transform:translateY(0);opacity:1}}
 @media(min-width:800px){.v105-bottom-sheet{margin-bottom:14px;border-bottom:1px solid var(--v102-border);border-radius:18px}.v105-sheet-overlay{align-items:flex-end;padding-bottom:14px}}
 
-/* V109 — restauração completa do layout DESKTOP.
-   A camada mobile continua ativa somente até 880px. A partir de 881px,
-   a casca oficial volta a usar sidebar + conteúdo em duas colunas. */
+/* V111 — desktop restaurado sem substituir a estrutura oficial. */
 @media (min-width:881px){
-  body{overflow-x:auto!important}
-  .app-shell{display:flex!important;align-items:stretch!important;min-height:100vh!important;max-width:1440px!important;margin:0 auto!important}
-  .sidebar{display:block!important;width:238px!important;flex-shrink:0!important;position:sticky!important;left:auto!important;top:0!important;bottom:auto!important;height:100vh!important;overflow-y:auto!important;box-shadow:none!important}
-  .sidebar-overlay{display:none!important}
-  .sidebar-toggle-mobile{display:none!important}
-  .main{display:block!important;flex:1!important;min-width:0!important;margin-left:0!important;min-height:100vh!important;padding:22px 24px 60px!important}
-  .topbar{position:relative!important;display:flex!important;align-items:center!important;gap:16px!important;flex-wrap:wrap!important;max-width:1100px!important;margin:0 auto 22px!important;padding:0 0 16px!important;border-bottom:1px solid var(--line)!important;background:transparent!important;backdrop-filter:none!important;min-height:0!important}
-  .topbar-title-wrap{flex:1!important;min-width:170px!important}
-  .topbar-title{font-size:calc(20px * var(--font-scale, 1))!important}
-  .status-line{font-size:calc(11px * var(--font-scale, 1))!important;color:var(--muted)!important}
-  .identity-bar{display:flex!important;align-items:center!important;gap:10px!important;flex-wrap:wrap!important;font-size:calc(11.5px * var(--font-scale, 1))!important}
-  #slot-modulo-1,#slot-modulo-2,#slot-modulo-3,#slot-modulo-4,#slot-configuracoes-conta{max-width:none!important;margin:0!important;padding:0!important}
-  .view{max-width:1100px!important;margin:0 auto!important}
-  .board{display:grid!important;grid-template-columns:1fr 1fr!important;gap:18px!important}
-  .stats-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important;overflow:visible!important;padding:0!important}
-  .stats-grid>.stat-card{min-width:0!important;flex:initial!important;scroll-snap-align:none!important}
-  #v102-bottom-nav,#v102-context-bar{display:none!important}
-  .v105-sheet-overlay{display:none!important}
+  .sidebar{display:block!important;}
+  .identity-bar{display:flex!important;}
+  .main{margin-left:0!important;padding:22px 24px 60px!important;}
+  .topbar{position:relative!important;}
+  #v102-bottom-nav,#v102-context-bar{display:none!important;}
+  .stats-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;overflow:visible!important;}
+  .stats-grid>.stat-card{min-width:0!important;flex:initial!important;}
+}
+
+/* V111 — desktop restaurado sem substituir a estrutura oficial. */
+@media (min-width:881px){
+  .sidebar{display:block!important;}
+  .identity-bar{display:flex!important;}
+  .main{margin-left:0!important;padding:22px 24px 60px!important;}
+  .topbar{position:relative!important;}
+  #v102-bottom-nav,#v102-context-bar{display:none!important;}
+  .stats-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;overflow:visible!important;}
+  .stats-grid>.stat-card{min-width:0!important;flex:initial!important;}
 }
