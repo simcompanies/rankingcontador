@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="Ranking Geral">
+  <defs>
+    <linearGradient id="gCyan" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#0878d1"/><stop offset="1" stop-color="#25d9e7"/></linearGradient>
+    <linearGradient id="gBlue" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#0b62c9"/><stop offset="1" stop-color="#4bd5ef"/></linearGradient>
+    <linearGradient id="gGreen" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#13b978"/><stop offset="1" stop-color="#5df08c"/></linearGradient>
+    <linearGradient id="gOrange" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9a38"/><stop offset="1" stop-color="#ff5d20"/></linearGradient>
+    <linearGradient id="gNavy" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0b3d69"/><stop offset="1" stop-color="#061b32"/></linearGradient>
+    <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+
+  <g id="rg-mark">
+    <g id="rg-arcs" fill="none" stroke-linecap="round">
+      <path class="arc arc-a" d="M158 410 A250 250 0 0 1 602 158" stroke="url(#gCyan)" stroke-width="22"/>
+      <path class="arc arc-b" d="M642 204 A250 250 0 0 1 612 628" stroke="url(#gBlue)" stroke-width="18"/>
+      <path class="arc arc-c" d="M188 590 A250 250 0 0 1 158 410" stroke="#0c75bf" stroke-width="13" opacity=".95"/>
+    </g>
+
+    <g id="rg-bars">
+      <rect x="286" y="294" width="34" height="82" rx="5" fill="url(#gBlue)"/>
+      <rect x="332" y="252" width="34" height="124" rx="5" fill="url(#gBlue)"/>
+      <rect x="378" y="205" width="34" height="171" rx="5" fill="url(#gCyan)"/>
+      <rect x="424" y="150" width="34" height="226" rx="5" fill="url(#gCyan)"/>
+      <rect x="470" y="96" width="34" height="280" rx="5" fill="url(#gCyan)"/>
+    </g>
+
+    <g id="rg-letters">
+      <text x="214" y="500" font-family="Arial, Helvetica, sans-serif" font-size="248" font-weight="900" fill="url(#gNavy)">R</text>
+      <text x="400" y="500" font-family="Arial, Helvetica, sans-serif" font-size="248" font-weight="900" fill="url(#gCyan)">G</text>
+    </g>
+
+    <g id="rg-growth-arrow" fill="none" stroke="url(#gCyan)" stroke-width="24" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M318 404 C385 365 433 330 474 283 C508 245 531 214 555 178"/>
+      <path d="M537 182 L562 168 L566 199"/>
+    </g>
+
+    <g id="rg-drop-arrow" fill="none" stroke="url(#gOrange)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M180 495 C142 536 148 584 188 612"/>
+      <path d="M182 590 L202 615 L169 616"/>
+    </g>
+
+    <g id="rg-podium">
+      <path d="M246 630 L554 630 L614 687 L186 687 Z" fill="url(#gNavy)"/>
+      <rect x="294" y="612" width="212" height="86" rx="11" fill="#0b75bf" stroke="#1bd7e7" stroke-width="7"/>
+      <circle cx="320" cy="600" r="26" fill="#dbeaf5"/>
+      <circle cx="400" cy="570" r="31" fill="#dbeaf5"/>
+      <circle cx="480" cy="600" r="26" fill="#dbeaf5"/>
+      <path d="M281 637 Q320 612 359 637 L359 666 L281 666 Z" fill="#dbeaf5"/>
+      <path d="M348 620 Q400 583 452 620 L452 666 L348 666 Z" fill="#edf7fb"/>
+      <path d="M441 637 Q480 612 519 637 L519 666 L441 666 Z" fill="#dbeaf5"/>
+    </g>
+  </g>
+</svg>

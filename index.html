@@ -10,80 +10,85 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./assets/icons/icon-192.png">
 <link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
-<script src="./js/a11y/a11y.js?v=20260907-ui29-real-logo"></script>
-<link rel="stylesheet" href="./assets/css/style.css?v=20260907-ui29-real-logo">
-<link rel="stylesheet" href="./style.css?v=20260907-ui29-real-logo-root" media="not all" id="style-fallback">
-  <meta name="app-build" content="20260907-ui29-real-logo">
+<script src="./js/a11y/a11y.js?v=20260907-ui30-logo-build"></script>
+<link rel="stylesheet" href="./assets/css/style.css?v=20260907-ui30-logo-build">
+<link rel="stylesheet" href="./style.css?v=20260907-ui30-logo-build-root" media="not all" id="style-fallback">
+  <meta name="app-build" content="20260907-ui30-logo-build">
 <style id="screen-guard">
   #app-shell.hidden, body:not([data-app-screen="app"]) #app-shell { display:none !important; }
   body[data-app-screen="app"] #slot-modulo-0 { display:none !important; }
 
 </style>
 <style id="rg-startup-critical">
-  /* V31 — splash única: construção cinética baseada diretamente na logo oficial.
-     Não há tracing, clip-path animado ou segunda animação. Cada camada usa a
-     própria imagem oficial, recortada por regiões geométricas estáticas. */
-  #rg-startup{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#071019;overflow:hidden;opacity:1;visibility:visible;}
-  #rg-startup.rg-startup-hide{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .32s ease,visibility 0s linear .32s;}
-  .rg-startup-stage{position:relative;width:min(72vw,430px);aspect-ratio:1/1;display:block;flex:none;}
-  .rg-startup-layer,.rg-startup-final{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:contain;}
-  .rg-startup-layer{transform-origin:50% 50%;opacity:0;will-change:transform,opacity;backface-visibility:hidden;}
-  .rg-build-ring{animation:rgBuildRing 5s cubic-bezier(.22,.8,.2,1) both;}
-  .rg-build-bars{animation:rgBuildBars 5s cubic-bezier(.22,.8,.2,1) .45s both;}
-  .rg-build-core{animation:rgBuildCore 5s cubic-bezier(.22,.8,.2,1) 1.05s both;}
-  .rg-build-up{animation:rgBuildUp 5s cubic-bezier(.22,.8,.2,1) 1.75s both;}
-  .rg-build-down{animation:rgBuildDown 5s cubic-bezier(.22,.8,.2,1) 2.15s both;}
-  .rg-build-podium{animation:rgBuildPodium 5s cubic-bezier(.22,.8,.2,1) 2.55s both;}
-  .rg-startup-final{opacity:0;transform:scale(.985);animation:rgBuildFinal 5s cubic-bezier(.22,.8,.2,1) 4.25s both;filter:saturate(.98);}
-  .rg-startup-sweep{position:absolute;inset:2% -6%;width:112%;height:8%;top:46%;left:-6%;opacity:0;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(255,255,255,0),rgba(255,255,255,.48),rgba(255,255,255,0),transparent);filter:blur(8px);transform:translateX(-115%) skewX(-18deg);animation:rgBuildSweep 5s ease-out 4.15s both;}
-  .rg-startup-text{margin-top:18px;font:700 clamp(18px,3vw,25px)/1.1 system-ui,sans-serif;letter-spacing:.16em;color:#f5fbff;opacity:0;transform:translateY(10px);animation:rgBuildText 5s cubic-bezier(.22,.8,.2,1) 4.35s both;}
-  @keyframes rgBuildRing{0%{opacity:0;transform:translateY(28px) scale(.84) rotate(-12deg)}18%{opacity:.96;transform:translateY(10px) scale(.95) rotate(-4deg)}38%{opacity:1;transform:translateY(0) scale(1) rotate(0)}100%{opacity:1;transform:none}}
-  @keyframes rgBuildBars{0%{opacity:0;transform:translateY(44px) scaleY(.15) scaleX(.96)}16%{opacity:1;transform:translateY(24px) scaleY(.48) scaleX(.98)}35%{transform:translateY(2px) scaleY(1.04) scaleX(1)}50%{transform:translateY(0) scaleY(1)}100%{opacity:1;transform:none}}
-  @keyframes rgBuildCore{0%{opacity:0;transform:translateY(52px) scale(.90)}20%{opacity:1;transform:translateY(25px) scale(.965)}42%{transform:translateY(-2px) scale(1.01)}58%{transform:translateY(0) scale(1)}100%{opacity:1;transform:none}}
-  @keyframes rgBuildUp{0%{opacity:0;transform:translate(24px,48px) scale(.92) rotate(7deg)}22%{opacity:1;transform:translate(10px,20px) scale(.97) rotate(3deg)}45%{transform:translate(-2px,-2px) scale(1.01) rotate(0)}60%{transform:translate(0,0) scale(1)}100%{opacity:1;transform:none}}
-  @keyframes rgBuildDown{0%{opacity:0;transform:translate(-20px,-42px) scale(.92) rotate(-5deg)}24%{opacity:1;transform:translate(-10px,-18px) scale(.97) rotate(-2deg)}46%{transform:translate(1px,2px) scale(1.01) rotate(0)}60%{transform:translate(0,0) scale(1)}100%{opacity:1;transform:none}}
-  @keyframes rgBuildPodium{0%{opacity:0;transform:translateY(64px) scale(.93)}22%{opacity:1;transform:translateY(32px) scale(.965)}46%{transform:translateY(-3px) scale(1.01)}60%{transform:translateY(0) scale(1)}100%{opacity:1;transform:none}}
-  @keyframes rgBuildFinal{0%{opacity:0;transform:scale(.985)}70%{opacity:0;transform:scale(.985)}87%{opacity:1;transform:scale(1.01)}100%{opacity:1;transform:scale(1)}}
-  @keyframes rgBuildSweep{0%{opacity:0;transform:translateX(-115%) skewX(-18deg)}72%{opacity:0;transform:translateX(-115%) skewX(-18deg)}82%{opacity:.2;transform:translateX(5%) skewX(-18deg)}92%{opacity:0;transform:translateX(115%) skewX(-18deg)}100%{opacity:0;transform:translateX(115%) skewX(-18deg)}}
-  @keyframes rgBuildText{0%{opacity:0;transform:translateY(10px);letter-spacing:.20em}78%{opacity:0;transform:translateY(10px);letter-spacing:.20em}92%{opacity:1;transform:translateY(0);letter-spacing:.16em}100%{opacity:1;transform:none}}
-  @media (max-width:560px){#rg-startup .rg-startup-stage{width:min(78vw,360px)}.rg-startup-text{margin-top:14px;font-size:17px}}
-  @media (prefers-reduced-motion:reduce){.rg-build-ring,.rg-build-bars,.rg-build-core,.rg-build-up,.rg-build-down,.rg-build-podium,.rg-startup-final,.rg-startup-sweep,.rg-startup-text{animation:none!important;opacity:1!important;transform:none!important;filter:none!important}}
+/* Splash única: construção cinética limpa baseada na geometria da marca oficial. */
+#rg-startup{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:#071019;overflow:hidden;opacity:1;pointer-events:auto;}
+#rg-startup.rg-startup-hide{display:none!important;}
+.rg-startup-card{display:flex;flex-direction:column;align-items:center;justify-content:center;width:min(88vw,520px);padding:24px;box-sizing:border-box;}
+.rg-build-logo{width:min(58vw,320px);height:auto;overflow:visible;}
+.rg-build-logo .arc{stroke-dasharray:1000;stroke-dashoffset:1000;animation:rgDraw 900ms cubic-bezier(.18,.74,.16,1) forwards;}
+.rg-build-logo .arc-a{animation-delay:180ms}.rg-build-logo .arc-b{animation-delay:340ms}.rg-build-logo .arc-c{animation-delay:480ms}
+#rg-build-logo .rg-bars rect{transform-box:fill-box;transform-origin:center bottom;transform:scaleY(0);opacity:0;animation:rgBar 680ms cubic-bezier(.18,.76,.2,1) forwards;}
+#rg-build-logo .rg-bars rect:nth-child(1){animation-delay:520ms}#rg-build-logo .rg-bars rect:nth-child(2){animation-delay:600ms}#rg-build-logo .rg-bars rect:nth-child(3){animation-delay:680ms}#rg-build-logo .rg-bars rect:nth-child(4){animation-delay:760ms}#rg-build-logo .rg-bars rect:nth-child(5){animation-delay:840ms}
+#rg-build-logo .rg-letters{opacity:0;transform:translateY(46px);animation:rgLift 760ms cubic-bezier(.2,.85,.2,1) 980ms forwards;}
+#rg-build-logo #rg-growth-arrow{stroke-dasharray:520;stroke-dashoffset:520;animation:rgDraw 820ms cubic-bezier(.18,.74,.16,1) 1220ms forwards;}
+#rg-build-logo #rg-drop-arrow{stroke-dasharray:260;stroke-dashoffset:260;animation:rgDraw 620ms cubic-bezier(.18,.74,.16,1) 1500ms forwards;}
+#rg-build-logo #rg-podium{opacity:0;transform:translateY(90px);animation:rgLift 760ms cubic-bezier(.18,.84,.18,1) 1760ms forwards;}
+.rg-build-name{margin-top:18px;font:900 clamp(24px,5vw,36px)/1 Arial,Helvetica,sans-serif;letter-spacing:-.03em;color:#eef8ff;opacity:0;transform:translateY(18px);animation:rgName 640ms cubic-bezier(.2,.85,.2,1) 3450ms forwards;}
+.rg-build-name span{color:#25d9e7;}
+.rg-build-flare{position:absolute;width:min(70vw,420px);height:min(70vw,420px);border-radius:50%;background:radial-gradient(circle,rgba(25,211,232,.15),transparent 65%);filter:blur(8px);opacity:0;animation:rgFlare 700ms ease 3940ms forwards;pointer-events:none;}
+#rg-build-logo > *{will-change:transform,opacity;}
+@keyframes rgDraw{to{stroke-dashoffset:0}}
+@keyframes rgBar{0%{transform:scaleY(0);opacity:0}70%{opacity:1}100%{transform:scaleY(1);opacity:1}}
+@keyframes rgLift{0%{opacity:0;transform:translateY(46px)}72%{opacity:1;transform:translateY(-5px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes rgName{0%{opacity:0;transform:translateY(18px);letter-spacing:.08em}100%{opacity:1;transform:translateY(0);letter-spacing:-.03em}}
+@keyframes rgFlare{0%{opacity:0;transform:scale(.7)}100%{opacity:1;transform:scale(1)}}
+@keyframes rgStartupOut{0%{opacity:1}100%{opacity:0;visibility:hidden;pointer-events:none}}
+.rg-build-finish{animation:rgStartupOut 500ms ease 4920ms forwards;}
+@media(max-width:560px){.rg-build-logo{width:min(72vw,300px)}.rg-startup-card{padding:18px}.rg-build-name{margin-top:14px}}
+@media(prefers-reduced-motion:reduce){#rg-startup,.rg-build-logo .arc,#rg-build-logo .rg-bars rect,#rg-build-logo .rg-letters,#rg-build-logo #rg-growth-arrow,#rg-build-logo #rg-drop-arrow,#rg-build-logo #rg-podium,.rg-build-name,.rg-build-flare{animation:none!important;opacity:1!important;transform:none!important;stroke-dashoffset:0!important;}}
 </style>
 <script>document.addEventListener('DOMContentLoaded',function(){var main=document.querySelector('link[href^="./assets/css/style.css"]');var fb=document.getElementById('style-fallback');if(main&&fb){main.addEventListener('error',function(){fb.media='all'});}});</script>
 </head>
 <body>
 
-  <div id="rg-startup" class="rg-startup" aria-hidden="true">
-    <svg class="rg-startup-stage" viewBox="0 0 1280 1280" role="img" aria-label="Construção da marca Ranking Geral">
-      <defs>
-        <clipPath id="rgClipRing"><path fill-rule="evenodd" d="M640 40a600 600 0 1 0 0 1200A600 600 0 0 0 640 40ZM640 175a465 465 0 1 1 0 930a465 465 0 0 1 0-930Z"/></clipPath>
-        <clipPath id="rgClipBars"><rect x="300" y="70" width="610" height="500" rx="22"/></clipPath>
-        <clipPath id="rgClipCore"><path d="M180 330L1070 330L1160 930L150 930Z"/></clipPath>
-        <clipPath id="rgClipUp"><path d="M430 260L1120 160L1085 720L480 860Z"/></clipPath>
-        <clipPath id="rgClipDown"><path d="M80 470L420 420L650 1040L110 980Z"/></clipPath>
-        <clipPath id="rgClipPodium"><rect x="250" y="860" width="780" height="360" rx="32"/></clipPath>
-      </defs>
-      <g class="rg-startup-layer rg-build-ring"><image href="./assets/logo-ranking-geral.png" x="0" y="0" width="1280" height="1280" clip-path="url(#rgClipRing)" preserveAspectRatio="none"/></g>
-      <g class="rg-startup-layer rg-build-bars"><image href="./assets/logo-ranking-geral.png" x="0" y="0" width="1280" height="1280" clip-path="url(#rgClipBars)" preserveAspectRatio="none"/></g>
-      <g class="rg-startup-layer rg-build-core"><image href="./assets/logo-ranking-geral.png" x="0" y="0" width="1280" height="1280" clip-path="url(#rgClipCore)" preserveAspectRatio="none"/></g>
-      <g class="rg-startup-layer rg-build-up"><image href="./assets/logo-ranking-geral.png" x="0" y="0" width="1280" height="1280" clip-path="url(#rgClipUp)" preserveAspectRatio="none"/></g>
-      <g class="rg-startup-layer rg-build-down"><image href="./assets/logo-ranking-geral.png" x="0" y="0" width="1280" height="1280" clip-path="url(#rgClipDown)" preserveAspectRatio="none"/></g>
-      <g class="rg-startup-layer rg-build-podium"><image href="./assets/logo-ranking-geral.png" x="0" y="0" width="1280" height="1280" clip-path="url(#rgClipPodium)" preserveAspectRatio="none"/></g>
-      <image class="rg-startup-final" href="./assets/logo-ranking-geral.png" x="0" y="0" width="1280" height="1280" preserveAspectRatio="none"/>
-    </svg>
-    <div class="rg-startup-sweep" aria-hidden="true"></div>
+  <div id="rg-startup" class="rg-startup rg-build-finish" aria-hidden="true">
+    <div class="rg-build-flare" aria-hidden="true"></div>
+    <div class="rg-startup-card">
+      <svg id="rg-build-logo" class="rg-build-logo" viewBox="0 0 800 800" role="img" aria-label="Ranking Geral">
+        <defs>
+          <linearGradient id="gCyan" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#0878d1"/><stop offset="1" stop-color="#25d9e7"/></linearGradient>
+          <linearGradient id="gBlue" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#0b62c9"/><stop offset="1" stop-color="#4bd5ef"/></linearGradient>
+          <linearGradient id="gGreen" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#13b978"/><stop offset="1" stop-color="#5df08c"/></linearGradient>
+          <linearGradient id="gOrange" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9a38"/><stop offset="1" stop-color="#ff5d20"/></linearGradient>
+          <linearGradient id="gNavy" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0b3d69"/><stop offset="1" stop-color="#061b32"/></linearGradient>
+        </defs>
+        <g id="rg-arcs" fill="none" stroke-linecap="round">
+          <path class="arc arc-a" d="M158 410 A250 250 0 0 1 602 158" stroke="url(#gCyan)" stroke-width="22"/>
+          <path class="arc arc-b" d="M642 204 A250 250 0 0 1 612 628" stroke="url(#gBlue)" stroke-width="18"/>
+          <path class="arc arc-c" d="M188 590 A250 250 0 0 1 158 410" stroke="#0c75bf" stroke-width="13" opacity=".95"/>
+        </g>
+        <g id="rg-bars">
+          <rect x="286" y="294" width="34" height="82" rx="5" fill="url(#gBlue)"/><rect x="332" y="252" width="34" height="124" rx="5" fill="url(#gBlue)"/><rect x="378" y="205" width="34" height="171" rx="5" fill="url(#gCyan)"/><rect x="424" y="150" width="34" height="226" rx="5" fill="url(#gCyan)"/><rect x="470" y="96" width="34" height="280" rx="5" fill="url(#gCyan)"/>
+        </g>
+        <g id="rg-letters">
+          <text x="214" y="500" font-family="Arial, Helvetica, sans-serif" font-size="248" font-weight="900" fill="url(#gNavy)">R</text>
+          <text x="400" y="500" font-family="Arial, Helvetica, sans-serif" font-size="248" font-weight="900" fill="url(#gCyan)">G</text>
+        </g>
+        <g id="rg-growth-arrow" fill="none" stroke="url(#gGreen)" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"><path d="M318 404 C385 365 433 330 474 283 C508 245 531 214 555 178"/><path d="M537 182 L562 168 L566 199"/></g>
+        <g id="rg-drop-arrow" fill="none" stroke="url(#gOrange)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><path d="M180 495 C142 536 148 584 188 612"/><path d="M182 590 L202 615 L169 616"/></g>
+        <g id="rg-podium"><path d="M246 630 L554 630 L614 687 L186 687 Z" fill="url(#gNavy)"/><rect x="294" y="612" width="212" height="86" rx="11" fill="#0b75bf" stroke="#1bd7e7" stroke-width="7"/><circle cx="320" cy="600" r="26" fill="#dbeaf5"/><circle cx="400" cy="570" r="31" fill="#dbeaf5"/><circle cx="480" cy="600" r="26" fill="#dbeaf5"/><path d="M281 637 Q320 612 359 637 L359 666 L281 666 Z" fill="#dbeaf5"/><path d="M348 620 Q400 583 452 620 L452 666 L348 666 Z" fill="#edf7fb"/><path d="M441 637 Q480 612 519 637 L519 666 L441 666 Z" fill="#dbeaf5"/></g>
+      </svg>
+      <div class="rg-build-name">RANKING <span>GERAL</span></div>
+    </div>
   </div>
-  <div class="rg-startup-text" aria-hidden="true">RANKING GERAL</div>
   <script>
-  (function(){
-    var started=performance.now();
-    var splash=document.getElementById('rg-startup');
-    if(!splash)return;
-    var hide=function(){ if(splash.classList.contains('rg-startup-hide'))return; splash.classList.add('rg-startup-hide'); };
-    var minTime=5000;
-    var remaining=Math.max(0,minTime-(performance.now()-started));
-    window.setTimeout(hide,remaining);
-  })();
+    (function(){
+      var splash=document.getElementById('rg-startup');
+      if(!splash) return;
+      window.setTimeout(function(){
+        splash.classList.add('rg-startup-hide');
+      }, 5480);
+    })();
   </script>
 
   <!-- ============================================================================
@@ -390,29 +395,29 @@
        import/export foi introduzido, para não alterar como os onclick="..." e
        demais funções se enxergam entre si.
        ============================================================================ -->
-  <script src="./js/core/config-api.js?v=20260907-ui29-real-logo"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
-  <script src="./js/core/estado-global.js?v=20260907-ui29-real-logo"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
-  <script src="./js/features/faixas-dinamicas.js?v=20260907-ui29-real-logo"></script><!-- Gerenciamento de faixas dinâmicas. -->
-  <script src="./js/core/identidade.js?v=20260907-ui29-real-logo"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
-  <script src="./js/core/navegacao.js?v=20260907-ui29-real-logo"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
-  <script src="./js/core/sidebar.js?v=20260907-ui29-real-logo"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->
-  <script src="./js/a11y/acessibilidade.js?v=20260907-ui29-real-logo"></script><!-- Painel de acessibilidade (UI) — liga os controles a window.A11Y, de a11y.js. -->
-  <script src="./js/features/configuracoes-de-conta.js?v=20260907-ui29-real-logo"></script><!-- Tela "Minha conta". -->
-  <script src="./js/features/modulo-0.js?v=20260907-ui29-real-logo"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
-  <script src="./js/features/texto-do-resumo.js?v=20260907-ui29-real-logo"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
-  <script src="./js/features/colagem.js?v=20260907-ui29-real-logo"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
-  <script src="./js/features/colagem-ocr.js?v=20260907-ui29-real-logo"></script><!-- Leitura de print via OCR — alimenta a mesma caixa de colagem.js. -->
-  <script src="./js/features/planilha-mestra.js?v=20260907-ui29-real-logo"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
-  <script src="./js/features/participantes.js?v=20260907-ui29-real-logo"></script><!-- CRUD de participante + cálculo de ranking (total/tiebreak/sort). -->
-  <script src="./js/features/dias.js?v=20260907-ui29-real-logo"></script><!-- Adicionar/remover um dia. -->
-  <script src="./js/features/formulario-lancamento-dia.js?v=20260907-ui29-real-logo"></script><!-- Aba "Preencher" do Lançar Pontuação. -->
-  <script src="./js/features/analises-gerais.js?v=20260907-ui29-real-logo"></script><!-- Cartões de estatística do Módulo 2. -->
-  <script src="./js/features/filtros.js?v=20260907-ui29-real-logo"></script><!-- Filtro por período/dias do Módulo 2. -->
-  <script src="./js/features/analises-dashboard.js?v=20260907-ui29-real-logo"></script><!-- Destaques + gráfico de evolução + mapa de desempenho (chamados de dentro de filtros.js). -->
-  <script src="./js/features/gerenciar-dias-lancados.js?v=20260907-ui29-real-logo"></script><!-- Lista de dias lançados (Módulos 3 e 4). -->
-  <script src="./js/features/resumos-salvos.js?v=20260907-ui29-real-logo"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
-  <script src="./js/features/usuarios.js?v=20260907-ui29-real-logo"></script><!-- Painel de administração de usuários (Módulo 4). -->
-  <script src="./js/core/renderizacao.js?v=20260907-ui29-real-logo"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
-  <script src="./js/core/inicializacao.js?v=20260907-ui29-real-logo"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
+  <script src="./js/core/config-api.js?v=20260907-ui30-logo-build"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
+  <script src="./js/core/estado-global.js?v=20260907-ui30-logo-build"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
+  <script src="./js/features/faixas-dinamicas.js?v=20260907-ui30-logo-build"></script><!-- Gerenciamento de faixas dinâmicas. -->
+  <script src="./js/core/identidade.js?v=20260907-ui30-logo-build"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
+  <script src="./js/core/navegacao.js?v=20260907-ui30-logo-build"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
+  <script src="./js/core/sidebar.js?v=20260907-ui30-logo-build"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->
+  <script src="./js/a11y/acessibilidade.js?v=20260907-ui30-logo-build"></script><!-- Painel de acessibilidade (UI) — liga os controles a window.A11Y, de a11y.js. -->
+  <script src="./js/features/configuracoes-de-conta.js?v=20260907-ui30-logo-build"></script><!-- Tela "Minha conta". -->
+  <script src="./js/features/modulo-0.js?v=20260907-ui30-logo-build"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
+  <script src="./js/features/texto-do-resumo.js?v=20260907-ui30-logo-build"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
+  <script src="./js/features/colagem.js?v=20260907-ui30-logo-build"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
+  <script src="./js/features/colagem-ocr.js?v=20260907-ui30-logo-build"></script><!-- Leitura de print via OCR — alimenta a mesma caixa de colagem.js. -->
+  <script src="./js/features/planilha-mestra.js?v=20260907-ui30-logo-build"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
+  <script src="./js/features/participantes.js?v=20260907-ui30-logo-build"></script><!-- CRUD de participante + cálculo de ranking (total/tiebreak/sort). -->
+  <script src="./js/features/dias.js?v=20260907-ui30-logo-build"></script><!-- Adicionar/remover um dia. -->
+  <script src="./js/features/formulario-lancamento-dia.js?v=20260907-ui30-logo-build"></script><!-- Aba "Preencher" do Lançar Pontuação. -->
+  <script src="./js/features/analises-gerais.js?v=20260907-ui30-logo-build"></script><!-- Cartões de estatística do Módulo 2. -->
+  <script src="./js/features/filtros.js?v=20260907-ui30-logo-build"></script><!-- Filtro por período/dias do Módulo 2. -->
+  <script src="./js/features/analises-dashboard.js?v=20260907-ui30-logo-build"></script><!-- Destaques + gráfico de evolução + mapa de desempenho (chamados de dentro de filtros.js). -->
+  <script src="./js/features/gerenciar-dias-lancados.js?v=20260907-ui30-logo-build"></script><!-- Lista de dias lançados (Módulos 3 e 4). -->
+  <script src="./js/features/resumos-salvos.js?v=20260907-ui30-logo-build"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
+  <script src="./js/features/usuarios.js?v=20260907-ui30-logo-build"></script><!-- Painel de administração de usuários (Módulo 4). -->
+  <script src="./js/core/renderizacao.js?v=20260907-ui30-logo-build"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
+  <script src="./js/core/inicializacao.js?v=20260907-ui30-logo-build"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
 </body>
 </html>
