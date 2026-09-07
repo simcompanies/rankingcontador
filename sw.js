@@ -8,7 +8,7 @@
    respostas poderia mostrar dado desatualizado ou quebrar o fluxo de sessão.
 
    Ao alterar qualquer arquivo do app shell, troque o número da versão em
-   CACHE_NAME (ex.: 'ranking-geral-v2') — isso força os usuários a
+   CACHE_NAME (ex.: 'ranking-geral-v26') — isso força os usuários a
    baixarem a versão nova em vez de continuarem presos no cache antigo.
    ============================================================================ */
 

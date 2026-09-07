@@ -10,78 +10,84 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./assets/icons/icon-192.png">
 <link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
-<script src="./js/a11y/a11y.js?v=20260907-ui23"></script>
-<link rel="stylesheet" href="./assets/css/style.css?v=20260907-ui23">
-<link rel="stylesheet" href="./style.css?v=20260907-ui23-root" media="not all" id="style-fallback">
-  <meta name="app-build" content="20260907-ui23">
+<script src="./js/a11y/a11y.js?v=20260907-ui26"></script>
+<link rel="stylesheet" href="./assets/css/style.css?v=20260907-ui26">
+<link rel="stylesheet" href="./style.css?v=20260907-ui26-root" media="not all" id="style-fallback">
+  <meta name="app-build" content="20260907-ui26">
 <style id="screen-guard">
   #app-shell.hidden, body:not([data-app-screen="app"]) #app-shell { display:none !important; }
   body[data-app-screen="app"] #slot-modulo-0 { display:none !important; }
 
 </style>
+<style id="rg-startup-critical">
+  #rg-startup{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:#071019;color:#edf5fb;overflow:hidden;opacity:1;visibility:visible;transition:opacity .38s ease,visibility .38s ease}
+  #rg-startup.rg-startup-hide{opacity:0;visibility:hidden;pointer-events:none}
+  .rg-startup-grid{position:absolute;inset:-15%;background:radial-gradient(circle at 50% 38%,rgba(47,216,168,.15),transparent 30%),linear-gradient(rgba(98,132,170,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(98,132,170,.05) 1px,transparent 1px);background-size:auto,48px 48px,48px 48px;transform:perspective(500px) rotateX(62deg) translateY(28%);transform-origin:center;opacity:.75;animation:rgGridDrift 3.2s linear infinite}
+  .rg-startup-card{position:relative;width:min(92vw,520px);padding:34px 30px 28px;text-align:center;border:1px solid rgba(126,155,190,.2);border-radius:28px;background:rgba(12,21,30,.84);box-shadow:0 30px 90px rgba(0,0,0,.44),inset 0 1px 0 rgba(255,255,255,.04);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+  .rg-startup-logo-wrap{position:relative;width:128px;height:128px;margin:0 auto 16px;display:grid;place-items:center}
+  .rg-startup-logo{position:relative;z-index:3;width:92px;height:92px;object-fit:contain;filter:drop-shadow(0 12px 24px rgba(37,181,223,.18));animation:rgLogoFloat 1.8s ease-in-out infinite}
+  .rg-startup-ring{position:absolute;border:1px solid rgba(47,216,168,.38);border-radius:50%;inset:8px;animation:rgRing 2.1s linear infinite}
+  .rg-ring-b{inset:20px;border-color:rgba(92,139,255,.25);animation-direction:reverse;animation-duration:1.55s}
+  .rg-startup-brand{font-size:16px;letter-spacing:.24em;font-weight:850}
+  .rg-startup-subtitle{margin-top:8px;color:#8ea0b5;font-size:12px;letter-spacing:.02em}
+  .rg-race{display:grid;gap:10px;margin:28px 0 16px;text-align:left}
+  .rg-race-lane{display:grid;grid-template-columns:78px 1fr 12px;align-items:center;gap:10px}
+  .rg-race-label{font-size:9px;letter-spacing:.12em;color:#7890a7;font-weight:800}
+  .rg-race-line{position:relative;height:5px;border-radius:999px;background:rgba(142,160,181,.13);overflow:hidden}
+  .rg-race-line::after{content:'';position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(47,216,168,.9),transparent);animation:rgScan 1.25s ease-in-out infinite}
+  .rg-race-lane i{width:10px;height:10px;border-radius:50%;background:#2fd8a8;box-shadow:0 0 0 4px rgba(47,216,168,.1),0 0 16px rgba(47,216,168,.55);animation:rgRunner 1.8s cubic-bezier(.4,0,.2,1) infinite}
+  .lane-y i{background:#6c8cff;box-shadow:0 0 0 4px rgba(108,140,255,.1),0 0 16px rgba(108,140,255,.5);animation-delay:.22s}
+  .lane-m i{background:#f0b14a;box-shadow:0 0 0 4px rgba(240,177,74,.1),0 0 16px rgba(240,177,74,.48);animation-delay:.42s}
+  .rg-startup-chart{position:relative;display:flex;align-items:flex-end;gap:7px;height:78px;padding:12px 16px 10px;border-top:1px solid rgba(126,155,190,.12);border-bottom:1px solid rgba(126,155,190,.12)}
+  .rg-startup-chart span{height:var(--h);flex:1;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,rgba(47,216,168,.95),rgba(47,216,168,.2));transform-origin:bottom;animation:rgBarGrow .78s cubic-bezier(.22,1,.36,1) var(--d) both infinite alternate}
+  .rg-startup-chart span:nth-of-type(3n){background:linear-gradient(180deg,rgba(108,140,255,.9),rgba(108,140,255,.18))}
+  .rg-startup-chart span:nth-of-type(5n){background:linear-gradient(180deg,rgba(240,177,74,.95),rgba(240,177,74,.18))}
+  .rg-trend-up,.rg-trend-down{position:absolute;width:52px;height:18px;border-top:2px solid #2fd8a8;transform:skewY(-23deg);top:19px;right:26px;opacity:.8}
+  .rg-trend-up::after{content:'';position:absolute;right:-1px;top:-5px;border-left:7px solid #2fd8a8;border-top:4px solid transparent;border-bottom:4px solid transparent;transform:rotate(-2deg)}
+  .rg-trend-down{top:50px;left:26px;right:auto;border-color:#e67581;transform:skewY(23deg)}
+  .rg-trend-down::after{content:'';position:absolute;left:-1px;bottom:-5px;border-right:7px solid #e67581;border-top:4px solid transparent;border-bottom:4px solid transparent;transform:rotate(2deg)}
+  .rg-startup-status{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:17px;color:#72869d;font-size:11px}.rg-startup-status>span:first-child{width:7px;height:7px;border-radius:50%;background:#2fd8a8;box-shadow:0 0 0 4px rgba(47,216,168,.1);animation:rgPulse 1.15s ease-in-out infinite}
+  @keyframes rgGridDrift{to{transform:perspective(500px) rotateX(62deg) translateY(35%)}}
+  @keyframes rgLogoFloat{50%{transform:translateY(-4px) scale(1.025)}}
+  @keyframes rgRing{to{transform:rotate(360deg) scale(1.04)}}
+  @keyframes rgScan{50%,100%{transform:translateX(100%)}}
+  @keyframes rgRunner{0%{transform:translateX(0)}45%{transform:translateX(46%)}80%{transform:translateX(92%)}100%{transform:translateX(0)}}
+  @keyframes rgBarGrow{0%{transform:scaleY(.88)}100%{transform:scaleY(1.06)}}
+  @keyframes rgPulse{50%{opacity:.42;transform:scale(.72)}}
+  .rg-reduced-motion #rg-startup *{animation-duration:.01ms!important;animation-iteration-count:1!important}
+  @media (max-width:520px){.rg-startup-card{padding:28px 18px 22px;border-radius:22px}.rg-startup-logo-wrap{width:112px;height:112px}.rg-startup-logo{width:82px;height:82px}.rg-startup-brand{font-size:14px;letter-spacing:.18em}.rg-race{margin-top:22px}.rg-race-label{font-size:8px}.rg-startup-chart{height:68px;gap:5px;padding-left:9px;padding-right:9px}}
+</style>
 <script>document.addEventListener('DOMContentLoaded',function(){var main=document.querySelector('link[href^="./assets/css/style.css"]');var fb=document.getElementById('style-fallback');if(main&&fb){main.addEventListener('error',function(){fb.media='all'});}});</script>
-<style id="rg-startup-critical">#rg-startup{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;opacity:1;visibility:visible;pointer-events:auto}#rg-startup.rg-startup-hide{opacity:0;visibility:hidden;pointer-events:none}</style>
 </head>
 <body>
 
-  <!-- Splash de inicialização — construção vetorial nativa da logo oficial. -->
-  <div id="rg-startup" aria-hidden="true">
-    <div class="rg-startup-stage">
-      <div class="rg-startup-lockup">
-        <svg class="rg-build-svg" viewBox="0 0 1000 1000" role="img" aria-label="Construção do logo Ranking Geral">
-          <g class="rg-build-guides" fill="none" stroke="#2E6C96" stroke-width="3">
-            <circle cx="500" cy="500" r="390"/>
-            <circle cx="500" cy="500" r="300"/>
-            <path d="M120 500h760M500 120v760"/>
-          </g>
-          <g class="rg-build-glow" aria-hidden="true"><circle cx="500" cy="500" r="240" fill="#01AACA" opacity=".09"/></g>
-          <g class="rg-build-arcs" fill="none" stroke-linecap="round">
-            <path class="draw" data-delay="0" d="M160 520 A340 340 0 0 1 500 160" stroke="#01AACA" stroke-width="42" pathLength="1"/>
-            <path class="draw" data-delay="260" d="M250 265 A340 340 0 0 1 760 245" stroke="#A98BFA" stroke-width="22" pathLength="1"/>
-            <path class="draw" data-delay="500" d="M815 285 A340 340 0 0 1 845 665" stroke="#01AACA" stroke-width="32" pathLength="1"/>
-            <path class="draw" data-delay="760" d="M180 700 A340 340 0 0 0 820 735" stroke="#A98BFA" stroke-width="22" pathLength="1"/>
-          </g>
-          <g class="rg-build-bars" fill="#01AACA">
-            <rect data-delay="720" x="360" y="300" width="54" height="145" rx="14"/>
-            <rect data-delay="860" x="425" y="255" width="54" height="190" rx="14"/>
-            <rect data-delay="1000" x="490" y="205" width="54" height="240" rx="14"/>
-            <rect data-delay="1140" x="555" y="150" width="54" height="295" rx="14"/>
-          </g>
-          <g class="rg-build-r" transform="translate(285 675) scale(.255 -.255)" fill="#012443" stroke="#082F4F" stroke-width="8" stroke-linejoin="round" pathLength="1">
-            <path data-delay="1280" class="draw" d="M735 831Q856 831 908.5 876.0Q961 921 961 1024Q961 1126 908.5 1170.0Q856 1214 735 1214H573V831ZM573 565V0H188V1493H776Q1071 1493 1208.5 1394.0Q1346 1295 1346 1081Q1346 933 1274.5 838.0Q1203 743 1059 698Q1138 680 1200.5 616.5Q1263 553 1327 424L1536 0H1126L944 371Q889 483 832.5 524.0Q776 565 682 565Z"/>
-          </g>
-          <g class="rg-build-g" fill="none" stroke="#01AACA" stroke-width="82" stroke-linecap="round" stroke-linejoin="round">
-            <path data-delay="1460" class="draw" d="M710 485 A190 190 0 1 1 690 320" pathLength="1"/>
-            <path data-delay="1640" class="draw" d="M665 485h115" pathLength="1"/>
-          </g>
-          <g class="rg-build-arrow-up" fill="#01AACA" stroke="#2ADDEA" stroke-linecap="round" stroke-linejoin="round">
-            <path data-delay="1700" class="draw" d="M470 590 L745 315" fill="none" stroke-width="40" pathLength="1"/>
-            <path data-delay="1840" class="rise-small" d="M704 300 L780 270 L752 347 Z"/>
-          </g>
-          <g class="rg-build-arrow-down" fill="#FF5A1A" stroke="#FF6B29" stroke-linecap="round" stroke-linejoin="round">
-            <path data-delay="1920" class="draw" d="M845 340 A250 250 0 0 1 860 635" fill="none" stroke-width="28" pathLength="1"/>
-            <path data-delay="2060" class="rise-small" d="M835 625 L862 690 L892 628 Z"/>
-          </g>
-          <g class="rg-build-podium">
-            <path data-delay="2220" class="rise" d="M265 820 H480 L420 870 H230 Z" fill="#173E63"/>
-            <path data-delay="2320" class="rise" d="M520 820 H735 L770 870 H580 Z" fill="#8F70FF"/>
-            <rect data-delay="2420" class="rise" x="285" y="785" width="135" height="110" rx="18" fill="#012443"/>
-            <rect data-delay="2520" class="rise" x="430" y="745" width="140" height="150" rx="20" fill="#01AACA"/>
-            <rect data-delay="2620" class="rise" x="580" y="785" width="135" height="110" rx="18" fill="#012443"/>
-          </g>
-          <g class="rg-build-people" fill="#EAF5FF">
-            <g data-delay="2660" class="rise"><circle cx="350" cy="740" r="30"/><path d="M300 775 Q350 735 400 775 V805 H300Z" fill="#123B5D"/></g>
-            <g data-delay="2800" class="rise"><circle cx="500" cy="700" r="34" fill="#D8FBFF"/><path d="M445 745 Q500 698 555 745 V780 H445Z" fill="#01AACA"/></g>
-            <g data-delay="2940" class="rise"><circle cx="650" cy="740" r="30"/><path d="M600 775 Q650 735 700 775 V805 H600Z" fill="#123B5D"/></g>
-          </g>
-          <path data-delay="3080" class="rg-build-accent draw" d="M180 640 L250 580 L305 640" fill="none" stroke="#FF6FB4" stroke-width="28" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
-        </svg>
-        <div class="rg-build-wordmark"><span>RANKING</span> <strong>GERAL</strong></div>
+  <div id="rg-startup" class="rg-startup" aria-hidden="true">
+    <div class="rg-startup-grid" aria-hidden="true"></div>
+    <div class="rg-startup-card">
+      <div class="rg-startup-logo-wrap">
+        <div class="rg-startup-ring rg-ring-a"></div>
+        <div class="rg-startup-ring rg-ring-b"></div>
+        <img class="rg-startup-logo" src="./assets/logo-ranking-geral.png" alt="Ranking Geral">
       </div>
+      <div class="rg-startup-brand">RANKING GERAL</div>
+      <div class="rg-startup-subtitle">Mercado em movimento. Índices em disputa.</div>
+      <div class="rg-race" aria-hidden="true">
+        <div class="rg-race-lane lane-x"><span class="rg-race-label">ÍNDICE X</span><span class="rg-race-line"></span><i></i></div>
+        <div class="rg-race-lane lane-y"><span class="rg-race-label">ÍNDICE Y</span><span class="rg-race-line"></span><i></i></div>
+        <div class="rg-race-lane lane-m"><span class="rg-race-label">MERCADO</span><span class="rg-race-line"></span><i></i></div>
+      </div>
+      <div class="rg-startup-chart" aria-hidden="true">
+        <span style="--h:18%;--d:0s"></span><span style="--h:34%;--d:.08s"></span><span style="--h:28%;--d:.16s"></span><span style="--h:56%;--d:.24s"></span><span style="--h:44%;--d:.32s"></span><span style="--h:75%;--d:.40s"></span><span style="--h:64%;--d:.48s"></span><span style="--h:92%;--d:.56s"></span>
+        <b class="rg-trend-up"></b><b class="rg-trend-down"></b>
+      </div>
+      <div class="rg-startup-status"><span></span><span id="rg-startup-status-text">Inicializando ambiente</span></div>
     </div>
   </div>
 
   <!-- ============================================================================
+
+  <!-- Splash de inicialização: única linha do tempo, construção cinética da marca. -->
++
        MENU DE ACESSIBILIDADE — botão flutuante + painel, e a camada do filtro
        de daltonismo. Ficam aqui, direto no corpo de index.html (não são um
        módulo buscado por fetch como os slots abaixo), de propósito: assim
@@ -387,71 +393,44 @@
        ============================================================================ -->
 <script>
 (function(){
-  const start=performance.now();
-  const DURATION=6400;
-  let hidden=false;
-  const root=document.documentElement;
-  const splash=document.getElementById('rg-startup');
-  const prefersReduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  root.classList.toggle('rg-reduced-motion',prefersReduced);
-  function ease(t){return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;}
-  function playBuild(){
-    if(!splash) return;
-    const q=splash.querySelectorAll('[data-delay]');
-    q.forEach(el=>{
-      const delay=Number(el.dataset.delay||0);
-      if(el.classList.contains('draw')){
-        el.style.strokeDasharray='1'; el.style.strokeDashoffset='1';
-        el.animate([{strokeDashoffset:'1'},{strokeDashoffset:'0'}],{duration:620,delay,easing:'cubic-bezier(.16,1,.3,1)',fill:'forwards'});
-      } else if(el.classList.contains('rise-small')){
-        el.style.opacity='0';
-        el.animate([{opacity:0,transform:'translateY(34px) scale(.92)'},{opacity:1,transform:'translateY(0) scale(1)'}],{duration:520,delay,easing:'cubic-bezier(.22,1,.36,1)',fill:'forwards'});
-      } else {
-        el.style.transformOrigin=el.tagName==='rect'?'50% 100%':'50% 100%';
-        el.animate([{opacity:0,transform:'translateY(80px) scaleY(.05)'},{opacity:1,transform:'translateY(-6px) scaleY(1.035)'},{opacity:1,transform:'translateY(0) scaleY(1)'}],{duration:720,delay,easing:'cubic-bezier(.22,1,.36,1)',fill:'forwards'});
-      }
-    });
-    const guides=splash.querySelector('.rg-build-guides');
-    if(guides){ guides.animate([{opacity:0,transform:'scale(.96)'},{opacity:.45,transform:'scale(1)'}],{duration:760,easing:'cubic-bezier(.22,1,.36,1)',fill:'forwards'}); }
-    const glow=splash.querySelector('.rg-build-glow');
-    if(glow){ glow.animate([{opacity:0,transform:'scale(.7)'},{opacity:.9,transform:'scale(1)'},{opacity:.55,transform:'scale(1.04)'}],{duration:4300,delay:900,easing:'ease-out',fill:'forwards'}); }
-    const word=splash.querySelector('.rg-build-wordmark');
-    if(word){ word.animate([{opacity:0,transform:'translateY(18px)'},{opacity:1,transform:'translateY(0)'}],{duration:760,delay:5000,easing:'cubic-bezier(.22,1,.36,1)',fill:'forwards'}); }
-    const lock=splash.querySelector('.rg-startup-lockup');
-    if(lock){ lock.animate([{transform:'scale(.985)'},{transform:'scale(1.012)',offset:.86},{transform:'scale(1)'}],{duration:850,delay:5350,easing:'cubic-bezier(.22,1,.36,1)',fill:'forwards'}); }
-  }
-  function hide(){ if(hidden||!splash)return; hidden=true; splash.classList.add('rg-startup-hide'); setTimeout(()=>splash.remove(),720); }
-  window.rgStartup={status:function(){},hide:function(){setTimeout(hide,Math.max(0,DURATION-(performance.now()-start)))},forceHide:hide,elapsed:function(){return performance.now()-start}};
-  if(prefersReduced){
-    const word=splash?.querySelector('.rg-build-wordmark'); if(word) word.style.opacity='1';
-    const all=splash?.querySelectorAll('[data-delay]'); all?.forEach(el=>{el.style.opacity='1';el.style.strokeDashoffset='0';el.style.transform='none'});
-    setTimeout(hide,1100);
-  } else { playBuild(); setTimeout(hide,DURATION); }
+  function atualizarSplash(texto){ var el=document.getElementById('rg-startup-status-text'); if(el) el.textContent=texto; }
+  window.rgStartup = {
+    status: atualizarSplash,
+    hide: function(){
+      var splash=document.getElementById('rg-startup');
+      if(!splash || splash.classList.contains('rg-startup-hide')) return;
+      splash.classList.add('rg-startup-hide');
+      setTimeout(function(){ splash.remove(); }, 500);
+    }
+  };
+  var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce){ document.documentElement.classList.add('rg-reduced-motion'); }
+  setTimeout(function(){ atualizarSplash('Preparando ambiente'); }, 350);
 })();
 </script>
-  <script src="./js/core/config-api.js?v=20260907-ui23"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
-  <script src="./js/core/estado-global.js?v=20260907-ui23"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
-  <script src="./js/features/faixas-dinamicas.js?v=20260907-ui23"></script><!-- Gerenciamento de faixas dinâmicas. -->
-  <script src="./js/core/identidade.js?v=20260907-ui23"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
-  <script src="./js/core/navegacao.js?v=20260907-ui23"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
-  <script src="./js/core/sidebar.js?v=20260907-ui23"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->
-  <script src="./js/a11y/acessibilidade.js?v=20260907-ui23"></script><!-- Painel de acessibilidade (UI) — liga os controles a window.A11Y, de a11y.js. -->
-  <script src="./js/features/configuracoes-de-conta.js?v=20260907-ui23"></script><!-- Tela "Minha conta". -->
-  <script src="./js/features/modulo-0.js?v=20260907-ui23"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
-  <script src="./js/features/texto-do-resumo.js?v=20260907-ui23"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
-  <script src="./js/features/colagem.js?v=20260907-ui23"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
-  <script src="./js/features/colagem-ocr.js?v=20260907-ui23"></script><!-- Leitura de print via OCR — alimenta a mesma caixa de colagem.js. -->
-  <script src="./js/features/planilha-mestra.js?v=20260907-ui23"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
-  <script src="./js/features/participantes.js?v=20260907-ui23"></script><!-- CRUD de participante + cálculo de ranking (total/tiebreak/sort). -->
-  <script src="./js/features/dias.js?v=20260907-ui23"></script><!-- Adicionar/remover um dia. -->
-  <script src="./js/features/formulario-lancamento-dia.js?v=20260907-ui23"></script><!-- Aba "Preencher" do Lançar Pontuação. -->
-  <script src="./js/features/analises-gerais.js?v=20260907-ui23"></script><!-- Cartões de estatística do Módulo 2. -->
-  <script src="./js/features/filtros.js?v=20260907-ui23"></script><!-- Filtro por período/dias do Módulo 2. -->
-  <script src="./js/features/analises-dashboard.js?v=20260907-ui23"></script><!-- Destaques + gráfico de evolução + mapa de desempenho (chamados de dentro de filtros.js). -->
-  <script src="./js/features/gerenciar-dias-lancados.js?v=20260907-ui23"></script><!-- Lista de dias lançados (Módulos 3 e 4). -->
-  <script src="./js/features/resumos-salvos.js?v=20260907-ui23"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
-  <script src="./js/features/usuarios.js?v=20260907-ui23"></script><!-- Painel de administração de usuários (Módulo 4). -->
-  <script src="./js/core/renderizacao.js?v=20260907-ui23"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
-  <script src="./js/core/inicializacao.js?v=20260907-ui23"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
+  <script src="./js/core/config-api.js?v=20260907-ui26"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
+  <script src="./js/core/estado-global.js?v=20260907-ui26"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
+  <script src="./js/features/faixas-dinamicas.js?v=20260907-ui26"></script><!-- Gerenciamento de faixas dinâmicas. -->
+  <script src="./js/core/identidade.js?v=20260907-ui26"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
+  <script src="./js/core/navegacao.js?v=20260907-ui26"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
+  <script src="./js/core/sidebar.js?v=20260907-ui26"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->
+  <script src="./js/a11y/acessibilidade.js?v=20260907-ui26"></script><!-- Painel de acessibilidade (UI) — liga os controles a window.A11Y, de a11y.js. -->
+  <script src="./js/features/configuracoes-de-conta.js?v=20260907-ui26"></script><!-- Tela "Minha conta". -->
+  <script src="./js/features/modulo-0.js?v=20260907-ui26"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
+  <script src="./js/features/texto-do-resumo.js?v=20260907-ui26"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
+  <script src="./js/features/colagem.js?v=20260907-ui26"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
+  <script src="./js/features/colagem-ocr.js?v=20260907-ui26"></script><!-- Leitura de print via OCR — alimenta a mesma caixa de colagem.js. -->
+  <script src="./js/features/planilha-mestra.js?v=20260907-ui26"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
+  <script src="./js/features/participantes.js?v=20260907-ui26"></script><!-- CRUD de participante + cálculo de ranking (total/tiebreak/sort). -->
+  <script src="./js/features/dias.js?v=20260907-ui26"></script><!-- Adicionar/remover um dia. -->
+  <script src="./js/features/formulario-lancamento-dia.js?v=20260907-ui26"></script><!-- Aba "Preencher" do Lançar Pontuação. -->
+  <script src="./js/features/analises-gerais.js?v=20260907-ui26"></script><!-- Cartões de estatística do Módulo 2. -->
+  <script src="./js/features/filtros.js?v=20260907-ui26"></script><!-- Filtro por período/dias do Módulo 2. -->
+  <script src="./js/features/analises-dashboard.js?v=20260907-ui26"></script><!-- Destaques + gráfico de evolução + mapa de desempenho (chamados de dentro de filtros.js). -->
+  <script src="./js/features/gerenciar-dias-lancados.js?v=20260907-ui26"></script><!-- Lista de dias lançados (Módulos 3 e 4). -->
+  <script src="./js/features/resumos-salvos.js?v=20260907-ui26"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
+  <script src="./js/features/usuarios.js?v=20260907-ui26"></script><!-- Painel de administração de usuários (Módulo 4). -->
+  <script src="./js/core/renderizacao.js?v=20260907-ui26"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
+  <script src="./js/core/inicializacao.js?v=20260907-ui26"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
 </body>
 </html>

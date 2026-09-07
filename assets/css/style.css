@@ -3352,21 +3352,3 @@ V13 — LOGIN RESPONSIVO POR LIMITE REAL DA TELA / GRID 5x5
 
 
 
-/* ============================================================
-   V24 — LOGO OFICIAL DESENHADA EM SVG + CONSTRUÇÃO CINÉTICA
-   ============================================================ */
-#rg-startup{position:fixed!important;inset:0!important;z-index:99999!important;display:grid!important;place-items:center!important;overflow:hidden!important;background:radial-gradient(circle at 50% 45%,#0c1a28 0%,#071019 52%,#050b10 100%)!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;transition:opacity .72s cubic-bezier(.22,1,.36,1),visibility .72s linear!important}
-#rg-startup.rg-startup-hide{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
-#rg-startup .rg-startup-stage{width:min(94vw,860px);height:min(92vh,860px);display:grid;place-items:center}
-#rg-startup .rg-startup-lockup{position:relative;width:min(72vw,570px);aspect-ratio:1;display:grid;place-items:center}
-#rg-startup .rg-build-svg{width:100%;height:100%;overflow:visible;shape-rendering:geometricPrecision}
-#rg-startup .rg-build-guides{opacity:0;transform-box:fill-box;transform-origin:center}
-#rg-startup .rg-build-glow{opacity:0;transform-box:fill-box;transform-origin:center}
-#rg-startup .rg-build-bars rect,#rg-startup .rg-build-podium > * ,#rg-startup .rg-build-people > g{opacity:0;transform-box:fill-box;transform-origin:center bottom}
-#rg-startup .draw{stroke-dasharray:1;stroke-dashoffset:1}
-#rg-startup .rg-build-wordmark{position:absolute;left:50%;bottom:-7%;transform:translate(-50%,18px);opacity:0;white-space:nowrap;font-weight:900;font-size:clamp(18px,3vw,30px);letter-spacing:.12em;color:#f4f8fb;text-shadow:0 12px 30px rgba(0,0,0,.35)}
-#rg-startup .rg-build-wordmark strong{color:#39E7F3;font-weight:950}
-#rg-startup .rg-build-svg *{vector-effect:non-scaling-stroke}
-#rg-startup .rg-build-svg #r-glyph{vector-effect:none}
-@media(max-width:760px){#rg-startup .rg-startup-stage{width:96vw;height:84vh}#rg-startup .rg-startup-lockup{width:min(82vw,450px)}#rg-startup .rg-build-wordmark{bottom:-9%;font-size:20px}}
-.rg-reduced-motion #rg-startup *{animation:none!important;transition:none!important}
