@@ -25,7 +25,7 @@ function renderGerenciarDias(){
     for(let d = state.days - 1; d >= 0; d--){
       html += `<div class="day-row">
         <span class="day-row-label">Dia ${d+1}</span>
-        <button class="del-x-btn day-remove-btn" ${admin ? '' : 'disabled'} onclick="removeDay(${d})" title="Remover Dia ${d+1}">✕ remover</button>
+        <button class="del-x-btn day-remove-btn" ${admin ? '' : 'disabled'} onclick="removeDay(${d})" title="Remover Dia ${d+1}">Remover dia</button>
       </div>`;
     }
   }

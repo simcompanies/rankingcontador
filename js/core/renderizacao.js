@@ -107,8 +107,8 @@ function renderDivision(divId){
       ${cells}
       <td class="total">${p.total}</td>
       ${admin ? `<td><div class="row-btns">
-        <button class="del-x-btn" onclick="renameParticipant('${divId}', ${p.idx})" title="Renomear">✎</button>
-        <button class="del-x-btn" onclick="removeParticipant('${divId}', ${p.idx})" title="Remover">✕</button>
+        <button class="del-x-btn" onclick="renameParticipant('${divId}', ${p.idx})" title="Renomear">Renomear</button>
+        <button class="del-x-btn" onclick="removeParticipant('${divId}', ${p.idx})" title="Remover">Remover</button>
       </div></td>` : ''}
     </tr>`;
   }).join('');
