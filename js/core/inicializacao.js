@@ -33,13 +33,13 @@
 // de index.html onde seu conteúdo deve ser injetado. Os ids de slot aqui
 // precisam bater exatamente com os ids usados em index.html.
 const MODULOS_HTML = [
-  { arquivo: 'modules/modulo-0.html',                slot: 'slot-modulo-0' },
-  { arquivo: 'modules/troca-de-senha.html',          slot: 'slot-troca-senha' },
-  { arquivo: 'modules/modulo-1.html',                slot: 'slot-modulo-1' },
-  { arquivo: 'modules/modulo-2.html',                slot: 'slot-modulo-2' },
-  { arquivo: 'modules/modulo-3.html',                slot: 'slot-modulo-3' },
-  { arquivo: 'modules/modulo-4.html',                slot: 'slot-modulo-4' },
-  { arquivo: 'modules/configuracoes-de-conta.html',  slot: 'slot-configuracoes-conta' },
+  { arquivo: 'modulo-0.html',                slot: 'slot-modulo-0' },
+  { arquivo: 'troca-de-senha.html',          slot: 'slot-troca-senha' },
+  { arquivo: 'modulo-1.html',                slot: 'slot-modulo-1' },
+  { arquivo: 'modulo-2.html',                slot: 'slot-modulo-2' },
+  { arquivo: 'modulo-3.html',                slot: 'slot-modulo-3' },
+  { arquivo: 'modulo-4.html',                slot: 'slot-modulo-4' },
+  { arquivo: 'configuracoes-de-conta.html',  slot: 'slot-configuracoes-conta' },
 ];
 
 // Busca todos os fragmentos de HTML em paralelo (nenhum depende do
@@ -110,19 +110,3 @@ window.addEventListener('beforeunload', saveState);
 window.addEventListener('pagehide', saveState);
 window.addEventListener('blur', saveState);
 document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='hidden') saveState(); });
-
-/* --------------------------------------------------------------------------
-   PWA: registra o service worker (sw.js, na raiz) que faz cache do
-   "app shell" (index.html, CSS, JS, fragmentos de módulo) para permitir
-   abrir o app offline ou com rede instável, e habilita "instalar app" no
-   celular/desktop via manifest.webmanifest. Não interfere em nada que já
-   existia acima; se o navegador não suportar Service Worker, o app
-   continua funcionando normalmente (só sem cache offline).
-   -------------------------------------------------------------------------- */
-if('serviceWorker' in navigator){
-  window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('sw.js').catch((erro)=>{
-      console.error('Falha ao registrar o service worker', erro);
-    });
-  });
-}

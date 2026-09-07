@@ -50,12 +50,11 @@ function renderUsuarios(){
           if(!souEu){
             const proximoPapel = u.papel === 'administrador' ? 'membro' : 'administrador';
             const rotuloPapel = u.papel === 'administrador' ? '↓ tornar membro' : '↑ tornar admin';
-            const idAtributo = escapeHtml(u.idUsuario, 'atributo');
-            acoes = `<button class="del-x-btn" onclick="handleAlterarPapel('${idAtributo}', '${proximoPapel}')" title="Alterar papel">${rotuloPapel}</button>`;
+            acoes = `<button class="del-x-btn" onclick="handleAlterarPapel('${u.idUsuario}', '${proximoPapel}')" title="Alterar papel">${rotuloPapel}</button>`;
             if(u.resetPendente){
-              acoes += `<button class="del-x-btn" onclick="handleAdminEnviarReset('${idAtributo}')" title="Enviar código temporário">Enviar código</button>`;
+              acoes += `<button class="del-x-btn" onclick="handleAdminEnviarReset('${u.idUsuario}')" title="Enviar código temporário">Enviar código</button>`;
             }
-            acoes += `<button class="del-x-btn" onclick="handleRemoverUsuario('${idAtributo}')" title="Remover">✕</button>`;
+            acoes += `<button class="del-x-btn" onclick="handleRemoverUsuario('${u.idUsuario}')" title="Remover">✕</button>`;
           }
           return `<div class="user-row">
             <span class="user-row-name">${escapeHtml(u.nome)} <span class="user-row-email">${escapeHtml(u.email)}</span> ${badge} ${pendente}</span>

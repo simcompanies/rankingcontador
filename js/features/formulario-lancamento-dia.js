@@ -6,12 +6,22 @@
    entre campos, barra de progresso "quantos já preenchidos") mais a lista
    dinâmica de participantes NOVOS a criar junto com o lançamento do dia.
 
-   Depende de: estado-global.js (draft, draftNew, state), planilha-mestra.js
-   (saveState), texto-do-resumo.js (autoSalvarResumoDoDia), renderizacao.js
-   (render). Observação: launchDayForm() NÃO chama addDay()/addParticipant()
-   (dias.js/participantes.js) — ele repete a mesma lógica de criar o dia e
-   os participantes novos diretamente, já no formato do lançamento em lote.
-   Isso já era assim no arquivo original; mantido aqui sem alteração.
+   FAIXAS DINÂMICAS: o formulário tinha duas colunas fixas (Faixa X / Faixa
+   Y). Agora renderLaunchColumns() monta UMA coluna por faixa existente
+   dentro de #launch-columns-container (ver modulo-3.html), e draft/draftNew
+   são objetos indexados pelo id de cada faixa (draft[divId], não mais
+   draft.x/draft.y). Os templates usam notação de colchete
+   (draft['${divId}']) em vez de ponto (draft.${divId}) de propósito: um id
+   de faixa é validado para começar com letra e só ter [a-z0-9_], mas
+   notação de colchete é sempre seguro independente disso.
+
+   Depende de: estado-global.js (draft, draftNew, state, obterTodasDivisoes),
+   planilha-mestra.js (saveState), texto-do-resumo.js (autoSalvarResumoDoDia),
+   renderizacao.js (render). Observação: launchDayForm() NÃO chama
+   addDay()/addParticipant() (dias.js/participantes.js) — ele repete a mesma
+   lógica de criar o dia e os participantes novos diretamente, já no formato
+   do lançamento em lote. Isso já era assim no arquivo original; mantido
+   aqui sem alteração de comportamento.
    ============================================================================ */
 
 // Atualiza o rótulo "Lançando o dia N" / data mostrado no topo do formulário.
@@ -41,16 +51,18 @@ function focusNextLaunch(el){
 // Recalcula e desenha a barra de progresso "X de Y participantes preenchidos".
 function updateLaunchProgress(){
   let filled = 0, totalCount = 0;
-  ['x','y'].forEach(div=>{
-    state[div].forEach((p,i)=>{
+  obterTodasDivisoes().forEach(div=>{
+    const divId = div.id;
+    const participantes = div.participantes || [];
+    participantes.forEach((p,i)=>{
       totalCount++;
-      if(draft[div][i] !== undefined && draft[div][i] !== '') filled++;
+      if(draft[divId] && draft[divId][i] !== undefined && draft[divId][i] !== '') filled++;
     });
-    draftNew[div].forEach(r=>{
+    (draftNew[divId] || []).forEach(r=>{
       if(r.name.trim()){ totalCount++; if(r.value !== '') filled++; }
     });
-    const countEl = document.getElementById('launch-count-'+div);
-    if(countEl) countEl.textContent = `${state[div].length} cadastrado${state[div].length===1?'':'s'}`;
+    const countEl = document.getElementById('launch-count-'+divId);
+    if(countEl) countEl.textContent = `${participantes.length} cadastrado${participantes.length===1?'':'s'}`;
   });
   const el = document.getElementById('launch-progress');
   if(el){
@@ -60,103 +72,133 @@ function updateLaunchProgress(){
   }
 }
 
-// Redesenha a lista de linhas de participantes NOVOS sendo adicionados junto com este lançamento.
-function renderDraftNewRows(div){
-  const wrap = document.getElementById('launch-new-'+div);
+// Redesenha a lista de linhas de participantes NOVOS sendo adicionados junto com este lançamento, para UMA faixa.
+function renderDraftNewRows(divId){
+  const wrap = document.getElementById('launch-new-'+divId);
   if(!wrap) return;
-  wrap.innerHTML = draftNew[div].map((row,i)=>`
+  const linhas = draftNew[divId] || [];
+  wrap.innerHTML = linhas.map((row,i)=>`
     <div class="launch-row launch-row-new">
       <input class="launch-name-input" type="text" placeholder="Novo participante"
-        value="${escapeHtml(row.name, 'atributo')}" oninput="draftNew.${div}[${i}].name=this.value; updateLaunchProgress();">
+        value="${escapeHtml(row.name)}" oninput="draftNew['${divId}'][${i}].name=this.value; updateLaunchProgress();">
       <input class="launch-input" type="text" inputmode="numeric" pattern="-?[0-9]*" placeholder="pts"
-        value="${row.value}"
-        oninput="draftNew.${div}[${i}].value=this.value; styleLaunchInput(this); updateLaunchProgress();"
+        value="${escapeHtml(row.value)}"
+        oninput="draftNew['${divId}'][${i}].value=this.value; styleLaunchInput(this); updateLaunchProgress();"
         onkeydown="if(event.key==='Enter'){event.preventDefault(); focusNextLaunch(this);}">
-      <button type="button" class="del-x-btn" onclick="removeDraftRow('${div}', ${i})" title="Remover">✕</button>
+      <button type="button" class="del-x-btn" onclick="removeDraftRow('${divId}', ${i})" title="Remover">✕</button>
     </div>
   `).join('');
 }
 
 // Adiciona uma linha em branco para cadastrar mais um participante novo direto no formulário de lançamento.
-function addDraftRow(div){
-  draftNew[div].push({ name:'', value:'' });
-  renderDraftNewRows(div);
+function addDraftRow(divId){
+  if(!draftNew[divId]) draftNew[divId] = [];
+  draftNew[divId].push({ name:'', value:'' });
+  renderDraftNewRows(divId);
   updateLaunchProgress();
   requestAnimationFrame(()=>{
-    const wrap = document.getElementById('launch-new-'+div);
+    const wrap = document.getElementById('launch-new-'+divId);
     const inputs = wrap ? wrap.querySelectorAll('.launch-name-input') : [];
     if(inputs.length) inputs[inputs.length-1].focus();
   });
 }
 
 // Remove uma linha de participante novo ainda não confirmada.
-function removeDraftRow(div, idx){
-  draftNew[div].splice(idx,1);
-  renderDraftNewRows(div);
+function removeDraftRow(divId, idx){
+  if(!draftNew[divId]) return;
+  draftNew[divId].splice(idx,1);
+  renderDraftNewRows(divId);
   updateLaunchProgress();
 }
 
-// (Re)desenha o formulário completo: um campo por participante existente de cada divisão, mais as linhas de novos.
+// Monta o esqueleto (uma coluna por faixa) dentro de #launch-columns-container.
+// Chamada por renderLaunchForm() ANTES de preencher cada coluna, igual ao
+// padrão de renderBoard() em renderizacao.js.
+function renderLaunchColumns(){
+  const container = document.getElementById('launch-columns-container');
+  if(!container) return;
+  container.innerHTML = obterTodasDivisoes().map(div => `
+    <div class="launch-col" data-div-id="${div.id}" style="--div-accent:var(${div.cor || '--muted'})">
+      <div class="launch-col-head">
+        <span class="launch-col-title">${escapeHtml(div.titulo)}</span>
+        <span class="launch-col-count" id="launch-count-${div.id}"></span>
+      </div>
+      <div class="launch-list" id="launch-list-${div.id}"></div>
+      <div id="launch-new-${div.id}"></div>
+      <div class="launch-add-row"><button type="button" onclick="addDraftRow('${div.id}')">+ novo participante</button></div>
+    </div>
+  `).join('');
+}
+
+// (Re)desenha o formulário completo: uma coluna por faixa, um campo por participante existente, mais as linhas de novos.
 function renderLaunchForm(){
-  draft = { x:{}, y:{} };
-  draftNew = { x:[], y:[] };
-  ['x','y'].forEach(div=>{
-    const listEl = document.getElementById('launch-list-'+div);
+  draft = {};
+  draftNew = {};
+  obterTodasDivisoes().forEach(div=>{ draft[div.id] = {}; draftNew[div.id] = []; });
+
+  renderLaunchColumns();
+
+  obterTodasDivisoes().forEach(div=>{
+    const divId = div.id;
+    const listEl = document.getElementById('launch-list-'+divId);
     if(!listEl) return;
-    listEl.innerHTML = state[div].length
-      ? state[div].map((p,i)=>`
+    const participantes = div.participantes || [];
+    listEl.innerHTML = participantes.length
+      ? participantes.map((p,i)=>`
         <div class="launch-row">
           <span class="launch-name">${escapeHtml(p.name)}</span>
           <input class="launch-input" type="text" inputmode="numeric" pattern="-?[0-9]*" placeholder="—"
-            oninput="draft.${div}[${i}]=this.value; styleLaunchInput(this); updateLaunchProgress();"
+            oninput="draft['${divId}'][${i}]=this.value; styleLaunchInput(this); updateLaunchProgress();"
             onkeydown="if(event.key==='Enter'){event.preventDefault(); focusNextLaunch(this);}"
             onfocus="this.select()">
         </div>
       `).join('')
       : '<div class="empty-hint" style="padding:8px 0;">Nenhum participante ainda.</div>';
-    renderDraftNewRows(div);
+    renderDraftNewRows(divId);
   });
   updateLaunchDayLabel();
   updateLaunchProgress();
 }
 
 // Botão "Lançar dia": cria os participantes novos pendentes, adiciona um
-// dia (addDay) com a pontuação preenchida para todo mundo, salva
+// dia com a pontuação preenchida para todo mundo em TODAS as faixas, salva
 // (saveState), dispara o auto-save do resumo do dia e limpa o rascunho.
 function launchDayForm(){
   if(!exigirAdministrador()) return;
   let hasAny = false;
-  ['x','y'].forEach(div=>{
-    if(Object.values(draft[div]).some(v => v !== undefined && v !== '')) hasAny = true;
-    if(draftNew[div].some(r => r.name.trim() && r.value !== '')) hasAny = true;
+  obterTodasDivisoes().forEach(div=>{
+    const divId = div.id;
+    if(Object.values(draft[divId] || {}).some(v => v !== undefined && v !== '')) hasAny = true;
+    if((draftNew[divId] || []).some(r => r.name.trim() && r.value !== '')) hasAny = true;
   });
   if(!hasAny){ alert('Preencha ao menos uma pontuação antes de lançar o dia.'); return; }
 
   state.days += 1;
-  state.x.forEach(p=>p.scores.push(null));
-  state.y.forEach(p=>p.scores.push(null));
-  state.dayDates.push(new Date().toISOString());
+  obterTodasDivisoes().forEach(div=>{ (div.participantes || []).forEach(p=>p.scores.push(null)); });
+  state.dayDates.push(dataLocalISO());
   const newIdx = state.days - 1;
 
-  ['x','y'].forEach(div=>{
-    state[div].forEach((p,i)=>{
-      const raw = draft[div][i];
+  obterTodasDivisoes().forEach(div=>{
+    const divId = div.id;
+    if(!div.participantes) div.participantes = [];
+    div.participantes.forEach((p,i)=>{
+      const raw = (draft[divId] || {})[i];
       if(raw === undefined || raw === '') return;
       let num = parseFloat(String(raw).replace(',', '.'));
       if(isNaN(num)) return;
       if(num > 10) num = 10;
       p.scores[newIdx] = num;
     });
-    draftNew[div].forEach(row=>{
+    (draftNew[divId] || []).forEach(row=>{
       const name = row.name.trim();
       if(!name || row.value === '') return;
       let num = parseFloat(String(row.value).replace(',', '.'));
       if(isNaN(num)) return;
       if(num > 10) num = 10;
-      let p = state[div].find(pp => pp.name.toLowerCase() === name.toLowerCase());
+      let p = div.participantes.find(pp => pp.name.toLowerCase() === name.toLowerCase());
       if(!p){
         p = { name, scores: Array(state.days).fill(null) };
-        state[div].push(p);
+        div.participantes.push(p);
       }
       p.scores[newIdx] = num;
     });

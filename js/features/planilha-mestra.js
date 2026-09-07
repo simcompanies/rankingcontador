@@ -9,9 +9,29 @@
    Uma única planilha compartilhada — nada fica salvo no navegador, exceto
    o token de sessão (sessionStorage, some ao fechar a aba).
 
+   FAIXAS DINÂMICAS: o backend pode devolver o ranking em dois formatos —
+   o novo (`dados.divisoes`, se o Code.gs já foi atualizado nesta versão) ou
+   o antigo (`dados.x`/`dados.y`, formato usado antes desta refatoração).
+   migrarEstadoAntigo() (estado-global.js) normaliza os dois para o mesmo
+   formato interno, então o resto do app nunca precisa saber qual dos dois
+   o backend realmente devolveu.
+
    Depende de: config-api.js (chamarAPI, chamarAPIGet, tratarErroSessaoOuPermissao),
-   estado-global.js (state, loaded), renderizacao.js (render).
+   estado-global.js (state, loaded, migrarEstadoAntigo), renderizacao.js (render).
    ============================================================================ */
+
+// Estado inicial "vazio" (Faixa X / Faixa Y sem participantes) — usado tanto
+// como fallback de erro quanto quando o backend não devolve nada aproveitável.
+function estadoVazioPadrao(){
+  return {
+    days: 0,
+    dayDates: [],
+    divisoes: [
+      { id: 'x', titulo: 'Faixa X', intervalo: '0 a 19.999M', cor: '--x-color', participantes: [] },
+      { id: 'y', titulo: 'Faixa Y', intervalo: '20M ou mais', cor: '--y-color', participantes: [] }
+    ]
+  };
+}
 
 // Atualiza o texto de status exibido perto do botão de salvar/sincronizar (ex.: "Salvando...", "Salvo").
 function setStatus(text, ok){
@@ -32,16 +52,22 @@ async function loadState(){
       throw new Error(resposta.erro || 'Falha ao carregar');
     }
     const carregado = resposta.dados;
-    if(carregado && typeof carregado.days === "number" && Array.isArray(carregado.x) && Array.isArray(carregado.y)){
-      state = carregado;
+    const formatoValido = carregado && typeof carregado.days === "number" &&
+      (Array.isArray(carregado.divisoes) || (Array.isArray(carregado.x) && Array.isArray(carregado.y)));
+
+    if(formatoValido){
+      state = migrarEstadoAntigo(carregado);
       if(!Array.isArray(state.dayDates)) state.dayDates = new Array(state.days).fill(null);
+      if(!Array.isArray(state.divisoes) || !state.divisoes.length){
+        state.divisoes = estadoVazioPadrao().divisoes;
+      }
     } else {
-      state = { days: 0, x: [], y: [], dayDates: [] };
+      state = estadoVazioPadrao();
     }
     setStatus('sincronizado ✓', true);
   }catch(e){
     console.error("Erro ao carregar dados", e);
-    state = { days: 0, x: [], y: [], dayDates: [] };
+    state = estadoVazioPadrao();
     setStatus('erro ao carregar — recarregue a página para tentar de novo', false);
   }
   loaded = true;
@@ -62,7 +88,10 @@ function saveState(){
 }
 
 // Execução de fato da gravação na planilha (POST via chamarAPI) — só é
-// chamada pelo setTimeout agendado em saveState(), nunca diretamente.
+// chamada pelo setTimeout agendado em saveState(), nunca diretamente. Envia
+// `state` inteiro, agora com `divisoes` no lugar de `x`/`y` — exige que o
+// Code.gs publicado já esteja na versão que entende `estado.divisoes` (ver
+// nota no topo do arquivo e o resumo de implementação).
 async function syncToServer(){
   if(!souAdmin()) return;
   setStatus('salvando...', 'busy');

@@ -11,8 +11,29 @@
    Planilha Mestra) fica declarado dentro do próprio arquivo daquela feature,
    para manter a coesão — só o que é realmente compartilhado mora aqui.
 
-   Depende de: nada (é puro estado, sem lógica). Deve carregar logo após
-   config-api.js e antes de qualquer script que leia/altere estas variáveis.
+   ----------------------------------------------------------------------------
+   FAIXAS DINÂMICAS (v2) — mudança de arquitetura
+   ----------------------------------------------------------------------------
+   Antes, o ranking vivia hardcoded em duas propriedades fixas: state.x e
+   state.y. Agora state.divisoes é um ARRAY de tamanho variável — cada item é
+   uma "faixa": { id, titulo, intervalo, cor, participantes }. Isso é o que
+   permite criar/renomear/remover faixas em tempo de execução (ver
+   faixas-dinamicas.js) sem tocar em nenhum outro arquivo.
+
+   `id` é o identificador ESTÁVEL usado em toda a aplicação (chaves de DOM
+   como "head-<id>", chaves de draft, o valor gravado na coluna "Divisao" da
+   planilha). `titulo`/`intervalo`/`cor` são só para exibição e podem mudar
+   livremente (renomearFaixa). As duas faixas padrão ('x' e 'y') continuam
+   existindo por padrão — nada muda para quem nunca criar uma faixa nova.
+
+   obterDivisao()/obterTodasDivisoes(), abaixo, são os dois helpers que TODO
+   o resto do app usa para nunca precisar saber quantas faixas existem ou
+   quais são seus ids — troque `state.x`/`state.y` por
+   `obterDivisao('x').participantes` sempre que for mexer em código antigo.
+
+   Depende de: nada (é puro estado, sem lógica de UI). Deve carregar logo
+   após config-api.js e antes de qualquer script que leia/altere estas
+   variáveis.
    ============================================================================ */
 
 // Sessão do usuário autenticado (token, id, nome, e-mail, papel).
@@ -22,8 +43,19 @@ let sessaoUsuario = null; // { token, idUsuario, nome, email, papel }
 
 /* --------------------------------------------------------------------------
    Estado do ranking (a "planilha" em memória) e flags de carregamento geral.
+   `divisoes` começa com Faixa X / Faixa Y (o padrão histórico do app) — isso
+   é só o valor usado antes do primeiro loadState() responder; assim que a
+   sessão carrega, este objeto é substituído pelo que vier do backend (ver
+   loadState, em planilha-mestra.js).
    -------------------------------------------------------------------------- */
-let state = { days: 0, x: [], y: [], dayDates: [] };
+let state = {
+  days: 0,
+  dayDates: [],
+  divisoes: [
+    { id: 'x', titulo: 'Faixa X', intervalo: '0 a 19.999M', cor: '--x-color', participantes: [] },
+    { id: 'y', titulo: 'Faixa Y', intervalo: '20M ou mais', cor: '--y-color', participantes: [] }
+  ]
+};
 
 // true assim que o primeiro carregamento de state (loadState, em planilha-mestra.js) terminar.
 let loaded = false;
@@ -35,11 +67,13 @@ let pendingImport = null;
 let pendingDayMode = 'new';
 
 // Rascunho (não salvo) do formulário de lançamento do dia — ver
-// formulario-lancamento-dia.js. draft = valores digitados para participantes
-// já cadastrados; draftNew = linhas de participantes novos sendo criados.
-let draft = { x:{}, y:{} };
+// formulario-lancamento-dia.js. Agora indexado pelo id de cada faixa, e não
+// mais por 'x'/'y' fixos: draft[divId] = { participantIndex: valorDigitado },
+// draftNew[divId] = [ {name, value}, ... ]. Populado por renderLaunchForm()
+// a cada render(), então começa como objeto vazio.
+let draft = {};
 
-let draftNew = { x:[], y:[] };
+let draftNew = {};
 
 /* --------------------------------------------------------------------------
    Cache dos dados do painel "Usuários" (Configurações Gerais) — ver usuarios.js.
@@ -76,36 +110,80 @@ function exigirAdministrador(){
 }
 
 /* --------------------------------------------------------------------------
-   Escape de saída para HTML — usado por toda função de renderização que
-   insere dado dinâmico (nome de participante, nome/e-mail de usuário,
-   texto de resumo salvo etc.) dentro de innerHTML via template string.
+   Utilitários de segurança/formatação compartilhados por todo o app.
+   -------------------------------------------------------------------------- */
 
-   Sem isso, um nome de participante ou de usuário contendo algo como
-   `<img src=x onerror=...>` seria interpretado como HTML de verdade pelo
-   navegador (XSS armazenado) assim que qualquer tela redesenhasse aquele
-   nome — inclusive o painel de administração de Usuários, o que é
-   especialmente grave (rodaria com a sessão do administrador).
-
-   Use contexto:'texto' (padrão) para conteúdo de texto normal entre tags
-   (ex.: ${escapeHtml(p.name)} dentro de <td>...</td>), e contexto:'atributo'
-   quando o valor vai dentro de um atributo entre aspas (ex.: value="${...}"
-   ou dentro de um onclick="...('${...}')"), pois esse contexto também
-   precisa escapar aspas simples/duplas para não permitir que o valor
-   "escape" do atributo. -------------------------------------------------------------------------- */
-function escapeHtml(valor, contexto = 'texto'){
+// Escapa caracteres especiais de HTML (& < > " ') antes de inserir texto
+// vindo do usuário (nome de participante, título de faixa, nome/e-mail de
+// conta, texto de resumo...) em qualquer template usado com innerHTML —
+// tanto em texto quanto dentro de atributos (value="", title=""), que são
+// os dois jeitos de um nome malicioso virar HTML/JS executável (XSS
+// armazenado — ver AUDITORIA_TESTES_E_MELHORIAS.md). Não mexe em quebras de
+// linha (\n), então continua preservando a formatação de textos multi-linha
+// (ex.: resumo dentro de <pre>). "&" precisa ser trocado primeiro, senão as
+// entidades geradas pelas trocas seguintes ("&lt;") seriam escapadas de novo.
+function escapeHtml(valor){
   if(valor === null || valor === undefined) return '';
-
-  let resultado = String(valor)
+  return String(valor)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 
-  if(contexto === 'atributo'){
-    resultado = resultado
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;')
-      .replace(/`/g, '&#96;');
-  }
+// Monta uma string estilo ISO (YYYY-MM-DDTHH:mm:ss.sss) a partir do horário
+// LOCAL do navegador — ao contrário de `new Date().toISOString()` (sempre
+// UTC), que "empurra" lançamentos feitos à noite (em fusos como UTC-3, a
+// partir de ~21h) pra data do dia seguinte quando comparados com um
+// <input type="date"> (que é sempre local, sem fuso — ver diasFiltrados,
+// em filtros.js). Sem "Z"/offset no final, uma string com hora é
+// interpretada de volta como horário LOCAL por `new Date(str)`, então o
+// valor faz a ida e volta sem trocar de fuso dentro do navegador.
+function dataLocalISO(data){
+  const d = data instanceof Date ? data : new Date();
+  const pad = (n, tamanho) => String(n).padStart(tamanho || 2, '0');
+  return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) +
+    'T' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds()) +
+    '.' + pad(d.getMilliseconds(), 3);
+}
 
-  return resultado;
+/* --------------------------------------------------------------------------
+   Helpers de DIVISÃO (faixas dinâmicas) — usados por praticamente todo o
+   resto do app (participantes.js, dias.js, renderizacao.js, colagem.js,
+   formulario-lancamento-dia.js, filtros.js, analises-dashboard.js,
+   analises-gerais.js, texto-do-resumo.js, faixas-dinamicas.js).
+   -------------------------------------------------------------------------- */
+
+// Devolve o objeto da faixa com esse id, ou null se não existir.
+function obterDivisao(divId){
+  if(!state.divisoes || !Array.isArray(state.divisoes)) return null;
+  return state.divisoes.find(d => d.id === divId) || null;
+}
+
+// Devolve todas as faixas como array (sempre seguro para .forEach/.map,
+// mesmo que state.divisoes ainda não exista por algum motivo).
+function obterTodasDivisoes(){
+  return (state.divisoes && Array.isArray(state.divisoes)) ? state.divisoes : [];
+}
+
+/* Converte um `state` no formato ANTIGO (state.x / state.y — usado antes da
+   v2, e ainda o formato que um backend não atualizado devolve) para o novo
+   formato dinâmico (state.divisoes). Chamada por loadState() logo após
+   receber os dados do backend (ver planilha-mestra.js). Se `estadoAntigo`
+   já estiver no formato novo (tem state.divisoes), devolve como veio, sem
+   tocar em nada. */
+function migrarEstadoAntigo(estadoAntigo){
+  if(!estadoAntigo) return estadoAntigo;
+  if(Array.isArray(estadoAntigo.divisoes)) return estadoAntigo;
+  if(!Array.isArray(estadoAntigo.x) && !Array.isArray(estadoAntigo.y)) return estadoAntigo;
+
+  return {
+    days: estadoAntigo.days || 0,
+    dayDates: estadoAntigo.dayDates || [],
+    divisoes: [
+      { id: 'x', titulo: 'Faixa X', intervalo: '0 a 19.999M', cor: '--x-color', participantes: estadoAntigo.x || [] },
+      { id: 'y', titulo: 'Faixa Y', intervalo: '20M ou mais', cor: '--y-color', participantes: estadoAntigo.y || [] }
+    ]
+  };
 }
