@@ -3303,3 +3303,106 @@ body.light-mode .a11y-panel select{background:#f2f6f9!important;color:#18222d!im
   .rg-wordmark{bottom:16%;}.rg-build-progress{bottom:11.5%;font-size:9px}.rg-build-status{bottom:6.5%;font-size:9px}
 }
 
+
+/* ============================================================================
+   V13 — LOGIN RESPONSIVO POR LIMITE REAL DA TELA / GRID 5x5
+   A caixa usa uma malha visual de referência 5x5, mas calcula o tamanho
+   efetivo por viewport para nunca comprimir o conteúdo.
+   ============================================================================ */
+.auth-gate.ui-auth-gate{
+  min-height:100dvh!important;
+  min-height:100svh!important;
+  height:auto!important;
+  box-sizing:border-box!important;
+  padding:
+    clamp(18px, 4vh, 44px)
+    clamp(16px, 3vw, 48px)
+    clamp(18px, 4vh, 44px)!important;
+  display:grid!important;
+  place-items:center!important;
+  overflow:auto!important;
+}
+.auth-card{
+  box-sizing:border-box!important;
+  width:min(520px, calc(100vw - 32px), 38vw)!important;
+  min-width:360px!important;
+  max-width:520px!important;
+  min-height:560px!important;
+  max-height:calc(100dvh - 36px)!important;
+  height:auto!important;
+  padding:clamp(24px, 3.8vh, 38px) clamp(24px, 3vw, 38px)!important;
+  overflow:auto!important;
+  overscroll-behavior:contain!important;
+  scrollbar-gutter:stable!important;
+}
+.auth-brand.auth-brand-logo{
+  flex:0 0 auto!important;
+  margin-bottom:clamp(20px, 3.2vh, 30px)!important;
+}
+.auth-brand.auth-brand-logo img{
+  width:clamp(82px, 8vw, 108px)!important;
+  height:clamp(82px, 8vw, 108px)!important;
+}
+.auth-brand.auth-brand-logo span{
+  font-size:clamp(24px, 2.4vw, 32px)!important;
+}
+.auth-view{width:100%!important;box-sizing:border-box!important;}
+.auth-form{gap:clamp(12px, 1.8vh, 16px)!important;}
+.auth-form .launch-submit{min-height:46px!important;}
+.auth-links{margin-top:clamp(14px, 2.2vh, 20px)!important;}
+
+/* Proporção de referência 5x5 em telas médias/grandes. O conteúdo continua
+   sendo o limitante para que o login nunca seja espremido artificialmente. */
+@media (min-width:901px) and (min-height:720px){
+  .auth-card{
+    width:min(520px, 38vw)!important;
+    min-height:min(650px, calc(100dvh - 60px))!important;
+  }
+}
+
+/* Tablets e janelas menores: prioridade total para a área útil vertical. */
+@media (max-width:900px){
+  .auth-card{
+    width:min(520px, calc(100vw - 28px))!important;
+    min-width:0!important;
+    min-height:min(560px, calc(100dvh - 28px))!important;
+    max-height:calc(100dvh - 28px)!important;
+    padding:clamp(22px, 4vh, 32px) clamp(20px, 5vw, 30px)!important;
+  }
+}
+
+/* Mobile: a caixa ocupa a largura útil, sem perder espaçamento interno. */
+@media (max-width:560px){
+  .auth-gate.ui-auth-gate{
+    padding:12px!important;
+    place-items:center!important;
+  }
+  .auth-card{
+    width:100%!important;
+    max-width:none!important;
+    min-height:0!important;
+    max-height:calc(100dvh - 24px)!important;
+    border-radius:20px!important;
+    padding:24px 18px!important;
+  }
+  .auth-brand.auth-brand-logo{
+    gap:10px!important;
+    margin-bottom:22px!important;
+  }
+  .auth-brand.auth-brand-logo img{width:88px!important;height:88px!important;}
+  .auth-brand.auth-brand-logo span{font-size:25px!important;}
+}
+
+/* Alturas realmente baixas: reduz apenas espaçamentos, nunca a largura ou o
+   tamanho mínimo dos controles. */
+@media (max-height:680px){
+  .auth-card{
+    min-height:0!important;
+    padding-block:18px!important;
+  }
+  .auth-brand.auth-brand-logo{gap:8px!important;margin-bottom:14px!important;}
+  .auth-brand.auth-brand-logo img{width:76px!important;height:76px!important;}
+  .auth-brand.auth-brand-logo span{font-size:24px!important;}
+  .auth-view .panel-title{margin-bottom:12px!important;}
+  .auth-links{margin-top:12px!important;padding-top:10px!important;}
+}
