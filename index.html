@@ -10,10 +10,10 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./assets/icons/icon-192.png">
 <link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
-<script src="./js/a11y/a11y.js?v=20260907-ui14"></script>
-<link rel="stylesheet" href="./assets/css/style.css?v=20260907-ui14">
-<link rel="stylesheet" href="./style.css?v=20260907-ui14-root" media="not all" id="style-fallback">
-  <meta name="app-build" content="20260907-ui14">
+<script src="./js/a11y/a11y.js?v=20260907-ui16"></script>
+<link rel="stylesheet" href="./assets/css/style.css?v=20260907-ui16">
+<link rel="stylesheet" href="./style.css?v=20260907-ui16-root" media="not all" id="style-fallback">
+  <meta name="app-build" content="20260907-ui16">
 <style id="screen-guard">
   #app-shell.hidden, body:not([data-app-screen="app"]) #app-shell { display:none !important; }
   body[data-app-screen="app"] #slot-modulo-0 { display:none !important; }
@@ -24,7 +24,6 @@
 </head>
 <body>
 
-  <!-- Splash de inicialização: construção progressiva da marca oficial. -->
   <!-- Splash de inicialização: construção cinética da logo oficial. -->
   <div id="rg-startup" aria-hidden="true">
     <div class="rg-build-field"></div>
@@ -64,7 +63,6 @@
           <g class="rg-part rg-down-arrow"><path d="M184 366 L134 414" fill="none" stroke="#ff7040" stroke-width="15" stroke-linecap="round"/><path d="M134 414 L144 381 L175 405 Z" fill="#ff7040"/></g>
           <g class="rg-part rg-podium"><circle cx="300" cy="463" r="16" fill="#10bfd7"/><circle cx="231" cy="476" r="14" fill="#082844"/><circle cx="369" cy="476" r="14" fill="#082844"/><rect x="244" y="484" width="112" height="72" rx="4" fill="#10bfd7"/><rect x="183" y="501" width="66" height="55" rx="4" fill="#082844"/><rect x="351" y="501" width="66" height="55" rx="4" fill="#082844"/></g>
           <path class="rg-part rg-finish" d="M114 306 A190 190 0 0 1 476 154" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
-          <image class="rg-official-lockup" href="./assets/logo-ranking-geral.png" x="60" y="60" width="480" height="480" preserveAspectRatio="xMidYMid meet"/>
         </svg>
       </div>
       <div class="rg-wordmark" aria-hidden="true">RANKING <span>GERAL</span></div>
@@ -398,29 +396,29 @@
   setTimeout(esconder,duracao);
 })();
 </script>
-  <script src="./js/core/config-api.js?v=20260907-ui14"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
-  <script src="./js/core/estado-global.js?v=20260907-ui14"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
-  <script src="./js/features/faixas-dinamicas.js?v=20260907-ui14"></script><!-- Gerenciamento de faixas dinâmicas. -->
-  <script src="./js/core/identidade.js?v=20260907-ui14"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
-  <script src="./js/core/navegacao.js?v=20260907-ui14"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
-  <script src="./js/core/sidebar.js?v=20260907-ui14"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->
-  <script src="./js/a11y/acessibilidade.js?v=20260907-ui14"></script><!-- Painel de acessibilidade (UI) — liga os controles a window.A11Y, de a11y.js. -->
-  <script src="./js/features/configuracoes-de-conta.js?v=20260907-ui14"></script><!-- Tela "Minha conta". -->
-  <script src="./js/features/modulo-0.js?v=20260907-ui14"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
-  <script src="./js/features/texto-do-resumo.js?v=20260907-ui14"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
-  <script src="./js/features/colagem.js?v=20260907-ui14"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
-  <script src="./js/features/colagem-ocr.js?v=20260907-ui14"></script><!-- Leitura de print via OCR — alimenta a mesma caixa de colagem.js. -->
-  <script src="./js/features/planilha-mestra.js?v=20260907-ui14"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
-  <script src="./js/features/participantes.js?v=20260907-ui14"></script><!-- CRUD de participante + cálculo de ranking (total/tiebreak/sort). -->
-  <script src="./js/features/dias.js?v=20260907-ui14"></script><!-- Adicionar/remover um dia. -->
-  <script src="./js/features/formulario-lancamento-dia.js?v=20260907-ui14"></script><!-- Aba "Preencher" do Lançar Pontuação. -->
-  <script src="./js/features/analises-gerais.js?v=20260907-ui14"></script><!-- Cartões de estatística do Módulo 2. -->
-  <script src="./js/features/filtros.js?v=20260907-ui14"></script><!-- Filtro por período/dias do Módulo 2. -->
-  <script src="./js/features/analises-dashboard.js?v=20260907-ui14"></script><!-- Destaques + gráfico de evolução + mapa de desempenho (chamados de dentro de filtros.js). -->
-  <script src="./js/features/gerenciar-dias-lancados.js?v=20260907-ui14"></script><!-- Lista de dias lançados (Módulos 3 e 4). -->
-  <script src="./js/features/resumos-salvos.js?v=20260907-ui14"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
-  <script src="./js/features/usuarios.js?v=20260907-ui14"></script><!-- Painel de administração de usuários (Módulo 4). -->
-  <script src="./js/core/renderizacao.js?v=20260907-ui14"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
-  <script src="./js/core/inicializacao.js?v=20260907-ui14"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
+  <script src="./js/core/config-api.js?v=20260907-ui16"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
+  <script src="./js/core/estado-global.js?v=20260907-ui16"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
+  <script src="./js/features/faixas-dinamicas.js?v=20260907-ui16"></script><!-- Gerenciamento de faixas dinâmicas. -->
+  <script src="./js/core/identidade.js?v=20260907-ui16"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
+  <script src="./js/core/navegacao.js?v=20260907-ui16"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
+  <script src="./js/core/sidebar.js?v=20260907-ui16"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->
+  <script src="./js/a11y/acessibilidade.js?v=20260907-ui16"></script><!-- Painel de acessibilidade (UI) — liga os controles a window.A11Y, de a11y.js. -->
+  <script src="./js/features/configuracoes-de-conta.js?v=20260907-ui16"></script><!-- Tela "Minha conta". -->
+  <script src="./js/features/modulo-0.js?v=20260907-ui16"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
+  <script src="./js/features/texto-do-resumo.js?v=20260907-ui16"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
+  <script src="./js/features/colagem.js?v=20260907-ui16"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
+  <script src="./js/features/colagem-ocr.js?v=20260907-ui16"></script><!-- Leitura de print via OCR — alimenta a mesma caixa de colagem.js. -->
+  <script src="./js/features/planilha-mestra.js?v=20260907-ui16"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
+  <script src="./js/features/participantes.js?v=20260907-ui16"></script><!-- CRUD de participante + cálculo de ranking (total/tiebreak/sort). -->
+  <script src="./js/features/dias.js?v=20260907-ui16"></script><!-- Adicionar/remover um dia. -->
+  <script src="./js/features/formulario-lancamento-dia.js?v=20260907-ui16"></script><!-- Aba "Preencher" do Lançar Pontuação. -->
+  <script src="./js/features/analises-gerais.js?v=20260907-ui16"></script><!-- Cartões de estatística do Módulo 2. -->
+  <script src="./js/features/filtros.js?v=20260907-ui16"></script><!-- Filtro por período/dias do Módulo 2. -->
+  <script src="./js/features/analises-dashboard.js?v=20260907-ui16"></script><!-- Destaques + gráfico de evolução + mapa de desempenho (chamados de dentro de filtros.js). -->
+  <script src="./js/features/gerenciar-dias-lancados.js?v=20260907-ui16"></script><!-- Lista de dias lançados (Módulos 3 e 4). -->
+  <script src="./js/features/resumos-salvos.js?v=20260907-ui16"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
+  <script src="./js/features/usuarios.js?v=20260907-ui16"></script><!-- Painel de administração de usuários (Módulo 4). -->
+  <script src="./js/core/renderizacao.js?v=20260907-ui16"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
+  <script src="./js/core/inicializacao.js?v=20260907-ui16"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
 </body>
 </html>

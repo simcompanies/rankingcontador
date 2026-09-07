@@ -3247,65 +3247,7 @@ body.light-mode .a11y-panel select{background:#f2f6f9!important;color:#18222d!im
   .auth-brand.auth-brand-logo span{font-size:25px!important;}
 }
 
-#rg-startup{
-  position:fixed;inset:0;z-index:99999;display:grid;place-items:center;overflow:hidden;
-  background:
-    radial-gradient(560px 420px at 50% 43%,rgba(47,216,168,.11),transparent 66%),
-    radial-gradient(460px 340px at 50% 48%,rgba(111,146,232,.07),transparent 68%),
-    linear-gradient(180deg,#071019 0%,#08131c 52%,#070d14 100%);
-  color:#eef5fa;opacity:1;visibility:visible;transition:opacity .55s ease,visibility .55s ease;
-}
-#rg-startup.rg-startup-hide{opacity:0;visibility:hidden;pointer-events:none}
-.rg-build-wrap{position:relative;width:min(90vw,640px);height:min(90vh,640px);display:grid;place-items:center}
-.rg-build-field{position:absolute;inset:0;pointer-events:none;opacity:.4;background:
-  linear-gradient(rgba(115,145,176,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(115,145,176,.035) 1px,transparent 1px);
-  background-size:46px 46px;mask-image:radial-gradient(circle at center,black 0 25%,transparent 73%);-webkit-mask-image:radial-gradient(circle at center,black 0 25%,transparent 73%);
-}
-.rg-logo-construction{position:relative;width:min(62vw,390px);aspect-ratio:1;filter:drop-shadow(0 26px 52px rgba(0,0,0,.42));}
-.rg-logo-piece,.rg-logo-final{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;pointer-events:none;}
-.rg-logo-piece img,.rg-logo-final img{width:100%;height:100%;object-fit:contain;display:block;}
-.rg-logo-piece{opacity:0;will-change:transform,opacity,clip-path,filter;}
-.rg-piece-left{clip-path:inset(0 48% 0 0);transform:translateX(-120px) rotate(-7deg) scale(.92);animation:rgPieceLeft 1.15s cubic-bezier(.22,1,.36,1) .45s forwards;}
-.rg-piece-top{clip-path:inset(0 0 48% 0);transform:translateY(-110px) rotate(5deg) scale(.88);animation:rgPieceTop 1.10s cubic-bezier(.22,1,.36,1) .75s forwards;}
-.rg-piece-right{clip-path:inset(0 0 0 48%);transform:translateX(120px) rotate(7deg) scale(.92);animation:rgPieceRight 1.15s cubic-bezier(.22,1,.36,1) 1.05s forwards;}
-.rg-piece-bottom{clip-path:inset(48% 0 0 0);transform:translateY(125px) rotate(-5deg) scale(.9);animation:rgPieceBottom 1.20s cubic-bezier(.22,1,.36,1) 1.25s forwards;}
-.rg-piece-center{clip-path:circle(33% at 50% 50%);transform:scale(.22) rotate(-35deg);animation:rgPieceCenter 1.00s cubic-bezier(.16,1,.3,1) 1.85s forwards;}
-.rg-logo-final{opacity:0;transform:scale(.86);animation:rgLogoFinal 1.15s cubic-bezier(.18,1,.3,1) 2.55s forwards;}
-.rg-logo-final img{animation:rgFinalDrift 2.2s ease-in-out 3.3s infinite alternate;}
-.rg-build-orbit{position:absolute;left:50%;top:43%;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;}
-.rg-orbit-a{width:min(55vw,410px);height:min(55vw,410px);border:1px solid rgba(47,216,168,.35);border-right-color:transparent;border-bottom-color:transparent;opacity:0;animation:rgOrbitA 4.8s cubic-bezier(.22,1,.36,1) .15s forwards;}
-.rg-orbit-b{width:min(64vw,490px);height:min(64vw,490px);border:1px dashed rgba(111,146,232,.22);border-left-color:transparent;border-top-color:transparent;opacity:0;animation:rgOrbitB 5.2s linear .2s forwards;}
-.rg-build-sweep{position:absolute;left:50%;top:11%;width:min(70vw,520px);height:2px;transform:translateX(-50%) scaleX(0);transform-origin:center;opacity:.7;background:linear-gradient(90deg,transparent,#2fd8a8 18%,#fff 50%,#6f92e8 82%,transparent);box-shadow:0 0 20px rgba(47,216,168,.3);animation:rgSweep 4.9s ease-in-out .65s forwards;}
-.rg-build-progress{position:absolute;left:50%;bottom:10.2%;transform:translateX(-50%);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#6d849b;opacity:.95;white-space:nowrap;}
-.rg-wordmark{position:absolute;left:50%;bottom:15%;transform:translateX(-50%) translateY(16px);opacity:0;white-space:nowrap;animation:rgWordmark 1s cubic-bezier(.22,1,.36,1) 4.2s forwards;}
-.rg-wordmark-main{font-size:clamp(22px,3vw,31px);font-weight:950;letter-spacing:.16em;color:#f1f6fa;}
-.rg-wordmark-accent{color:#2fd8a8}
-.rg-build-status{position:absolute;left:50%;bottom:5.2%;transform:translateX(-50%);display:flex;align-items:center;gap:7px;color:#6f859a;font-size:10px;letter-spacing:.11em;text-transform:uppercase;}
-.rg-build-status i{width:7px;height:7px;border-radius:50%;background:#2fd8a8;box-shadow:0 0 0 5px rgba(47,216,168,.08);animation:rgStatusPulse .8s ease-in-out infinite;}
-@keyframes rgPieceLeft{0%{opacity:0;transform:translateX(-120px) rotate(-7deg) scale(.92);filter:blur(8px)}55%{opacity:1}100%{opacity:.96;transform:none;filter:none}}
-@keyframes rgPieceTop{0%{opacity:0;transform:translateY(-110px) rotate(5deg) scale(.88);filter:blur(8px)}55%{opacity:1}100%{opacity:.96;transform:none;filter:none}}
-@keyframes rgPieceRight{0%{opacity:0;transform:translateX(120px) rotate(7deg) scale(.92);filter:blur(8px)}55%{opacity:1}100%{opacity:.96;transform:none;filter:none}}
-@keyframes rgPieceBottom{0%{opacity:0;transform:translateY(125px) rotate(-5deg) scale(.9);filter:blur(8px)}55%{opacity:1}100%{opacity:.96;transform:none;filter:none}}
-@keyframes rgPieceCenter{0%{opacity:0;transform:scale(.22) rotate(-35deg);filter:blur(10px)}55%{opacity:1}100%{opacity:1;transform:scale(1) rotate(0);filter:none}}
-@keyframes rgLogoFinal{0%{opacity:0;transform:scale(.86)}45%{opacity:1;transform:scale(1.05)}72%{transform:scale(.985)}100%{opacity:1;transform:scale(1)}}
-@keyframes rgFinalDrift{0%{transform:translate3d(-1px,1px,0) rotate(-.5deg)}100%{transform:translate3d(1px,-1px,0) rotate(.5deg)}}
-@keyframes rgOrbitA{0%{opacity:0;transform:translate(-50%,-50%) rotate(-120deg) scale(.4)}18%{opacity:.8}100%{opacity:.2;transform:translate(-50%,-50%) rotate(260deg) scale(1)}}
-@keyframes rgOrbitB{0%{opacity:0;transform:translate(-50%,-50%) rotate(20deg) scale(.7)}25%{opacity:.65}100%{opacity:.12;transform:translate(-50%,-50%) rotate(380deg) scale(1.05)}}
-@keyframes rgSweep{0%{transform:translateX(-50%) scaleX(0);opacity:0}25%{transform:translateX(-50%) scaleX(1);opacity:.9}60%{transform:translateX(-50%) scaleX(.25);opacity:.55}100%{transform:translateX(-50%) scaleX(1);opacity:0}}
-@keyframes rgWordmark{to{opacity:1;transform:translateX(-50%) translateY(0)}}
-@keyframes rgStatusPulse{50%{transform:scale(.72);opacity:.35}}
-.rg-reduced-motion #rg-startup *{animation:none!important;transition:none!important}
-.rg-reduced-motion .rg-logo-piece{opacity:0!important}
-.rg-reduced-motion .rg-logo-final{opacity:1!important;transform:none!important}
-.rg-reduced-motion .rg-wordmark{opacity:1!important;transform:translateX(-50%)!important}
-@media(max-width:760px){
-  .rg-build-wrap{width:95vw;height:82vh}.rg-logo-construction{width:min(76vw,330px)}
-  .rg-wordmark{bottom:16%;}.rg-build-progress{bottom:11.5%;font-size:9px}.rg-build-status{bottom:6.5%;font-size:9px}
-}
-
-
-/* ============================================================================
-   V13 — LOGIN RESPONSIVO POR LIMITE REAL DA TELA / GRID 5x5
+V13 — LOGIN RESPONSIVO POR LIMITE REAL DA TELA / GRID 5x5
    A caixa usa uma malha visual de referência 5x5, mas calcula o tamanho
    efetivo por viewport para nunca comprimir o conteúdo.
    ============================================================================ */
@@ -3408,55 +3350,7 @@ body.light-mode .a11y-panel select{background:#f2f6f9!important;color:#18222d!im
 }
 
 /* ============================================================
-   V14 — CONSTRUÇÃO REAL DA MARCA / SEM CONTADOR OU STATUS
-   ============================================================ */
-#rg-startup{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;overflow:hidden;background:radial-gradient(700px 520px at 50% 45%,rgba(47,216,168,.12),transparent 64%),radial-gradient(520px 420px at 50% 48%,rgba(88,129,255,.06),transparent 70%),linear-gradient(180deg,#061019 0%,#08131c 52%,#060c13 100%);color:#eef5fa;opacity:1;visibility:visible;transition:opacity .65s cubic-bezier(.22,1,.36,1),visibility .65s}
-#rg-startup.rg-startup-hide{opacity:0;visibility:hidden;pointer-events:none}
-.rg-build-wrap{position:relative;width:min(92vw,680px);height:min(92vh,700px);display:grid;place-items:center}
-.rg-logo-stage{position:relative;width:min(66vw,430px);aspect-ratio:1;transform:translateY(-2%);filter:drop-shadow(0 28px 54px rgba(0,0,0,.42))}
-.rg-logo-ghost,.rg-logo-fragment,.rg-logo-final{position:absolute;inset:0;display:block;overflow:hidden;pointer-events:none}
-.rg-logo-ghost img,.rg-logo-fragment img,.rg-logo-final img{width:100%;height:100%;object-fit:contain;display:block}
-.rg-logo-ghost{opacity:.035;transform:scale(.96)}
-.rg-logo-fragment{opacity:0;will-change:transform,opacity,filter,clip-path;mix-blend-mode:screen}
-/* Máscaras em regiões lógicas da própria marca oficial */
-.frag-arc-l{clip-path:polygon(0 18%,53% 6%,50% 32%,31% 46%,13% 64%,0 73%);transform:translateY(80px) translateX(-10px) rotate(-5deg) scale(.94);animation:rgRiseArcL .95s cubic-bezier(.22,1,.36,1) .20s forwards}
-.frag-arc-r{clip-path:polygon(46% 4%,100% 13%,100% 74%,88% 68%,71% 44%,53% 29%);transform:translateY(88px) translateX(12px) rotate(5deg) scale(.94);animation:rgRiseArcR .95s cubic-bezier(.22,1,.36,1) .38s forwards}
-.frag-bar-1{clip-path:polygon(22% 13%,42% 13%,42% 44%,22% 44%);transform:translateY(90px);animation:rgRiseBar .72s cubic-bezier(.18,1,.28,1) .55s forwards}
-.frag-bar-2{clip-path:polygon(40% 6%,59% 6%,59% 49%,40% 49%);transform:translateY(108px);animation:rgRiseBar .76s cubic-bezier(.18,1,.28,1) .70s forwards}
-.frag-bar-3{clip-path:polygon(57% 0%,77% 0%,77% 51%,57% 51%);transform:translateY(126px);animation:rgRiseBar .82s cubic-bezier(.18,1,.28,1) .86s forwards}
-.frag-r{clip-path:polygon(13% 29%,56% 29%,65% 47%,54% 70%,33% 79%,23% 64%,13% 59%);transform:translateY(150px) rotate(-3deg) scale(.9);animation:rgRiseCore 1.05s cubic-bezier(.16,1,.3,1) 1.10s forwards}
-.frag-g{clip-path:polygon(49% 31%,96% 30%,98% 80%,68% 82%,58% 66%,61% 48%,78% 48%,78% 59%,67% 59%,67% 68%,86% 68%,86% 44%,53% 46%);transform:translateY(155px) rotate(3deg) scale(.9);animation:rgRiseCore 1.05s cubic-bezier(.16,1,.3,1) 1.34s forwards}
-.frag-arrow{clip-path:polygon(24% 48%,82% 25%,97% 15%,85% 40%,72% 65%,67% 54%,32% 68%);transform:translateY(180px) translateX(-18px) rotate(-9deg) scale(.86);animation:rgRiseArrow 1.10s cubic-bezier(.16,1,.3,1) 1.68s forwards}
-.frag-down{clip-path:polygon(7% 48%,31% 42%,39% 54%,30% 64%,17% 72%,7% 68%);transform:translateY(160px) translateX(-18px) rotate(-7deg) scale(.85);animation:rgRiseArrow 1.0s cubic-bezier(.16,1,.3,1) 1.95s forwards}
-.frag-people{clip-path:polygon(26% 69%,74% 69%,82% 100%,18% 100%);transform:translateY(130px) scale(.88);animation:rgRisePeople 1.0s cubic-bezier(.18,1,.3,1) 2.18s forwards}
-.rg-logo-final{opacity:0;transform:scale(.95);animation:rgFinalSettle 1.15s cubic-bezier(.18,1,.3,1) 3.35s forwards}
-.rg-logo-final img{animation:rgFinalBreath 2.4s ease-in-out 4.5s infinite alternate}
-.rg-build-field{position:absolute;inset:0;pointer-events:none;opacity:.24;background:linear-gradient(rgba(115,145,176,.032) 1px,transparent 1px),linear-gradient(90deg,rgba(115,145,176,.032) 1px,transparent 1px);background-size:46px 46px;mask-image:radial-gradient(circle at center,black 0 22%,transparent 72%);-webkit-mask-image:radial-gradient(circle at center,black 0 22%,transparent 72%)}
-.rg-build-orbit{position:absolute;left:50%;top:45%;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none}
-.rg-orbit-a{width:min(55vw,420px);height:min(55vw,420px);border:1px solid rgba(47,216,168,.34);border-right-color:transparent;border-bottom-color:transparent;opacity:0;animation:rgOrbitA 5.4s cubic-bezier(.22,1,.36,1) .12s forwards}
-.rg-orbit-b{width:min(66vw,505px);height:min(66vw,505px);border:1px dashed rgba(111,146,232,.18);border-left-color:transparent;border-top-color:transparent;opacity:0;animation:rgOrbitB 5.6s linear .18s forwards}
-.rg-build-sweep{position:absolute;left:50%;top:14%;width:min(72vw,540px);height:2px;transform:translateX(-50%) scaleX(0);transform-origin:center;opacity:.72;background:linear-gradient(90deg,transparent,#2fd8a8 18%,#fff 50%,#6f92e8 82%,transparent);box-shadow:0 0 24px rgba(47,216,168,.28);animation:rgSweep 5s ease-in-out .35s forwards}
-.rg-wordmark{position:absolute;left:50%;bottom:10%;transform:translateX(-50%) translateY(18px);opacity:0;white-space:nowrap;animation:rgWordmarkClean 1s cubic-bezier(.22,1,.36,1) 4.85s forwards}
-.rg-wordmark-main{font-size:clamp(24px,3.6vw,34px);font-weight:950;letter-spacing:.13em;color:#f1f6fa}
-.rg-wordmark-accent{color:#2fd8a8}
-@keyframes rgRiseArcL{0%{opacity:0;transform:translateY(100px) translateX(-12px) rotate(-8deg) scale(.88);filter:blur(8px)}30%{opacity:.9}72%{transform:translateY(-6px) translateX(2px) rotate(1deg) scale(1.01)}100%{opacity:.9;transform:none;filter:none}}
-@keyframes rgRiseArcR{0%{opacity:0;transform:translateY(104px) translateX(14px) rotate(8deg) scale(.88);filter:blur(8px)}30%{opacity:.9}72%{transform:translateY(-6px) translateX(-2px) rotate(-1deg) scale(1.01)}100%{opacity:.9;transform:none;filter:none}}
-@keyframes rgRiseBar{0%{opacity:0;transform:translateY(135px) scaleY(.45);filter:blur(7px)}35%{opacity:1}72%{transform:translateY(-7px) scaleY(1.03)}100%{opacity:1;transform:translateY(0) scaleY(1);filter:none}}
-@keyframes rgRiseCore{0%{opacity:0;transform:translateY(165px) rotate(-4deg) scale(.74);filter:blur(9px)}34%{opacity:1}70%{transform:translateY(-7px) rotate(1deg) scale(1.02)}100%{opacity:1;transform:none;filter:none}}
-@keyframes rgRiseArrow{0%{opacity:0;transform:translateY(195px) translateX(-24px) rotate(-12deg) scale(.72);filter:blur(10px)}28%{opacity:1}66%{transform:translateY(-8px) translateX(2px) rotate(2deg) scale(1.03)}100%{opacity:1;transform:none;filter:none}}
-@keyframes rgRisePeople{0%{opacity:0;transform:translateY(145px) scale(.72);filter:blur(8px)}32%{opacity:1}72%{transform:translateY(-5px) scale(1.02)}100%{opacity:1;transform:none;filter:none}}
-@keyframes rgFinalSettle{0%{opacity:0;transform:scale(.86);filter:blur(12px) brightness(1.35)}42%{opacity:1}72%{transform:scale(1.025)}100%{opacity:1;transform:scale(1);filter:none}}
-@keyframes rgFinalBreath{from{transform:scale(1)}to{transform:scale(1.014)}}
-@keyframes rgWordmarkClean{0%{opacity:0;transform:translateX(-50%) translateY(18px);filter:blur(7px);letter-spacing:.32em}100%{opacity:1;transform:translateX(-50%) translateY(0);filter:none;letter-spacing:.13em}}
-@keyframes rgOrbitA{0%{opacity:0;transform:translate(-50%,-50%) rotate(-35deg) scale(.78)}30%{opacity:.85}100%{opacity:.45;transform:translate(-50%,-50%) rotate(15deg) scale(1)}}
-@keyframes rgOrbitB{0%{opacity:0;transform:translate(-50%,-50%) rotate(25deg) scale(.68)}38%{opacity:.5}100%{opacity:.24;transform:translate(-50%,-50%) rotate(110deg) scale(1)}}
-@keyframes rgSweep{0%{transform:translateX(-50%) scaleX(0);opacity:0}20%{opacity:.8}50%{transform:translateX(-50%) scaleX(1)}78%{transform:translateX(-50%) scaleX(.28);opacity:.25}100%{transform:translateX(-50%) scaleX(0);opacity:0}}
-@media (prefers-reduced-motion:reduce){.rg-logo-fragment,.rg-logo-final,.rg-wordmark,.rg-build-orbit,.rg-build-sweep{animation:none!important;opacity:1!important;transform:none!important;filter:none!important}.rg-logo-fragment{display:none}.rg-logo-final{display:block}}
-@media(max-width:560px){.rg-logo-stage{width:min(78vw,350px)}.rg-wordmark{bottom:6%}.rg-wordmark-main{font-size:20px;letter-spacing:.10em}}
-
-
-/* ============================================================
-   V15 — CONSTRUÇÃO CINÉTICA REAL DA LOGO
+   V16 — CONSTRUÇÃO CINÉTICA ÚNICA DA LOGO
    Cada elemento é desenhado e elevado separadamente. O PNG oficial
    aparece somente no fechamento, para selar a forma final.
    ============================================================ */
@@ -3524,8 +3418,6 @@ body.light-mode .a11y-panel select{background:#f2f6f9!important;color:#18222d!im
 #rg-startup .rg-podium rect:nth-of-type(3){animation:rg15-block .56s cubic-bezier(.16,.96,.25,1.08) 4.66s forwards}
 #rg-startup .rg-finish{stroke-dasharray:600;stroke-dashoffset:600;opacity:0}
 #rg-startup .rg-finish{animation:rg15-finish .92s cubic-bezier(.2,.9,.25,1) 5.02s forwards}
-#rg-startup .rg-official-lockup{opacity:0;transform:scale(.985);transform-origin:center;pointer-events:none}
-#rg-startup .rg-official-lockup{animation:rg15-official 1s cubic-bezier(.22,1,.36,1) 5.42s forwards}
 #rg-startup .rg-wordmark{position:absolute;left:50%;bottom:4.8%;transform:translateX(-50%) translateY(18px);opacity:0;white-space:nowrap;letter-spacing:.08em;font-size:clamp(22px,3.2vw,31px);font-weight:900;color:#eef5fa;text-shadow:0 8px 30px rgba(0,0,0,.35)}
 #rg-startup .rg-wordmark span{color:#16c8df}
 #rg-startup .rg-wordmark{animation:rg15-word 1.0s cubic-bezier(.22,1,.36,1) 5.56s forwards}
@@ -3552,5 +3444,4 @@ body.light-mode .a11y-panel select{background:#f2f6f9!important;color:#18222d!im
   #rg-startup .rg-wordmark{bottom:4.2%;font-size:22px}
 }
 .rg-reduced-motion #rg-startup *{animation:none!important;transition:none!important}
-.rg-reduced-motion #rg-startup .rg-official-lockup{opacity:1!important;transform:none!important}
 .rg-reduced-motion #rg-startup .rg-wordmark{opacity:1!important;transform:translateX(-50%)!important}

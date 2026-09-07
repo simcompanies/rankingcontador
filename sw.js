@@ -12,7 +12,7 @@
    baixarem a versão nova em vez de continuarem presos no cache antigo.
    ============================================================================ */
 
-const CACHE_NAME = 'ranking-geral-v15-kbuild';
+const CACHE_NAME = 'ranking-geral-v16-kbuild';
 
 const APP_SHELL = [
   './',
