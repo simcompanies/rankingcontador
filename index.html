@@ -2,6 +2,15 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1118">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./assets/icons/icon-192.png">
+<link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
+<link rel="stylesheet" href="./assets/css/style.css?v=20260907-ghfinal1">
+<link rel="stylesheet" href="./style.css?v=20260907-ghfinal1-root" media="not all" id="style-fallback">
+  <meta name="app-build" content="20260907-ghfinal1">
+<script>document.addEventListener('DOMContentLoaded',function(){var main=document.querySelector('link[href^="./assets/css/style.css"]');var fb=document.getElementById('style-fallback');if(main&&fb){main.addEventListener('error',function(){fb.media='all'});}});</script>
 </head>
 <body>
 
@@ -13,23 +22,23 @@
        Lógica de UI: acessibilidade.js. Lógica de estado/aplicação: a11y.js.
        ============================================================================ -->
   <button type="button" id="a11y-toggle-btn" class="a11y-toggle-btn" aria-haspopup="dialog" aria-expanded="false" aria-controls="a11y-panel" title="Acessibilidade">
-    <span aria-hidden="true">♿</span>
+    <span class="a11y-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="10" r="3"></circle><path d="M7.5 19c1.2-2.1 3-3.2 4.5-3.2s3.3 1.1 4.5 3.2"></path><path d="M12 3v3M12 18v3M3 12h3M18 12h3"></path></svg></span>
     <span class="sr-only">Abrir menu de acessibilidade</span>
   </button>
 
   <div id="a11y-panel-overlay" class="a11y-panel-overlay">
     <aside id="a11y-panel" class="a11y-panel" role="dialog" aria-modal="true" aria-labelledby="a11y-panel-titulo">
       <div class="a11y-panel-head">
-        <h2 id="a11y-panel-titulo" class="a11y-panel-titulo">♿ Acessibilidade</h2>
-        <button type="button" id="a11y-fechar-btn" class="a11y-fechar-btn" aria-label="Fechar menu de acessibilidade">✕</button>
+        <h2 id="a11y-panel-titulo" class="a11y-panel-titulo"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="10" r="3"></circle><path d="M7.5 19c1.2-2.1 3-3.2 4.5-3.2s3.3 1.1 4.5 3.2"></path><path d="M12 3v3M12 18v3M3 12h3M18 12h3"></path></svg></span>Acessibilidade</h2>
+        <button type="button" id="a11y-fechar-btn" class="a11y-fechar-btn" aria-label="Fechar menu de acessibilidade"><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M6 6l12 12M18 6L6 18"></path></svg></span></button>
       </div>
       <div class="a11y-panel-body">
 
         <div class="a11y-secao">
           <span class="a11y-rotulo">Tema</span>
           <div class="a11y-botoes-par">
-            <button type="button" class="a11y-opcao-btn" data-a11y-tema="dark" aria-pressed="false">🌙 Escuro</button>
-            <button type="button" class="a11y-opcao-btn" data-a11y-tema="light" aria-pressed="false">☀️ Claro</button>
+            <button type="button" class="a11y-opcao-btn" data-a11y-tema="dark" aria-pressed="false"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.2 8.2 0 1 0 20 15.5Z"></path></svg></span>Escuro</button>
+            <button type="button" class="a11y-opcao-btn" data-a11y-tema="light" aria-pressed="false"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg></span>Claro</button>
           </div>
         </div>
 
@@ -79,7 +88,7 @@
 
       </div>
       <div class="a11y-panel-rodape">
-        <button type="button" id="a11y-restaurar-btn" class="a11y-restaurar-btn">↺ Restaurar padrão</button>
+        <button type="button" id="a11y-restaurar-btn" class="a11y-restaurar-btn"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v6h6"></path></svg></span>Restaurar padrão</button>
       </div>
     </aside>
   </div>
@@ -131,9 +140,10 @@
 
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-head">
-      <span class="sidebar-brand"><span class="brand-mark" aria-hidden="true">R</span><span>Ranking Geral</span></span>
-      <button type="button" class="sidebar-collapse-btn" id="sidebar-collapse-btn" onclick="toggleSidebarCollapse()" title="Recolher menu">«</button>
+      <span class="sidebar-brand"><span class="brand-mark" aria-hidden="true">RG</span><span>Ranking Geral</span></span>
+      <button type="button" class="sidebar-collapse-btn" id="sidebar-collapse-btn" onclick="toggleSidebarCollapse()" title="Recolher menu" aria-label="Recolher menu"><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"></path></svg></span></button>
     </div>
+    <div class="sidebar-section-label">Navegação</div>
     <nav class="sidebar-nav">
       <button type="button" class="side-link active" data-view="faixas" onclick="mostrarView('faixas')">
         <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4v16"></path><path d="M5 6h11l-2 4 2 4H5"></path></svg></span><span class="side-label">Faixa X / Faixa Y</span>
@@ -148,6 +158,7 @@
         <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .3 1.82l.06.06-1.5 1.5-.06-.06a1.65 1.65 0 0 0-1.82-.3 1.65 1.65 0 0 0-1 1.5V21h-2v-.08a1.65 1.65 0 0 0-1-1.5 1.65 1.65 0 0 0-1.82.3l-.06.06-1.5-1.5.06-.06a1.65 1.65 0 0 0 .3-1.82 1.65 1.65 0 0 0-1.5-1H3v-2h.08a1.65 1.65 0 0 0 1.5-1 1.65 1.65 0 0 0-.3-1.82l-.06-.06 1.5-1.5.06.06a1.65 1.65 0 0 0 1.82.3 1.65 1.65 0 0 0 1-1.5V3h2v.08a1.65 1.65 0 0 0 1 1.5 1.65 1.65 0 0 0 1.82-.3l.06-.06 1.5 1.5-.06.06a1.65 1.65 0 0 0-.3 1.82 1.65 1.65 0 0 0 1.5 1H21v2h-.08a1.65 1.65 0 0 0-1.5 1z"></path></svg></span><span class="side-label">Configurações Gerais</span>
       </button>
     </nav>
+    <div class="sidebar-footer"><div class="sidebar-footer-note">Acompanhe classificações, análises e lançamentos em um único painel.</div></div>
   </aside>
 
   <main class="main ui-main">
@@ -189,29 +200,29 @@
        import/export foi introduzido, para não alterar como os onclick="..." e
        demais funções se enxergam entre si.
        ============================================================================ -->
-  <script src="js/core/config-api.js"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
-  <script src="js/core/estado-global.js"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
-  <script src="js/features/faixas-dinamicas.js"></script><!-- Gerenciamento de faixas dinâmicas. -->
-  <script src="js/core/identidade.js"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
-  <script src="js/core/navegacao.js"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
-  <script src="js/core/sidebar.js"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->
-  <script src="js/a11y/acessibilidade.js"></script><!-- Painel de acessibilidade (UI) — liga os controles a window.A11Y, de a11y.js. -->
-  <script src="js/features/configuracoes-de-conta.js"></script><!-- Tela "Minha conta". -->
-  <script src="js/features/modulo-0.js"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
-  <script src="js/features/texto-do-resumo.js"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
-  <script src="js/features/colagem.js"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
-  <script src="js/features/colagem-ocr.js"></script><!-- Leitura de print via OCR — alimenta a mesma caixa de colagem.js. -->
-  <script src="js/features/planilha-mestra.js"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
-  <script src="js/features/participantes.js"></script><!-- CRUD de participante + cálculo de ranking (total/tiebreak/sort). -->
-  <script src="js/features/dias.js"></script><!-- Adicionar/remover um dia. -->
-  <script src="js/features/formulario-lancamento-dia.js"></script><!-- Aba "Preencher" do Lançar Pontuação. -->
-  <script src="js/features/analises-gerais.js"></script><!-- Cartões de estatística do Módulo 2. -->
-  <script src="js/features/filtros.js"></script><!-- Filtro por período/dias do Módulo 2. -->
-  <script src="js/features/analises-dashboard.js"></script><!-- Destaques + gráfico de evolução + mapa de desempenho (chamados de dentro de filtros.js). -->
-  <script src="js/features/gerenciar-dias-lancados.js"></script><!-- Lista de dias lançados (Módulos 3 e 4). -->
-  <script src="js/features/resumos-salvos.js"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
-  <script src="js/features/usuarios.js"></script><!-- Painel de administração de usuários (Módulo 4). -->
-  <script src="js/core/renderizacao.js"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
-  <script src="js/core/inicializacao.js"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
+  <script src="./js/core/config-api.js?v=20260907-ghfix2"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
+  <script src="./js/core/estado-global.js?v=20260907-ghfix2"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
+  <script src="./js/features/faixas-dinamicas.js?v=20260907-ghfix2"></script><!-- Gerenciamento de faixas dinâmicas. -->
+  <script src="./js/core/identidade.js?v=20260907-ghfix2"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
+  <script src="./js/core/navegacao.js?v=20260907-ghfix2"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
+  <script src="./js/core/sidebar.js?v=20260907-ghfix2"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->
+  <script src="./js/a11y/acessibilidade.js?v=20260907-ghfix2"></script><!-- Painel de acessibilidade (UI) — liga os controles a window.A11Y, de a11y.js. -->
+  <script src="./js/features/configuracoes-de-conta.js?v=20260907-ghfix2"></script><!-- Tela "Minha conta". -->
+  <script src="./js/features/modulo-0.js?v=20260907-ghfix2"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
+  <script src="./js/features/texto-do-resumo.js?v=20260907-ghfix2"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
+  <script src="./js/features/colagem.js?v=20260907-ghfix2"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
+  <script src="./js/features/colagem-ocr.js?v=20260907-ghfix2"></script><!-- Leitura de print via OCR — alimenta a mesma caixa de colagem.js. -->
+  <script src="./js/features/planilha-mestra.js?v=20260907-ghfix2"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
+  <script src="./js/features/participantes.js?v=20260907-ghfix2"></script><!-- CRUD de participante + cálculo de ranking (total/tiebreak/sort). -->
+  <script src="./js/features/dias.js?v=20260907-ghfix2"></script><!-- Adicionar/remover um dia. -->
+  <script src="./js/features/formulario-lancamento-dia.js?v=20260907-ghfix2"></script><!-- Aba "Preencher" do Lançar Pontuação. -->
+  <script src="./js/features/analises-gerais.js?v=20260907-ghfix2"></script><!-- Cartões de estatística do Módulo 2. -->
+  <script src="./js/features/filtros.js?v=20260907-ghfix2"></script><!-- Filtro por período/dias do Módulo 2. -->
+  <script src="./js/features/analises-dashboard.js?v=20260907-ghfix2"></script><!-- Destaques + gráfico de evolução + mapa de desempenho (chamados de dentro de filtros.js). -->
+  <script src="./js/features/gerenciar-dias-lancados.js?v=20260907-ghfix2"></script><!-- Lista de dias lançados (Módulos 3 e 4). -->
+  <script src="./js/features/resumos-salvos.js?v=20260907-ghfix2"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
+  <script src="./js/features/usuarios.js?v=20260907-ghfix2"></script><!-- Painel de administração de usuários (Módulo 4). -->
+  <script src="./js/core/renderizacao.js?v=20260907-ghfix2"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
+  <script src="./js/core/inicializacao.js?v=20260907-ghfix2"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
 </body>
 </html>

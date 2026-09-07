@@ -65,6 +65,13 @@ function destaqueCard(icone, rotulo, valor, detalhe){
   </div>`;
 }
 
+const DASHBOARD_ICONS = {
+  recorde: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 4h10v5a5 5 0 0 1-10 0V4Z"></path><path d="M5 5H3v2a4 4 0 0 0 4 4M19 5h2v2a4 4 0 0 1-4 4M12 14v5M8 21h8"></path></svg>',
+  queda: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7l6 6 4-4 6 6"></path><path d="M15 15h5v-5"></path></svg>',
+  consistente: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v4l3 2"></path></svg>',
+  media: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3v18M17 3v18M3 8h4M13 8h8M3 16h4M13 16h8"></path><path d="M8 12h8"></path></svg>'
+};
+
 // Redesenha a grade de 4 cartões de destaque conforme os dias filtrados.
 function renderDestaques(dias){
   const grid = document.getElementById('destaques-grid');
@@ -78,24 +85,24 @@ function renderDestaques(dias){
   const d = calcularDestaques(dias);
 
   const cRecorde = d.recorde
-    ? destaqueCard('🏆', 'Recorde do período', d.recorde.name,
+    ? destaqueCard(DASHBOARD_ICONS.recorde, 'Recorde do período', d.recorde.name,
         `${scoreTag(d.recorde.value)} · Dia ${d.recorde.day+1} · ${d.recorde.divTitulo}`)
-    : destaqueCard('🏆', 'Recorde do período', '—', 'Nenhum lançamento ainda.');
+    : destaqueCard(DASHBOARD_ICONS.recorde, 'Recorde do período', '—', 'Nenhum lançamento ainda.');
 
   const cQueda = d.queda
-    ? destaqueCard('📉', 'Maior queda', d.queda.name,
+    ? destaqueCard(DASHBOARD_ICONS.queda, 'Maior queda', d.queda.name,
         `${scoreTag(d.queda.value)} · Dia ${d.queda.day+1} · ${d.queda.divTitulo}`)
-    : destaqueCard('📉', 'Maior queda', '—', 'Nenhum lançamento ainda.');
+    : destaqueCard(DASHBOARD_ICONS.queda, 'Maior queda', '—', 'Nenhum lançamento ainda.');
 
   const cConsistente = d.consistente
-    ? destaqueCard('🎯', 'Mais consistente', d.consistente.name,
+    ? destaqueCard(DASHBOARD_ICONS.consistente, 'Mais consistente', d.consistente.name,
         `desvio médio de ${d.consistente.desvio.toFixed(1)} pts · ${d.consistente.divTitulo}`)
-    : destaqueCard('🎯', 'Mais consistente', '—', 'Precisa de ao menos 2 dias lançados p/ alguém.');
+    : destaqueCard(DASHBOARD_ICONS.consistente, 'Mais consistente', '—', 'Precisa de ao menos 2 dias lançados p/ alguém.');
 
   const cMedia = d.media !== null
-    ? destaqueCard('⚖️', 'Média por lançamento', `${d.media >= 0 ? '+' : ''}${d.media.toFixed(2)}`,
+    ? destaqueCard(DASHBOARD_ICONS.media, 'Média por lançamento', `${d.media >= 0 ? '+' : ''}${d.media.toFixed(2)}`,
         'considerando todo mundo, no período selecionado')
-    : destaqueCard('⚖️', 'Média por lançamento', '—', 'Nenhum lançamento ainda.');
+    : destaqueCard(DASHBOARD_ICONS.media, 'Média por lançamento', '—', 'Nenhum lançamento ainda.');
 
   grid.innerHTML = cRecorde + cQueda + cConsistente + cMedia;
 }
