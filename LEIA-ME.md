@@ -91,3 +91,7 @@ que todos os 30 arquivos estejam na mesma pasta (sem subpastas).
 - A montagem final foi testada de ponta a ponta contra um servidor local
   (carregamento dos 7 módulos via fetch, execução de todos os scripts,
   inicialização do app) — sem erros.
+
+
+## Correção final de navegação e telas
+Esta versão separa explicitamente a tela de autenticação da aplicação e garante que apenas uma view fique visível por vez. Depois de publicar, faça uma atualização forçada (Ctrl+F5).

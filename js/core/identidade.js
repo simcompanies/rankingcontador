@@ -17,11 +17,17 @@
 // Chamada ao concluir login/cadastro com sucesso: grava a sessão em memória
 // e em sessionStorage (sobrevive a F5, mas não a fechar a aba), some com a
 // tela de login e mostra a casca do app já no módulo correto para o papel.
+function definirTelaAplicacao(modo){
+  const body = document.body;
+  if(body) body.setAttribute('data-app-screen', modo);
+}
+
 function aplicarSessao(dados){
   sessaoUsuario = { token: dados.token, idUsuario: dados.idUsuario, nome: dados.nome, email: dados.email, papel: dados.papel };
   sessionStorage.setItem('rankingGeral_token', dados.token);
   document.getElementById('auth-gate').classList.add('hidden');
   document.getElementById('app-shell').classList.remove('hidden');
+  definirTelaAplicacao('app');
   aplicarPermissoesPapel();
   atualizarBarraIdentidade();
   mostrarView('faixas');
@@ -48,6 +54,7 @@ function encerrarSessaoLocal(){
   document.getElementById('app-shell').classList.add('hidden');
   document.getElementById('modal-nova-senha').classList.add('hidden');
   document.getElementById('auth-gate').classList.remove('hidden');
+  definirTelaAplicacao('auth');
   mostrarAuthView('login');
 }
 

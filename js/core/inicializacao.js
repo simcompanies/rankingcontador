@@ -74,6 +74,7 @@ async function carregarModulosHtml(){
 }
 
 async function iniciarApp(){
+  document.body.setAttribute('data-app-screen', 'auth');
   if(localStorage.getItem('rankingGeral_sidebarCollapsed') === '1'){
     toggleSidebarCollapse();
   }
@@ -96,6 +97,7 @@ async function iniciarApp(){
     };
     document.getElementById('auth-gate')?.classList.add('hidden');
     document.getElementById('app-shell')?.classList.remove('hidden');
+    document.body.setAttribute('data-app-screen', 'app');
     aplicarPermissoesPapel();
     atualizarBarraIdentidade();
     loadState();
