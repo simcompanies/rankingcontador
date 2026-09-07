@@ -10,10 +10,10 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./assets/icons/icon-192.png">
 <link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
-<script src="./js/a11y/a11y.js?v=20260907-ui11b"></script>
-<link rel="stylesheet" href="./assets/css/style.css?v=20260907-ui11b">
-<link rel="stylesheet" href="./style.css?v=20260907-ui11b-root" media="not all" id="style-fallback">
-  <meta name="app-build" content="20260907-ui11b">
+<script src="./js/a11y/a11y.js?v=20260907-ui12"></script>
+<link rel="stylesheet" href="./assets/css/style.css?v=20260907-ui12">
+<link rel="stylesheet" href="./style.css?v=20260907-ui12-root" media="not all" id="style-fallback">
+  <meta name="app-build" content="20260907-ui12">
 <style id="screen-guard">
   #app-shell.hidden, body:not([data-app-screen="app"]) #app-shell { display:none !important; }
   body[data-app-screen="app"] #slot-modulo-0 { display:none !important; }
@@ -24,26 +24,76 @@
 </head>
 <body>
 
-  <!-- Splash de inicialização: construção visual do logotipo oficial. -->
+  <!-- Splash de inicialização: desenho progressivo da logo oficial. -->
   <div id="rg-startup" aria-hidden="true">
     <div class="rg-build-field"></div>
     <div class="rg-build-orbit rg-orbit-a"></div>
     <div class="rg-build-orbit rg-orbit-b"></div>
-    <div class="rg-build-sweep"></div>
     <div class="rg-build-wrap">
-      <div class="rg-logo-construction" aria-label="Construindo o logotipo Ranking Geral">
-        <div class="rg-logo-piece rg-piece-left"><img src="./assets/logo-ranking-geral.png" alt=""></div>
-        <div class="rg-logo-piece rg-piece-top"><img src="./assets/logo-ranking-geral.png" alt=""></div>
-        <div class="rg-logo-piece rg-piece-right"><img src="./assets/logo-ranking-geral.png" alt=""></div>
-        <div class="rg-logo-piece rg-piece-bottom"><img src="./assets/logo-ranking-geral.png" alt=""></div>
-        <div class="rg-logo-piece rg-piece-center"><img src="./assets/logo-ranking-geral.png" alt=""></div>
-        <div class="rg-logo-final"><img src="./assets/logo-ranking-geral.png" alt="Ranking Geral"></div>
+      <div class="rg-build-art" aria-label="Construindo o logotipo Ranking Geral">
+        <svg class="rg-draw-logo" viewBox="0 0 600 600" role="img" aria-hidden="true">
+          <defs>
+            <linearGradient id="rgCyan" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#13b8d4"/><stop offset="1" stop-color="#24e6f1"/></linearGradient>
+            <linearGradient id="rgBlue" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#063552"/><stop offset="1" stop-color="#123f6c"/></linearGradient>
+            <linearGradient id="rgViolet" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#7f68ec"/><stop offset="1" stop-color="#a98bfa"/></linearGradient>
+            <filter id="rgGlow"><feGaussianBlur stdDeviation="3.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <!-- 1. Guias / órbitas -->
+          <g class="rg-draw-guide">
+            <circle cx="300" cy="300" r="245" fill="none" stroke="#15334a" stroke-width="2" stroke-dasharray="6 12" opacity=".65"/>
+            <circle cx="300" cy="300" r="214" fill="none" stroke="#0d7897" stroke-width="3" stroke-dasharray="132 44 62 22" opacity=".65"/>
+            <circle cx="300" cy="300" r="170" fill="none" stroke="#2fd8a8" stroke-width="1.6" opacity=".28"/>
+          </g>
+          <!-- 2. Arco principal -->
+          <g class="rg-draw-arc" filter="url(#rgGlow)">
+            <path d="M103 302 A198 198 0 0 1 463 142" fill="none" stroke="url(#rgCyan)" stroke-width="20" stroke-linecap="round"/>
+            <path d="M105 347 A206 206 0 0 0 480 436" fill="none" stroke="#0bc7e0" stroke-width="18" stroke-linecap="round"/>
+            <path d="M463 142 A198 198 0 0 1 496 432" fill="none" stroke="url(#rgViolet)" stroke-width="16" stroke-linecap="round"/>
+          </g>
+          <!-- 3. Barras de crescimento -->
+          <g class="rg-draw-bars">
+            <rect x="205" y="215" width="42" height="85" rx="7" fill="url(#rgCyan)"/>
+            <rect x="260" y="170" width="42" height="130" rx="7" fill="#0b2f4a"/>
+            <rect x="315" y="130" width="42" height="170" rx="7" fill="url(#rgCyan)"/>
+            <rect x="370" y="84" width="42" height="216" rx="7" fill="#092f4d"/>
+          </g>
+          <!-- 4. Letra R -->
+          <g class="rg-draw-letter-r" fill="none" stroke="#082844" stroke-width="24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M172 248 L172 420 L270 420"/>
+            <path d="M172 250 L238 250 C292 250 302 322 246 338 L172 338"/>
+            <path d="M232 338 L317 428"/>
+          </g>
+          <path class="rg-fill-r" d="M159 236h22v186h-22z M172 236h68c38 0 64 24 64 57 0 28-18 49-47 58l73 78h-42l-67-72h-27v-23h58c20 0 31-11 31-28s-11-29-31-29h-42z" fill="#082844"/>
+          <!-- 5. Letra G -->
+          <g class="rg-draw-letter-g" fill="none" stroke="url(#rgCyan)" stroke-width="26" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M461 270 C435 238 392 228 355 245 C313 265 293 313 303 354 C313 396 349 425 391 425 C418 425 441 418 461 404 L461 342 L398 342"/>
+          </g>
+          <path class="rg-fill-g" d="M461 270c-18-22-42-34-71-34-55 0-98 44-98 99 0 55 43 100 99 100 31 0 56-9 76-26v-82h-78v31h44v34c-10 7-24 10-40 10-35 0-62-29-62-67 0-37 27-66 62-66 20 0 35 8 48 21z" fill="#11bfd9" opacity=".85"/>
+          <!-- 6. Seta de crescimento -->
+          <g class="rg-draw-arrow" filter="url(#rgGlow)">
+            <path d="M225 356 L445 180" fill="none" stroke="#16c7df" stroke-width="17" stroke-linecap="round"/>
+            <path d="M445 180 L416 193 L436 214 Z" fill="#16c7df"/>
+            <path d="M183 365 L135 414" fill="none" stroke="#ff6f3d" stroke-width="15" stroke-linecap="round"/>
+            <path d="M135 414 L144 381 L174 405 Z" fill="#ff6f3d"/>
+          </g>
+          <!-- 7. Pódio e participantes -->
+          <g class="rg-draw-podium">
+            <circle cx="298" cy="464" r="16" fill="#0fbfd7"/>
+            <circle cx="230" cy="476" r="14" fill="#082844"/>
+            <circle cx="366" cy="476" r="14" fill="#082844"/>
+            <rect x="244" y="482" width="108" height="73" rx="4" fill="#0fbfd7"/>
+            <rect x="184" y="500" width="65" height="55" rx="4" fill="#082844"/>
+            <rect x="351" y="500" width="65" height="55" rx="4" fill="#082844"/>
+          </g>
+          <!-- 8. Acabamento luminoso -->
+          <path class="rg-draw-finish" d="M115 305 A188 188 0 0 1 475 155" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity=".85"/>
+          <!-- 9. Imagem oficial, aplicada apenas no último instante para selar a identidade exata -->
+          <image class="rg-official-lockup" href="./assets/logo-ranking-geral.png" x="60" y="60" width="480" height="480" preserveAspectRatio="xMidYMid meet" opacity="0"/>
+        </svg>
       </div>
-      <div class="rg-build-progress" aria-hidden="true"><span id="rg-startup-phase">0% · iniciando</span></div>
-      <div class="rg-wordmark">
-        <div class="rg-wordmark-main">RANKING <span class="rg-wordmark-accent">GERAL</span></div>
-      </div>
-      <div class="rg-build-status"><i></i><span id="rg-startup-status-text">Construindo identidade</span></div>
+      <div class="rg-build-progress" aria-hidden="true"><span id="rg-startup-phase">0% · iniciando desenho</span></div>
+      <div class="rg-wordmark"><div class="rg-wordmark-main">RANKING <span class="rg-wordmark-accent">GERAL</span></div></div>
+      <div class="rg-build-status"><i></i><span id="rg-startup-status-text">Desenhando identidade</span></div>
     </div>
   </div>
 
@@ -354,7 +404,7 @@
 <script>
 (function(){
   var inicio=Date.now();
-  var duracao=6000;
+  var duracao=6400;
   var escondida=false;
   function atualizarSplash(texto){ var el=document.getElementById('rg-startup-status-text'); if(el) el.textContent=texto; }
   function atualizarFase(valor,texto){ var el=document.getElementById('rg-startup-phase'); if(el) el.textContent=valor+'% · '+texto; }
@@ -380,40 +430,40 @@
   var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(reduce){ document.documentElement.classList.add('rg-reduced-motion'); }
   var fases=[
-    [450,'Traçando a base','12'],
-    [1350,'Elevando os indicadores','28'],
-    [2450,'Formando as letras','48'],
-    [3550,'Ligando os vetores','68'],
-    [4550,'Fechando a marca','86'],
-    [5500,'Identidade concluída','100']
+    [500,'Traçando as guias','12'],
+    [1500,'Desenhando os arcos','28'],
+    [2450,'Construindo os indicadores','46'],
+    [3350,'Desenhando R e G','66'],
+    [4450,'Traçando as setas e o pódio','84'],
+    [5400,'Finalizando a marca','100']
   ];
   fases.forEach(function(f){ setTimeout(function(){ atualizarSplash(f[1]); atualizarFase(f[2],f[1].toLowerCase()); },f[0]); });
   setTimeout(esconderAgora,duracao);
 })();
 </script>
-  <script src="./js/core/config-api.js?v=20260907-ui11b"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
-  <script src="./js/core/estado-global.js?v=20260907-ui11b"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
-  <script src="./js/features/faixas-dinamicas.js?v=20260907-ui11b"></script><!-- Gerenciamento de faixas dinâmicas. -->
-  <script src="./js/core/identidade.js?v=20260907-ui11b"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
-  <script src="./js/core/navegacao.js?v=20260907-ui11b"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
-  <script src="./js/core/sidebar.js?v=20260907-ui11b"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->
-  <script src="./js/a11y/acessibilidade.js?v=20260907-ui11b"></script><!-- Painel de acessibilidade (UI) — liga os controles a window.A11Y, de a11y.js. -->
-  <script src="./js/features/configuracoes-de-conta.js?v=20260907-ui11b"></script><!-- Tela "Minha conta". -->
-  <script src="./js/features/modulo-0.js?v=20260907-ui11b"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
-  <script src="./js/features/texto-do-resumo.js?v=20260907-ui11b"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
-  <script src="./js/features/colagem.js?v=20260907-ui11b"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
-  <script src="./js/features/colagem-ocr.js?v=20260907-ui11b"></script><!-- Leitura de print via OCR — alimenta a mesma caixa de colagem.js. -->
-  <script src="./js/features/planilha-mestra.js?v=20260907-ui11b"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
-  <script src="./js/features/participantes.js?v=20260907-ui11b"></script><!-- CRUD de participante + cálculo de ranking (total/tiebreak/sort). -->
-  <script src="./js/features/dias.js?v=20260907-ui11b"></script><!-- Adicionar/remover um dia. -->
-  <script src="./js/features/formulario-lancamento-dia.js?v=20260907-ui11b"></script><!-- Aba "Preencher" do Lançar Pontuação. -->
-  <script src="./js/features/analises-gerais.js?v=20260907-ui11b"></script><!-- Cartões de estatística do Módulo 2. -->
-  <script src="./js/features/filtros.js?v=20260907-ui11b"></script><!-- Filtro por período/dias do Módulo 2. -->
-  <script src="./js/features/analises-dashboard.js?v=20260907-ui11b"></script><!-- Destaques + gráfico de evolução + mapa de desempenho (chamados de dentro de filtros.js). -->
-  <script src="./js/features/gerenciar-dias-lancados.js?v=20260907-ui11b"></script><!-- Lista de dias lançados (Módulos 3 e 4). -->
-  <script src="./js/features/resumos-salvos.js?v=20260907-ui11b"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
-  <script src="./js/features/usuarios.js?v=20260907-ui11b"></script><!-- Painel de administração de usuários (Módulo 4). -->
-  <script src="./js/core/renderizacao.js?v=20260907-ui11b"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
-  <script src="./js/core/inicializacao.js?v=20260907-ui11b"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
+  <script src="./js/core/config-api.js?v=20260907-ui12"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
+  <script src="./js/core/estado-global.js?v=20260907-ui12"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
+  <script src="./js/features/faixas-dinamicas.js?v=20260907-ui12"></script><!-- Gerenciamento de faixas dinâmicas. -->
+  <script src="./js/core/identidade.js?v=20260907-ui12"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
+  <script src="./js/core/navegacao.js?v=20260907-ui12"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
+  <script src="./js/core/sidebar.js?v=20260907-ui12"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->
+  <script src="./js/a11y/acessibilidade.js?v=20260907-ui12"></script><!-- Painel de acessibilidade (UI) — liga os controles a window.A11Y, de a11y.js. -->
+  <script src="./js/features/configuracoes-de-conta.js?v=20260907-ui12"></script><!-- Tela "Minha conta". -->
+  <script src="./js/features/modulo-0.js?v=20260907-ui12"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
+  <script src="./js/features/texto-do-resumo.js?v=20260907-ui12"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
+  <script src="./js/features/colagem.js?v=20260907-ui12"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
+  <script src="./js/features/colagem-ocr.js?v=20260907-ui12"></script><!-- Leitura de print via OCR — alimenta a mesma caixa de colagem.js. -->
+  <script src="./js/features/planilha-mestra.js?v=20260907-ui12"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
+  <script src="./js/features/participantes.js?v=20260907-ui12"></script><!-- CRUD de participante + cálculo de ranking (total/tiebreak/sort). -->
+  <script src="./js/features/dias.js?v=20260907-ui12"></script><!-- Adicionar/remover um dia. -->
+  <script src="./js/features/formulario-lancamento-dia.js?v=20260907-ui12"></script><!-- Aba "Preencher" do Lançar Pontuação. -->
+  <script src="./js/features/analises-gerais.js?v=20260907-ui12"></script><!-- Cartões de estatística do Módulo 2. -->
+  <script src="./js/features/filtros.js?v=20260907-ui12"></script><!-- Filtro por período/dias do Módulo 2. -->
+  <script src="./js/features/analises-dashboard.js?v=20260907-ui12"></script><!-- Destaques + gráfico de evolução + mapa de desempenho (chamados de dentro de filtros.js). -->
+  <script src="./js/features/gerenciar-dias-lancados.js?v=20260907-ui12"></script><!-- Lista de dias lançados (Módulos 3 e 4). -->
+  <script src="./js/features/resumos-salvos.js?v=20260907-ui12"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
+  <script src="./js/features/usuarios.js?v=20260907-ui12"></script><!-- Painel de administração de usuários (Módulo 4). -->
+  <script src="./js/core/renderizacao.js?v=20260907-ui12"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
+  <script src="./js/core/inicializacao.js?v=20260907-ui12"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
 </body>
 </html>
