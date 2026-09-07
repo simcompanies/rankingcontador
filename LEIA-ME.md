@@ -95,3 +95,7 @@ que todos os 30 arquivos estejam na mesma pasta (sem subpastas).
 
 ## Correção final de navegação e telas
 Esta versão separa explicitamente a tela de autenticação da aplicação e garante que apenas uma view fique visível por vez. Depois de publicar, faça uma atualização forçada (Ctrl+F5).
+
+
+## V8 — inicialização e acessibilidade
+A splash personalizada agora permanece aproximadamente 6 segundos no navegador e no fluxo do PWA, com fases visuais de carregamento. O painel de acessibilidade recebeu uma paleta unificada, com o verde de identidade reservado a estados ativos/selecionados e superfícies neutras para os demais controles.
