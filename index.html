@@ -15,10 +15,10 @@
   migrar os handlers inline para addEventListener() (mudança maior, fora
   do escopo desta correção pontual — ver relatório de segurança).
 
-  connect-src inclui https://script.google.com pois é o único backend
-  que este app chama (ver js/core/config-api.js → API_URL).
+  connect-src inclui os domínios usados pelo redirecionamento do Google Apps Script
+  (script.google.com e script.googleusercontent.com), usados pelo backend (ver js/core/config-api.js → API_URL).
 -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://script.google.com; base-uri 'self'; form-action 'self';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; base-uri 'self'; form-action 'self';">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <script src="js/a11y/a11y.js"></script><!-- Memória de acessibilidade — PRIMEIRO script da página, ver a11y.js. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -158,47 +158,42 @@
        login), então NÃO é um módulo buscado por fetch como os slots acima —
        fica direto aqui em index.html, junto com a estrutura da página.
        ============================================================================ -->
-<div class="app-shell hidden" id="app-shell">
+<div class="app-shell hidden ui-shell" id="app-shell">
   <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebarMobile(false)"></div>
 
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-head">
-      <div class="sidebar-brand-wrap"><span class="sidebar-brand">Ranking Geral</span><span class="sidebar-brand-sub">gestão de desempenho</span></div>
+      <span class="sidebar-brand"><span class="brand-mark" aria-hidden="true">R</span><span>Ranking Geral</span></span>
       <button type="button" class="sidebar-collapse-btn" id="sidebar-collapse-btn" onclick="toggleSidebarCollapse()" title="Recolher menu">«</button>
     </div>
-    <nav class="sidebar-nav" aria-label="Navegação principal">
+    <nav class="sidebar-nav">
       <button type="button" class="side-link active" data-view="faixas" onclick="mostrarView('faixas')">
-        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 20V4"></path><path d="M6 5h11l-2 4 2 4H6"></path></svg></span><span class="side-label">Faixas e ranking</span>
+        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4v16"></path><path d="M5 6h11l-2 4 2 4H5"></path></svg></span><span class="side-label">Faixa X / Faixa Y</span>
       </button>
       <button type="button" class="side-link" data-view="analises" onclick="mostrarView('analises')">
-        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="m7 15 3-4 3 2 4-6"></path></svg></span><span class="side-label">Análises gerais</span>
+        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="m7 15 3-4 3 2 4-6"></path></svg></span><span class="side-label">Análises Gerais</span>
       </button>
       <button type="button" class="side-link" data-view="lancar" data-papel="administrador" onclick="mostrarView('lancar')">
-        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"></path><path d="M8 8h8M8 12h8M8 16h5"></path></svg></span><span class="side-label">Lançar pontuação</span>
+        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h14v16H5z"></path><path d="M8 8h8M8 12h8M8 16h5"></path></svg></span><span class="side-label">Lançar Pontuação</span>
       </button>
       <button type="button" class="side-link" data-view="config" data-papel="administrador" onclick="mostrarView('config')">
-        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2 2-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-2.8v-.2a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1-2-2 .1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H4v-2.8h.2a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 2-2 .1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6V4h2.8v.2a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1 2 2-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v2.8h-.2a1.7 1.7 0 0 0-1.6 1z"></path></svg></span><span class="side-label">Configurações</span>
+        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .3 1.82l.06.06-1.5 1.5-.06-.06a1.65 1.65 0 0 0-1.82-.3 1.65 1.65 0 0 0-1 1.5V21h-2v-.08a1.65 1.65 0 0 0-1-1.5 1.65 1.65 0 0 0-1.82.3l-.06.06-1.5-1.5.06-.06a1.65 1.65 0 0 0 .3-1.82 1.65 1.65 0 0 0-1.5-1H3v-2h.08a1.65 1.65 0 0 0 1.5-1 1.65 1.65 0 0 0-.3-1.82l-.06-.06 1.5-1.5.06.06a1.65 1.65 0 0 0 1.82.3 1.65 1.65 0 0 0 1-1.5V3h2v.08a1.65 1.65 0 0 0 1 1.5 1.65 1.65 0 0 0 1.82-.3l.06-.06 1.5 1.5-.06.06a1.65 1.65 0 0 0-.3 1.82 1.65 1.65 0 0 0 1.5 1H21v2h-.08a1.65 1.65 0 0 0-1.5 1z"></path></svg></span><span class="side-label">Configurações Gerais</span>
       </button>
     </nav>
-    <div class="sidebar-foot">
-      <span class="sidebar-foot-label">Sistema de ranking</span>
-      <span class="sidebar-foot-sub">Interface responsiva</span>
-    </div>
   </aside>
 
-  <div class="main">
+  <main class="main ui-main">
     <header class="topbar">
-      <button type="button" class="sidebar-toggle-mobile" onclick="toggleSidebarMobile(true)" aria-label="Abrir menu">☰</button>
+      <button type="button" class="sidebar-toggle-mobile" onclick="toggleSidebarMobile(true)" aria-label="Abrir menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
       <div class="topbar-title-wrap">
-        <div class="topbar-eyebrow">PAINEL DE GESTÃO</div>
         <h1 class="topbar-title">Ranking Geral</h1>
         <div class="status-line"><span class="status-dot" id="status-dot"></span><span id="sync-status">carregando...</span></div>
       </div>
 
       <div class="identity-bar" id="identity-bar">
         <span class="identity-status" id="identity-status-texto"></span>
-        <button type="button" onclick="mostrarView('conta')">👤 Minha conta</button>
-        <button type="button" onclick="handleLogout()">Sair</button>
+        <button type="button" class="identity-action" onclick="mostrarView('conta')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3"></circle><path d="M5 20a7 7 0 0 1 14 0"></path></svg><span>Minha conta</span></button>
+        <button type="button" class="identity-action identity-logout" onclick="handleLogout()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 17l5-5-5-5"></path><path d="M15 12H3"></path><path d="M21 3v18"></path></svg><span>Sair</span></button>
       </div>
     </header>
 
@@ -216,7 +211,7 @@
 
     <!-- "Minha conta" — preenchido com configuracoes-de-conta.html -->
     <div id="slot-configuracoes-conta"></div>
-  </div><!-- /.main -->
+  </main><!-- /.main -->
 </div><!-- /.app-shell -->
 
   <!-- ============================================================================
