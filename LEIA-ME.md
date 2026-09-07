@@ -19,3 +19,9 @@ V29 — LIMPEZA E LOGO OFICIAL
 - As pastas e arquivos de rastreio/experimento de animação foram removidos.
 - Os ícones PWA foram derivados diretamente desse mesmo arquivo, sem uma identidade alternativa.
 - A inicialização exibe somente essa logo estática.
+
+
+## V30 — animação cinética de 5 segundos
+A abertura foi substituída por uma única animação baseada diretamente no arquivo oficial `assets/logo-ranking-geral.png`.
+
+A sequência usa recortes geométricos estáticos da própria marca para dar sensação de construção: anel, barras, núcleo, direção de crescimento, direção de queda e base/pódio entram em sobreposição temporal, com elevação e assentamento suaves. No final, a própria logo oficial assume a composição e o nome `RANKING GERAL` aparece. Não há rastreamento de SVG, vetorização automática ou uma segunda arte da marca.

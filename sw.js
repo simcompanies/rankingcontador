@@ -12,7 +12,7 @@
    baixarem a versão nova em vez de continuarem presos no cache antigo.
    ============================================================================ */
 
-const CACHE_NAME = 'ranking-contador-v29-real-logo';
+const CACHE_NAME = 'ranking-geral-v30'';
 
 const APP_SHELL = [
   './',

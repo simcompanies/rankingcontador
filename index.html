@@ -20,23 +20,71 @@
 
 </style>
 <style id="rg-startup-critical">
-  /* Tela inicial estática: somente a logo oficial. */
-  #rg-startup{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:#071019;overflow:hidden;}
-  #rg-startup.rg-startup-hide{display:none!important;}
-  .rg-startup-card{display:grid;place-items:center;width:min(82vw,360px);height:min(52vh,360px);padding:28px;background:transparent;border:0;box-shadow:none;}
-  .rg-startup-logo{display:block;width:min(48vw,220px);height:auto;object-fit:contain;}
-  @media (max-width:520px){.rg-startup-card{width:84vw;height:46vh;padding:20px}.rg-startup-logo{width:min(60vw,190px)}}
+  /* V31 — splash única: construção cinética baseada diretamente na logo oficial.
+     Não há tracing, clip-path animado ou segunda animação. Cada camada usa a
+     própria imagem oficial, recortada por regiões geométricas estáticas. */
+  #rg-startup{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#071019;overflow:hidden;opacity:1;visibility:visible;}
+  #rg-startup.rg-startup-hide{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .32s ease,visibility 0s linear .32s;}
+  .rg-startup-stage{position:relative;width:min(72vw,430px);aspect-ratio:1/1;display:block;flex:none;}
+  .rg-startup-layer,.rg-startup-final{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:contain;}
+  .rg-startup-layer{transform-origin:50% 50%;opacity:0;will-change:transform,opacity;backface-visibility:hidden;}
+  .rg-build-ring{animation:rgBuildRing 5s cubic-bezier(.22,.8,.2,1) both;}
+  .rg-build-bars{animation:rgBuildBars 5s cubic-bezier(.22,.8,.2,1) .45s both;}
+  .rg-build-core{animation:rgBuildCore 5s cubic-bezier(.22,.8,.2,1) 1.05s both;}
+  .rg-build-up{animation:rgBuildUp 5s cubic-bezier(.22,.8,.2,1) 1.75s both;}
+  .rg-build-down{animation:rgBuildDown 5s cubic-bezier(.22,.8,.2,1) 2.15s both;}
+  .rg-build-podium{animation:rgBuildPodium 5s cubic-bezier(.22,.8,.2,1) 2.55s both;}
+  .rg-startup-final{opacity:0;transform:scale(.985);animation:rgBuildFinal 5s cubic-bezier(.22,.8,.2,1) 4.25s both;filter:saturate(.98);}
+  .rg-startup-sweep{position:absolute;inset:2% -6%;width:112%;height:8%;top:46%;left:-6%;opacity:0;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(255,255,255,0),rgba(255,255,255,.48),rgba(255,255,255,0),transparent);filter:blur(8px);transform:translateX(-115%) skewX(-18deg);animation:rgBuildSweep 5s ease-out 4.15s both;}
+  .rg-startup-text{margin-top:18px;font:700 clamp(18px,3vw,25px)/1.1 system-ui,sans-serif;letter-spacing:.16em;color:#f5fbff;opacity:0;transform:translateY(10px);animation:rgBuildText 5s cubic-bezier(.22,.8,.2,1) 4.35s both;}
+  @keyframes rgBuildRing{0%{opacity:0;transform:translateY(28px) scale(.84) rotate(-12deg)}18%{opacity:.96;transform:translateY(10px) scale(.95) rotate(-4deg)}38%{opacity:1;transform:translateY(0) scale(1) rotate(0)}100%{opacity:1;transform:none}}
+  @keyframes rgBuildBars{0%{opacity:0;transform:translateY(44px) scaleY(.15) scaleX(.96)}16%{opacity:1;transform:translateY(24px) scaleY(.48) scaleX(.98)}35%{transform:translateY(2px) scaleY(1.04) scaleX(1)}50%{transform:translateY(0) scaleY(1)}100%{opacity:1;transform:none}}
+  @keyframes rgBuildCore{0%{opacity:0;transform:translateY(52px) scale(.90)}20%{opacity:1;transform:translateY(25px) scale(.965)}42%{transform:translateY(-2px) scale(1.01)}58%{transform:translateY(0) scale(1)}100%{opacity:1;transform:none}}
+  @keyframes rgBuildUp{0%{opacity:0;transform:translate(24px,48px) scale(.92) rotate(7deg)}22%{opacity:1;transform:translate(10px,20px) scale(.97) rotate(3deg)}45%{transform:translate(-2px,-2px) scale(1.01) rotate(0)}60%{transform:translate(0,0) scale(1)}100%{opacity:1;transform:none}}
+  @keyframes rgBuildDown{0%{opacity:0;transform:translate(-20px,-42px) scale(.92) rotate(-5deg)}24%{opacity:1;transform:translate(-10px,-18px) scale(.97) rotate(-2deg)}46%{transform:translate(1px,2px) scale(1.01) rotate(0)}60%{transform:translate(0,0) scale(1)}100%{opacity:1;transform:none}}
+  @keyframes rgBuildPodium{0%{opacity:0;transform:translateY(64px) scale(.93)}22%{opacity:1;transform:translateY(32px) scale(.965)}46%{transform:translateY(-3px) scale(1.01)}60%{transform:translateY(0) scale(1)}100%{opacity:1;transform:none}}
+  @keyframes rgBuildFinal{0%{opacity:0;transform:scale(.985)}70%{opacity:0;transform:scale(.985)}87%{opacity:1;transform:scale(1.01)}100%{opacity:1;transform:scale(1)}}
+  @keyframes rgBuildSweep{0%{opacity:0;transform:translateX(-115%) skewX(-18deg)}72%{opacity:0;transform:translateX(-115%) skewX(-18deg)}82%{opacity:.2;transform:translateX(5%) skewX(-18deg)}92%{opacity:0;transform:translateX(115%) skewX(-18deg)}100%{opacity:0;transform:translateX(115%) skewX(-18deg)}}
+  @keyframes rgBuildText{0%{opacity:0;transform:translateY(10px);letter-spacing:.20em}78%{opacity:0;transform:translateY(10px);letter-spacing:.20em}92%{opacity:1;transform:translateY(0);letter-spacing:.16em}100%{opacity:1;transform:none}}
+  @media (max-width:560px){#rg-startup .rg-startup-stage{width:min(78vw,360px)}.rg-startup-text{margin-top:14px;font-size:17px}}
+  @media (prefers-reduced-motion:reduce){.rg-build-ring,.rg-build-bars,.rg-build-core,.rg-build-up,.rg-build-down,.rg-build-podium,.rg-startup-final,.rg-startup-sweep,.rg-startup-text{animation:none!important;opacity:1!important;transform:none!important;filter:none!important}}
 </style>
 <script>document.addEventListener('DOMContentLoaded',function(){var main=document.querySelector('link[href^="./assets/css/style.css"]');var fb=document.getElementById('style-fallback');if(main&&fb){main.addEventListener('error',function(){fb.media='all'});}});</script>
 </head>
 <body>
 
   <div id="rg-startup" class="rg-startup" aria-hidden="true">
-    <div class="rg-startup-card">
-      <img class="rg-startup-logo" src="./assets/logo-ranking-geral.png" alt="Ranking Geral">
-    </div>
+    <svg class="rg-startup-stage" viewBox="0 0 1280 1280" role="img" aria-label="Construção da marca Ranking Geral">
+      <defs>
+        <clipPath id="rgClipRing"><path fill-rule="evenodd" d="M640 40a600 600 0 1 0 0 1200A600 600 0 0 0 640 40ZM640 175a465 465 0 1 1 0 930a465 465 0 0 1 0-930Z"/></clipPath>
+        <clipPath id="rgClipBars"><rect x="300" y="70" width="610" height="500" rx="22"/></clipPath>
+        <clipPath id="rgClipCore"><path d="M180 330L1070 330L1160 930L150 930Z"/></clipPath>
+        <clipPath id="rgClipUp"><path d="M430 260L1120 160L1085 720L480 860Z"/></clipPath>
+        <clipPath id="rgClipDown"><path d="M80 470L420 420L650 1040L110 980Z"/></clipPath>
+        <clipPath id="rgClipPodium"><rect x="250" y="860" width="780" height="360" rx="32"/></clipPath>
+      </defs>
+      <g class="rg-startup-layer rg-build-ring"><image href="./assets/logo-ranking-geral.png" x="0" y="0" width="1280" height="1280" clip-path="url(#rgClipRing)" preserveAspectRatio="none"/></g>
+      <g class="rg-startup-layer rg-build-bars"><image href="./assets/logo-ranking-geral.png" x="0" y="0" width="1280" height="1280" clip-path="url(#rgClipBars)" preserveAspectRatio="none"/></g>
+      <g class="rg-startup-layer rg-build-core"><image href="./assets/logo-ranking-geral.png" x="0" y="0" width="1280" height="1280" clip-path="url(#rgClipCore)" preserveAspectRatio="none"/></g>
+      <g class="rg-startup-layer rg-build-up"><image href="./assets/logo-ranking-geral.png" x="0" y="0" width="1280" height="1280" clip-path="url(#rgClipUp)" preserveAspectRatio="none"/></g>
+      <g class="rg-startup-layer rg-build-down"><image href="./assets/logo-ranking-geral.png" x="0" y="0" width="1280" height="1280" clip-path="url(#rgClipDown)" preserveAspectRatio="none"/></g>
+      <g class="rg-startup-layer rg-build-podium"><image href="./assets/logo-ranking-geral.png" x="0" y="0" width="1280" height="1280" clip-path="url(#rgClipPodium)" preserveAspectRatio="none"/></g>
+      <image class="rg-startup-final" href="./assets/logo-ranking-geral.png" x="0" y="0" width="1280" height="1280" preserveAspectRatio="none"/>
+    </svg>
+    <div class="rg-startup-sweep" aria-hidden="true"></div>
   </div>
-  <script>document.addEventListener('DOMContentLoaded',function(){var splash=document.getElementById('rg-startup');if(splash)splash.classList.add('rg-startup-hide');});</script>
+  <div class="rg-startup-text" aria-hidden="true">RANKING GERAL</div>
+  <script>
+  (function(){
+    var started=performance.now();
+    var splash=document.getElementById('rg-startup');
+    if(!splash)return;
+    var hide=function(){ if(splash.classList.contains('rg-startup-hide'))return; splash.classList.add('rg-startup-hide'); };
+    var minTime=5000;
+    var remaining=Math.max(0,minTime-(performance.now()-started));
+    window.setTimeout(hide,remaining);
+  })();
+  </script>
 
   <!-- ============================================================================
        MENU DE ACESSIBILIDADE — botão flutuante + painel, e a camada do filtro
