@@ -18,7 +18,7 @@
   connect-src inclui https://script.google.com pois é o único backend
   que este app chama (ver js/core/config-api.js → API_URL).
 -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; base-uri 'self'; form-action 'self';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://script.google.com; base-uri 'self'; form-action 'self';">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <script src="js/a11y/a11y.js"></script><!-- Memória de acessibilidade — PRIMEIRO script da página, ver a11y.js. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -34,7 +34,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
-<link rel="stylesheet" href="mobile.css">
 </head>
 <body>
 
@@ -185,12 +184,17 @@
 
   <div class="main">
     <header class="topbar">
+      <button type="button" class="sidebar-toggle-mobile" onclick="toggleSidebarMobile(true)" aria-label="Abrir menu">☰</button>
       <div class="topbar-title-wrap">
         <h1 class="topbar-title">Ranking Geral</h1>
         <div class="status-line"><span class="status-dot" id="status-dot"></span><span id="sync-status">carregando...</span></div>
       </div>
 
-      <div class="identity-bar" id="identity-bar"><span class="identity-status" id="identity-status-texto"></span></div>
+      <div class="identity-bar" id="identity-bar">
+        <span class="identity-status" id="identity-status-texto"></span>
+        <button type="button" onclick="mostrarView('conta')">👤 Minha conta</button>
+        <button type="button" onclick="handleLogout()">Sair</button>
+      </div>
     </header>
 
     <!-- Módulo 1 (Faixa X / Faixa Y) — preenchido com modulo-1.html -->
@@ -209,26 +213,6 @@
     <div id="slot-configuracoes-conta"></div>
   </div><!-- /.main -->
 </div><!-- /.app-shell -->
-  <div id="v102-context-bar" aria-label="Navegação contextual"></div>
-
-  <div id="v105-sheet-overlay" class="v105-sheet-overlay hidden" aria-hidden="true">
-    <div id="v105-sheet" class="v105-bottom-sheet" role="dialog" aria-modal="true" aria-labelledby="v105-sheet-title">
-      <div class="v105-sheet-handle" aria-hidden="true"></div>
-      <div class="v105-sheet-head">
-        <div><div class="v105-sheet-kicker">Ação</div><h2 id="v105-sheet-title">Detalhes</h2></div>
-        <button type="button" id="v105-sheet-close" class="v105-sheet-close" aria-label="Fechar painel">Fechar</button>
-      </div>
-      <div id="v105-sheet-body" class="v105-sheet-body"></div>
-    </div>
-  </div>
-
-  <nav id="v102-bottom-nav" aria-label="Navegação principal">
-    <button class="v102-nav-btn active" data-v102-view="faixas"><span>Ranking</span></button>
-    <button class="v102-nav-btn" data-v102-view="analises"><span>Análises</span></button>
-    <button class="v102-nav-btn" data-v102-view="lancar"><span>Lançar pontuação</span></button>
-    <button class="v102-nav-btn" data-v102-view="config"><span>Configurações</span></button>
-  </nav>
-
 
   <!-- ============================================================================
        Scripts, na ordem de dependência (ver o cabeçalho de cada arquivo para
@@ -260,6 +244,5 @@
   <script src="js/features/usuarios.js"></script><!-- Painel de administração de usuários (Módulo 4). -->
   <script src="js/core/renderizacao.js"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
   <script src="js/core/inicializacao.js"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
-  <script src="v103-ui.js"></script>
 </body>
 </html>

@@ -8,11 +8,11 @@
    respostas poderia mostrar dado desatualizado ou quebrar o fluxo de sessão.
 
    Ao alterar qualquer arquivo do app shell, troque o número da versão em
-   CACHE_NAME (ex.: 'ranking-geral-v112') — isso força os usuários a
+   CACHE_NAME (ex.: 'ranking-geral-v2') — isso força os usuários a
    baixarem a versão nova em vez de continuarem presos no cache antigo.
    ============================================================================ */
 
-const CACHE_NAME = 'ranking-geral-v112';
+const CACHE_NAME = 'ranking-geral-v2';
 
 const APP_SHELL = [
   './',

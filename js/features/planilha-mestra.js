@@ -1,7 +1,3 @@
-
-/* V104 — compatibilidade de transporte:
-   mantém state.x/state.y e toda a mecânica existente do front-end, mas adapta
-   apenas a fronteira com o backend que agora exige estado.divisoes. */
 /* ============================================================================
    planilha-mestra.js
    ----------------------------------------------------------------------------
@@ -36,20 +32,7 @@ async function loadState(){
       throw new Error(resposta.erro || 'Falha ao carregar');
     }
     const carregado = resposta.dados;
-
-    // O backend oficial mais recente devolve `divisoes`, enquanto esta camada
-    // visual continua usando internamente o estado legado x/y. Fazemos a
-    // conversão somente na fronteira da API, sem alterar a mecânica restante.
-    if(carregado && typeof carregado.days === "number" && Array.isArray(carregado.divisoes)){
-      const faixaX = carregado.divisoes.find(d => String(d && d.id).toLowerCase() === 'x');
-      const faixaY = carregado.divisoes.find(d => String(d && d.id).toLowerCase() === 'y');
-      state = {
-        days: carregado.days,
-        dayDates: Array.isArray(carregado.dayDates) ? carregado.dayDates : new Array(carregado.days).fill(null),
-        x: faixaX && Array.isArray(faixaX.participantes) ? faixaX.participantes : [],
-        y: faixaY && Array.isArray(faixaY.participantes) ? faixaY.participantes : []
-      };
-    } else if(carregado && typeof carregado.days === "number" && Array.isArray(carregado.x) && Array.isArray(carregado.y)){
+    if(carregado && typeof carregado.days === "number" && Array.isArray(carregado.x) && Array.isArray(carregado.y)){
       state = carregado;
       if(!Array.isArray(state.dayDates)) state.dayDates = new Array(state.days).fill(null);
     } else {
@@ -84,17 +67,7 @@ async function syncToServer(){
   if(!souAdmin()) return;
   setStatus('salvando...', 'busy');
   try{
-    // O backend atual exige estado.divisoes. Para preservar toda a mecânica
-    // interna existente (state.x/state.y), adaptamos somente o payload enviado.
-    const estadoParaServidor = {
-      days: Number(state.days) || 0,
-      dayDates: Array.isArray(state.dayDates) ? state.dayDates : [],
-      divisoes: [
-        { id:'x', titulo:'Faixa X', intervalo:'0 a 19.999M', cor:'--x-color', participantes:Array.isArray(state.x) ? state.x : [] },
-        { id:'y', titulo:'Faixa Y', intervalo:'20M ou mais', cor:'--y-color', participantes:Array.isArray(state.y) ? state.y : [] }
-      ]
-    };
-    const resposta = await chamarAPI({ action:'salvarRanking', token:sessaoUsuario.token, estado: estadoParaServidor });
+    const resposta = await chamarAPI({ action:'salvarRanking', token:sessaoUsuario.token, estado: state });
     if(!resposta.sucesso){
       if(tratarErroSessaoOuPermissao(resposta)) return;
       throw new Error(resposta.erro || 'Falha ao salvar');
