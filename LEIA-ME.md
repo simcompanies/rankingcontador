@@ -91,3 +91,10 @@ que todos os 30 arquivos estejam na mesma pasta (sem subpastas).
 - A montagem final foi testada de ponta a ponta contra um servidor local
   (carregamento dos 7 módulos via fetch, execução de todos os scripts,
   inicialização do app) — sem erros.
+
+
+## Correção da conexão com o Google Apps Script (07/09/2026)
+
+A CSP foi ajustada para permitir o host `script.googleusercontent.com`, usado pelo Google Apps Script durante redirecionamentos do Web App. O cliente também usa `redirect: "follow"` e `cache: "no-store"` nas chamadas à API.
+
+A `API_URL` foi mantida exatamente igual à versão que já funcionava.

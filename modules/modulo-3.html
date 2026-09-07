@@ -2,22 +2,13 @@
      modulo-3.html — Lançar Pontuação (Módulo 3, exclusivo de administrador)
      ----------------------------------------------------------------------------
      Duas abas: "Preencher" (formulário guiado, um campo por participante)
-     e "Colar" (importar texto em massa, com ajuda opcional do Gemini chat
-     padrão pra ler um print), mais a geração do texto de resumo e a lista
-     de dias lançados.
-
-     FAIXAS DINÂMICAS: a aba "Preencher" tinha duas colunas fixas (Faixa X /
-     Faixa Y) — agora #launch-columns-container começa vazio e
-     renderLaunchColumns() (formulario-lancamento-dia.js) monta uma coluna
-     por faixa cadastrada. Na aba "Colar", o seletor "Faixa para todos" (usado
-     pra aplicar a mesma faixa a todo mundo pendente de revisão) também
-     começa só com a opção "— escolher —": populatePendingBulkDivSelect()
-     (colagem.js) preenche as opções reais a partir de state.divisoes.
+     e "Colar" (importar texto em massa, com leitura opcional por OCR de
+     print), mais a geração do texto de resumo e a lista de dias lançados.
 
      Injetado por inicializacao.js (carregarModulosHtml) dentro de
      <div id="slot-modulo-3"> em index.html.
      Comportamento: navegacao.js (switchLaunchTab), formulario-lancamento-dia.js,
-     colagem.js, colagem-gemini.js, texto-do-resumo.js, gerenciar-dias-lancados.js.
+     colagem.js, colagem-ocr.js, texto-do-resumo.js, gerenciar-dias-lancados.js.
      Estilos: style.css, seções "Lançar dia: abas", "Colar", "Resumo".
      ============================================================================ -->
 
@@ -33,7 +24,26 @@
     </div>
 
     <div id="launch-view-form">
-      <div class="launch-columns" id="launch-columns-container"></div>
+      <div class="launch-columns">
+        <div class="launch-col x">
+          <div class="launch-col-head">
+            <span class="launch-col-title">Faixa X</span>
+            <span class="launch-col-count" id="launch-count-x"></span>
+          </div>
+          <div class="launch-list" id="launch-list-x"></div>
+          <div id="launch-new-x"></div>
+          <div class="launch-add-row"><button type="button" onclick="addDraftRow('x')">+ novo participante</button></div>
+        </div>
+        <div class="launch-col y">
+          <div class="launch-col-head">
+            <span class="launch-col-title">Faixa Y</span>
+            <span class="launch-col-count" id="launch-count-y"></span>
+          </div>
+          <div class="launch-list" id="launch-list-y"></div>
+          <div id="launch-new-y"></div>
+          <div class="launch-add-row"><button type="button" onclick="addDraftRow('y')">+ novo participante</button></div>
+        </div>
+      </div>
       <div class="launch-footer">
         <span class="launch-progress" id="launch-progress"></span>
         <button type="button" class="launch-submit" id="launch-submit-btn" onclick="launchDayForm()">Lançar dia</button>
@@ -41,13 +51,7 @@
     </div>
 
     <div id="launch-view-paste" style="display:none;">
-      <div class="panel-hint" style="margin-top:0;">Um participante por vez, separados por <strong>ponto e vírgula</strong> ou por <strong>linha</strong>, no formato <strong>Nome, Pontuação</strong>. Exemplo: <em>João, 8; Maria, -1; Grupo Alfa, 8,5;</em> — também funciona colando um embaixo do outro. Pontuação com casas decimais aceita vírgula ou ponto (8,5 ou 8.5). Depois de ler, escolha se é um dia novo ou se vai substituir um dia já lançado, e confira a faixa de cada participante antes de confirmar.</div>
-
-      <div class="gemini-leitura-box">
-        <button type="button" id="gemini-copiar-btn" onclick="handleCopiarRegrasGemini()">📋 Copiar regras de leitura</button>
-        <button type="button" onclick="handleAbrirGemini()">🔗 Abrir Gemini</button>
-        <span class="gemini-status-text">1) copie as regras → 2) abra o Gemini, cole as regras e anexe o print do ranking → 3) copie a resposta e cole na caixa abaixo.</span>
-      </div>
+      <div class="panel-hint" style="margin-top:0;">Um participante por vez, separados por <strong>ponto e vírgula</strong> ou por <strong>linha</strong>, no formato <strong>Nome, Pontuação</strong>. Exemplo: <em>João, 8; Maria, -1; Pedro, -1;</em> — também funciona colando um embaixo do outro. Depois de ler, escolha se é um dia novo ou se vai substituir um dia já lançado, e confira a faixa de cada participante antes de confirmar.</div>
 
       <div class="ocr-upload-box">
         <input type="file" id="ocr-file-input" accept="image/*" class="hidden" onchange="handleOcrFileSelected(event)">
@@ -60,7 +64,7 @@
         </details>
       </div>
 
-      <textarea id="paste-area" placeholder="João, 8;&#10;Maria, -1;&#10;Grupo Alfa, 8,5;"></textarea>
+      <textarea id="paste-area" placeholder="João, 8;&#10;Maria, -1;&#10;Pedro, -1;"></textarea>
       <div class="paste-actions">
         <button onclick="processPaste()">Ler colagem</button>
       </div>
@@ -70,6 +74,8 @@
           <label>Aplicar em: <select id="pending-day-select"></select></label>
           <label>Faixa para todos: <select id="pending-bulk-div" onchange="applyBulkDiv(this.value)">
             <option value="">— escolher —</option>
+            <option value="x">Faixa X</option>
+            <option value="y">Faixa Y</option>
           </select></label>
         </div>
         <div id="pending-list"></div>

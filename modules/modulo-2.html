@@ -5,14 +5,6 @@
      ranking filtrado resultante, os dashboards mais profundos (destaques,
      evolução acumulada, mapa de desempenho) e o resumo do último dia salvo.
 
-     FAIXAS DINÂMICAS: as três seções que antes tinham dois cards fixos
-     (Faixa X / Faixa Y) — mini-ranking filtrado, evolução acumulada e mapa
-     de desempenho — agora têm um container vazio cada, preenchido em tempo
-     de execução com um card por faixa: #analises-rank-board (ver
-     renderAnalisesRankBoard, filtros.js), #evolucao-chart-board (ver
-     renderEvolucaoBoard, analises-dashboard.js) e #heatmap-board (ver
-     renderHeatmapBoard, analises-dashboard.js).
-
      Injetado por inicializacao.js (carregarModulosHtml) dentro de
      <div id="slot-modulo-2"> em index.html.
      Comportamento: analises-gerais.js (renderStatsGrid), filtros.js,
@@ -43,7 +35,16 @@
       <div class="filtro-dias-lista" id="filtro-dias-lista"></div>
     </div>
 
-    <div class="board" style="margin-top:6px;" id="analises-rank-board"></div>
+    <div class="board" style="margin-top:6px;">
+      <div class="division x">
+        <div class="division-head"><div><div class="division-title">Faixa X</div><div class="division-range filtro-resultado-label" id="filtro-label-x"></div></div></div>
+        <div class="mini-rank-list" id="analises-rank-x"></div>
+      </div>
+      <div class="division y">
+        <div class="division-head"><div><div class="division-title">Faixa Y</div><div class="division-range filtro-resultado-label" id="filtro-label-y"></div></div></div>
+        <div class="mini-rank-list" id="analises-rank-y"></div>
+      </div>
+    </div>
   </div>
 
   <div class="panel">
@@ -53,15 +54,27 @@
   </div>
 
   <div class="panel">
-    <div class="panel-title">Evolução acumulada <span class="panel-sub">top 5 de cada faixa</span></div>
+    <div class="panel-title">Evolução acumulada <span class="panel-sub">top 5 de cada Faixa</span></div>
     <div class="panel-hint">Como a pontuação acumulada dos melhores colocados andou dia a dia, dentro do período filtrado.</div>
-    <div class="board" style="margin-top:6px;" id="evolucao-chart-board"></div>
+    <div class="board" style="margin-top:6px;">
+      <div class="division x">
+        <div class="division-head"><div><div class="division-title">Faixa X</div></div></div>
+        <div class="chart-wrap" id="evolucao-chart-x"></div>
+      </div>
+      <div class="division y">
+        <div class="division-head"><div><div class="division-title">Faixa Y</div></div></div>
+        <div class="chart-wrap" id="evolucao-chart-y"></div>
+      </div>
+    </div>
   </div>
 
   <div class="panel">
     <div class="panel-title">Mapa de desempenho</div>
     <div class="panel-hint">Cada célula é a pontuação de um participante num dia — verde para ganho, vermelho para perda; quanto mais forte a cor, maior o valor. Arraste para o lado pra ver mais dias.</div>
-    <div id="heatmap-board"></div>
+    <div class="division-title" style="color:var(--x-color);">Faixa X</div>
+    <div id="heatmap-wrap-x"></div>
+    <div class="division-title heat-divider" style="color:var(--y-color);">Faixa Y</div>
+    <div id="heatmap-wrap-y"></div>
   </div>
 
   <div class="panel">

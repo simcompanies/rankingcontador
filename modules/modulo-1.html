@@ -1,27 +1,49 @@
 <!-- ============================================================================
-     modulo-1.html — Faixas (Módulo 1)
+     modulo-1.html — Faixa X / Faixa Y (Módulo 1)
      ----------------------------------------------------------------------------
-     O quadro de classificação das faixas — tela inicial após o login,
-     visível para qualquer papel (administrador ou membro).
-
-     FAIXAS DINÂMICAS: o board não vem mais com Faixa X / Faixa Y hardcoded
-     no HTML. #board-container começa vazio e é preenchido em tempo de
-     execução por renderBoard() (renderizacao.js), uma <div class="division">
-     por faixa cadastrada em state.divisoes — inclusive quando há 1, 3, 4 ou
-     mais faixas (criar/renomear/remover faixa é feito em Configurações
-     Gerais → "Gerenciar faixas", ver modulo-4.html e faixas-dinamicas.js).
+     O quadro de classificação das duas divisões — tela inicial após o
+     login, visível para qualquer papel (administrador ou membro).
 
      Injetado por inicializacao.js (carregarModulosHtml) dentro de
      <div id="slot-modulo-1"> em index.html.
-     Comportamento: renderizacao.js (renderBoard/renderDivision), participantes.js
+     Comportamento: renderizacao.js (renderDivision), participantes.js
      (addParticipant/removeParticipant/renameParticipant/updateScore).
-     Estilos: style.css, seção "Board de ranking" (grid dinâmico com
-     repeat(auto-fit, ...) — acomoda qualquer número de faixas).
+     Estilos: style.css, seção "Board de ranking".
      ============================================================================ -->
 
-<!-- ===================== MÓDULO 1: Faixas (dinâmico) ===================== -->
+<!-- ===================== MÓDULO 1: Faixa X / Faixa Y ===================== -->
 <section class="view" id="view-faixas">
-  <div class="board" id="board-container"></div>
+  <div class="board">
+    <div class="division x" id="div-x">
+      <div class="division-head">
+        <div>
+          <div class="division-title">Faixa X</div>
+          <div class="division-range">0 a 19.999M</div>
+        </div>
+      </div>
+      <div class="table-wrap"><table><thead><tr id="head-x"></tr></thead><tbody id="body-x"></tbody></table></div>
+      <div class="empty-hint" id="empty-x" style="display:none;">Nenhum participante ainda.</div>
+      <div class="row-actions hidden">
+        <button onclick="addParticipant('x')">+ Participante</button>
+        <button onclick="addDay()">+ Dia em branco</button>
+      </div>
+    </div>
+
+    <div class="division y" id="div-y">
+      <div class="division-head">
+        <div>
+          <div class="division-title">Faixa Y</div>
+          <div class="division-range">20M ou mais</div>
+        </div>
+      </div>
+      <div class="table-wrap"><table><thead><tr id="head-y"></tr></thead><tbody id="body-y"></tbody></table></div>
+      <div class="empty-hint" id="empty-y" style="display:none;">Nenhum participante ainda.</div>
+      <div class="row-actions hidden">
+        <button onclick="addParticipant('y')">+ Participante</button>
+        <button onclick="addDay()">+ Dia em branco</button>
+      </div>
+    </div>
+  </div>
 
   <div class="panel">
     <div class="panel-title">Regra de pontuação</div>

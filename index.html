@@ -18,7 +18,7 @@
   connect-src inclui https://script.google.com pois é o único backend
   que este app chama (ver js/core/config-api.js → API_URL).
 -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://script.google.com; base-uri 'self'; form-action 'self';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; base-uri 'self'; form-action 'self';">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <script src="js/a11y/a11y.js"></script><!-- Memória de acessibilidade — PRIMEIRO script da página, ver a11y.js. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -223,7 +223,6 @@
        ============================================================================ -->
   <script src="js/core/config-api.js"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
   <script src="js/core/estado-global.js"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
-  <script src="js/features/faixas-dinamicas.js"></script><!-- Gerenciamento de faixas dinâmicas. -->
   <script src="js/core/identidade.js"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
   <script src="js/core/navegacao.js"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
   <script src="js/core/sidebar.js"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->

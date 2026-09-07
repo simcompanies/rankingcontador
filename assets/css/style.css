@@ -43,6 +43,13 @@
     background:var(--bg);
     color:var(--text);
     font-family:'IBM Plex Mono', monospace;
+    /* Respeita a "área segura" do aparelho (notch/entalhe e barra de
+       gestos) quando o app roda instalado como PWA em tela cheia
+       (display:standalone) — em navegador comum esses valores são 0px
+       e não mudam nada. */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
   }
   :focus-visible{ outline:2px solid var(--x-color); outline-offset:2px; }
   .hidden{ display:none !important; }
@@ -123,11 +130,6 @@
       width:34px; height:34px; background:var(--panel-2); border:1px solid var(--line);
       border-radius:8px; color:var(--text); font-size:calc(16px * var(--font-scale, 1)); cursor:pointer; flex-shrink:0;
     }
-    /* Quebra explícita de 880px também para board e colunas de lançamento —
-       antes .launch-columns só quebrava em 760px, deixando 760-880px com
-       colunas espremidas (ver ANALISE_RESPONSIVIDADE_FAIXAS_DINAMICAS.md, 1.3). */
-    .board{ grid-template-columns:1fr; }
-    .launch-columns{ grid-template-columns:1fr; }
     .main{ padding:16px 14px 50px; }
   }
 
@@ -168,11 +170,8 @@
   .launch-tab.active{ color:var(--text); border-color:var(--x-color); background:rgba(47,216,168,0.10); }
   .launch-tab:hover{ border-color:var(--x-color); }
 
-  /* auto-fit(minmax) em vez de "1fr 1fr" fixo: com 2 faixas (padrão) o
-     resultado visual é idêntico a antes (2 colunas 50/50); com 3+ faixas
-     dinâmicas, quebra em mais colunas sozinho, sem precisar de CSS novo. */
-  .launch-columns{ display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:26px; }
-  @media (max-width:880px){ .launch-columns{ grid-template-columns:1fr; gap:20px; } }
+  .launch-columns{ display:grid; grid-template-columns:1fr 1fr; gap:26px; }
+  @media (max-width:760px){ .launch-columns{ grid-template-columns:1fr; gap:20px; } }
 
   .launch-col-head{
     display:flex; align-items:center; justify-content:space-between;
@@ -181,7 +180,6 @@
   .launch-col-title{
     font-family:'Oswald',sans-serif; font-weight:600; text-transform:uppercase;
     font-size:calc(12.5px * var(--font-scale, 1)); letter-spacing:0.05em;
-    color:var(--div-accent, var(--text)); /* cor da faixa (ver renderLaunchColumns, formulario-lancamento-dia.js) */
   }
   .launch-col.x .launch-col-title{ color:var(--x-color); }
   .launch-col.y .launch-col-title{ color:var(--y-color); }
@@ -236,11 +234,14 @@
   }
   .paste-actions{ margin-top:10px; display:flex; gap:8px; }
 
-  .gemini-leitura-box{
+  .ocr-upload-box{
     display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px;
     padding:11px 13px; background:var(--panel-2); border:1px dashed var(--line); border-radius:8px;
   }
-  .gemini-status-text{ color:var(--muted); font-size:calc(11px * var(--font-scale, 1)); }
+  .ocr-status-text{ color:var(--muted); font-size:calc(11px * var(--font-scale, 1)); }
+  .ocr-raw-wrap{ margin-bottom:14px; }
+  .ocr-raw-wrap summary{ font-size:calc(11.5px * var(--font-scale, 1)); }
+  .ocr-raw-wrap pre{ max-height:220px; overflow-y:auto; }
 
   .pending-panel{
     margin-top:16px; background:var(--panel-2); border:1px solid var(--y-color); border-radius:10px;
@@ -276,31 +277,21 @@
   }
 
   /* ---------- Board de ranking ---------- */
-  /* auto-fit(minmax) no lugar de "1fr 1fr" fixo: com 2 faixas (padrão) o
-     resultado visual é idêntico a antes (2 colunas 50/50, já que a 3ª
-     trilha fica vazia e colapsa); com 3+ faixas dinâmicas (ver
-     faixas-dinamicas.js), o board ganha mais colunas sozinho, quebrando
-     linha quando não couber mais — sem precisar de nenhum CSS novo por faixa. */
-  .board{ display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:20px; max-width:1100px; margin:0 auto 20px; }
+  .board{ display:grid; grid-template-columns:1fr 1fr; gap:20px; max-width:1100px; margin:0 auto 20px; }
   @media (max-width:880px){ .board{grid-template-columns:1fr;} }
 
   .division{ background:var(--panel); border:1px solid var(--line); border-radius:10px; overflow:hidden; }
-  /* --div-accent é setada inline por faixa (renderBoard, renderizacao.js;
-     renderAnalisesRankBoard, filtros.js; renderEvolucaoBoard, analises-dashboard.js)
-     a partir de div.cor — isso substitui a antiga dependência de classes
-     literais .division.x/.division.y, que só cobriam duas faixas fixas. As
-     regras .x/.y abaixo continuam aqui só por segurança/retrocompatibilidade. */
-  .division-head{ padding:14px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line); border-top:3px solid var(--div-accent, var(--line)); }
+  .division-head{ padding:14px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line); }
   .division.x .division-head{ border-top:3px solid var(--x-color); }
   .division.y .division-head{ border-top:3px solid var(--y-color); }
-  .division-title{ font-family:'Oswald',sans-serif; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; font-size:calc(15px * var(--font-scale, 1)); color:var(--div-accent, var(--text)); }
+  .division-title{ font-family:'Oswald',sans-serif; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; font-size:calc(15px * var(--font-scale, 1)); }
   .division.x .division-title{ color:var(--x-color); }
   .division.y .division-title{ color:var(--y-color); }
   .division-range{ color:var(--muted); font-size:calc(11px * var(--font-scale, 1)); }
 
   /* Arrastar para rolar horizontalmente com o mouse (ver enableDragScroll,
      em renderizacao.js): cursor de "mão" em repouso e "segurando" durante o arraste. */
-  .table-wrap{ overflow-x:auto; cursor:grab; scrollbar-width:thin; scrollbar-color:var(--x-color) var(--panel-2); }
+  .table-wrap{ overflow-x:auto; cursor:grab; scrollbar-width:thin; scrollbar-color:var(--x-color) var(--panel-2); -webkit-overflow-scrolling:touch; touch-action:pan-x; }
   .table-wrap.dragging{ cursor:grabbing; user-select:none; }
   .table-wrap::-webkit-scrollbar{ height:10px; }
   .table-wrap::-webkit-scrollbar-track{ background:var(--panel-2); border-radius:6px; }
@@ -837,343 +828,3 @@
   .heat-empty{ color:var(--line); }
   .heat-scroll{ margin-bottom:4px; }
   .heat-divider{ margin:18px 0 8px; }
-
-  /* ============================================================================
-     GERENCIAR FAIXAS (ver faixas-dinamicas.js, painel em Configurações
-     Gerais / modulo-4.html). Reaproveita o mesmo vocabulário visual do
-     resto do app (.panel, var(--font-scale), var(--line)...).
-     ============================================================================ */
-  .faixas-lista{
-    display:flex; flex-direction:column; gap:12px;
-  }
-  .faixa-card{
-    background:var(--panel-2); border:1px solid var(--line);
-    border-left:4px solid var(--div-accent, var(--line));
-    border-radius:10px; padding:12px 14px;
-    display:flex; justify-content:space-between; align-items:flex-start; gap:12px;
-  }
-  .faixa-header{ flex:1; display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
-  .faixa-header > div{ flex:1; }
-  .faixa-titulo{ font-weight:600; font-size:calc(12.5px * var(--font-scale, 1)); margin-bottom:2px; }
-  .faixa-intervalo{ color:var(--muted); font-size:calc(11px * var(--font-scale, 1)); margin-bottom:4px; }
-  .faixa-id{ color:var(--muted); font-size:calc(10px * var(--font-scale, 1)); font-family:'IBM Plex Mono', monospace; }
-  .faixa-id code{ background:var(--panel-3); border-radius:4px; padding:2px 5px; font-size:calc(9.5px * var(--font-scale, 1)); }
-  .faixa-stats{ color:var(--x-color); font-weight:600; font-size:calc(11.5px * var(--font-scale, 1)); white-space:nowrap; }
-  .faixa-acoes{ display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; }
-  .faixa-acoes button{ font-size:calc(11px * var(--font-scale, 1)); padding:6px 10px; }
-  .faixas-adicionar{
-    background:var(--panel-3); border:1px dashed var(--line); border-radius:10px;
-    padding:14px 16px; margin-top:14px;
-  }
-  @media (max-width:767px){
-    .faixa-card{ flex-direction:column; }
-    .faixa-header{ flex-direction:column; }
-    .faixa-acoes{ justify-content:flex-start; width:100%; }
-    .faixa-acoes button{ flex:1; min-width:80px; }
-  }
-
-  /* ============================================================================
-     RESPONSIVIDADE — breakpoints adicionais
-     ----------------------------------------------------------------------------
-     Antes, o app tinha só UMA quebra (880px, acima), causando layout
-     quebradiço em tablets (768-880px) e overflow em celulares pequenos
-     (<480px) — ver ANALISE_RESPONSIVIDADE_FAIXAS_DINAMICAS.md, seção 1.
-     Os 5 blocos abaixo cobrem, do maior pro menor: widescreen (1440px+),
-     desktop pequeno (880-1439px), tablet (768-880px), celular médio
-     (≤767px) e celular pequeno (≤479px). A ORDEM importa: como ≤479px é
-     um subconjunto de ≤767px, ele é declarado por último de propósito, pra
-     suas regras mais extremas vencerem no cascade em telas bem estreitas.
-     Ficam no fim do arquivo (depois de Dashboard/heatmap) para que as
-     mesmas classes (.heat-table, .stats-grid, .board...) definidas mais
-     acima sejam corretamente sobrepostas aqui dentro dos media queries.
-     ============================================================================ */
-
-  /* ---------- Widescreen (1440px+) — layout otimizado para monitores grandes ---------- */
-  @media (min-width: 1440px) {
-    .main { padding: 26px 32px 60px; max-width: 1280px; }
-    .board { max-width: 1240px; gap: 24px; }
-    .panel { max-width: 1240px; }
-    .view { max-width: 1240px; }
-    .panel { margin-bottom: 26px; }
-    .launch-columns { gap: 32px; }
-    table { font-size: calc(13px * var(--font-scale, 1)); }
-  }
-
-  /* ---------- Desktop pequeno (880px-1439px) — ajustes para desktop compacto ---------- */
-  @media (max-width: 1439px) and (min-width: 881px) {
-    .main { padding: 20px 22px 50px; }
-    .topbar { max-width: 1000px; }
-    .launch-columns { gap: 20px; }
-  }
-
-  /* ---------- Tablet (768px-880px) — ajustes intermediários entre mobile e desktop ---------- */
-  @media (max-width: 880px) and (min-width: 768px) {
-    .main { padding: 16px 14px 50px; }
-    .sidebar { width: 200px; }
-    .sidebar.collapsed { width: 56px; }
-    .topbar { flex-wrap: wrap; gap: 12px; }
-    .topbar-title { font-size: calc(18px * var(--font-scale, 1)); }
-    .identity-bar { order: 3; width: 100%; }
-    .board { grid-template-columns: 1fr; gap: 18px; }
-    .launch-columns { grid-template-columns: 1fr; gap: 16px; }
-    .stats-grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
-    .table-wrap { scrollbar-width: thin; }
-    .launch-input { width: 80px; }
-    input.score { width: 60px; }
-  }
-
-  /* ---------- Celular médio (480px-767px) ---------- */
-  @media (max-width: 767px) {
-    .main { padding: 14px 12px 45px; }
-    .sidebar { width: min(90vw, 280px); }
-
-    .topbar {
-      flex-wrap: wrap;
-      gap: 8px;
-      max-width: 100%;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-    }
-    .topbar-title { font-size: calc(16px * var(--font-scale, 1)); margin: 0 0 2px; }
-    .topbar-title-wrap { flex: 1; min-width: 150px; }
-    .status-line { font-size: calc(10px * var(--font-scale, 1)); }
-
-    .identity-bar {
-      font-size: calc(10.5px * var(--font-scale, 1));
-      gap: 6px;
-    }
-    .identity-status {
-      max-width: 120px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .panel { padding: 14px 12px; margin-bottom: 16px; }
-    .panel-title { font-size: calc(13px * var(--font-scale, 1)); margin-bottom: 2px; }
-    .panel-hint { font-size: calc(10.5px * var(--font-scale, 1)); margin-bottom: 10px; }
-
-    .board { grid-template-columns: 1fr; gap: 16px; }
-
-    .division-head { padding: 10px 12px; }
-    .division-title { font-size: calc(13px * var(--font-scale, 1)); }
-    .division-range { font-size: calc(9.5px * var(--font-scale, 1)); }
-
-    th, td { padding: 6px 7px; }
-    th { font-size: calc(9px * var(--font-scale, 1)); }
-    table { font-size: calc(11.5px * var(--font-scale, 1)); }
-
-    td.name { min-width: 80px; }
-    td.rank { width: 28px; }
-
-    .tiebadge { font-size: calc(8px * var(--font-scale, 1)); margin-left: 3px; padding: 0px 3px; }
-
-    button { padding: 9px 14px; font-size: calc(11px * var(--font-scale, 1)); }
-    .del-x-btn { font-size: calc(13px * var(--font-scale, 1)); padding: 0 3px; }
-
-    .row-actions { padding: 8px 12px; gap: 6px; }
-
-    .launch-columns { grid-template-columns: 1fr; gap: 14px; }
-    .launch-col-head { margin-bottom: 4px; padding-bottom: 6px; }
-    .launch-col-title { font-size: calc(12px * var(--font-scale, 1)); }
-    .launch-col-count { font-size: calc(10px * var(--font-scale, 1)); }
-
-    .launch-list { max-height: 300px; }
-    .launch-row { padding: 5px 0; font-size: calc(12px * var(--font-scale, 1)); }
-    .launch-input { width: 100%; max-width: 80px; font-size: calc(12px * var(--font-scale, 1)); padding: 6px 3px; }
-    .launch-name-input { font-size: calc(12px * var(--font-scale, 1)); padding: 6px 8px; }
-
-    .launch-footer { flex-direction: column; gap: 8px; }
-    .launch-progress { font-size: calc(10.5px * var(--font-scale, 1)); }
-    .launch-submit { width: 100%; }
-
-    #paste-area { min-height: 80px; font-size: calc(12px * var(--font-scale, 1)); padding: 8px; }
-    .pending-row { gap: 8px; padding: 5px 0; }
-    .pending-row .pname { font-size: calc(12px * var(--font-scale, 1)); }
-    .pending-controls { flex-direction: column; gap: 8px; }
-    .pending-controls label { width: 100%; }
-    .pending-controls select { width: 100%; }
-
-    .gemini-leitura-box { flex-direction: column; gap: 6px; }
-    .gemini-leitura-box button { width: 100%; }
-    .gemini-status-text { font-size: calc(10px * var(--font-scale, 1)); }
-
-    #summary-output { min-height: 200px; font-size: calc(12px * var(--font-scale, 1)); }
-    .summary-row { flex-direction: column; gap: 8px; }
-    .summary-row select, .summary-row button { width: 100%; }
-
-    .stats-grid { grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; }
-    .stat-card { padding: 10px; }
-    .stat-value { font-size: calc(22px * var(--font-scale, 1)); }
-
-    .filtro-bar { flex-direction: column; gap: 6px; }
-    .filtro-modo-btn { width: 100%; }
-    .filtro-campos { flex-direction: column; gap: 8px; padding: 10px; }
-    .filtro-campos .campo { min-width: auto; width: 100%; }
-
-    .launch-tabs { gap: 4px; }
-    .launch-tab { padding: 7px 10px; font-size: calc(11px * var(--font-scale, 1)); flex: 1; }
-
-    .auth-card { padding: 20px 16px; max-width: 95vw; }
-    .auth-brand { font-size: calc(13px * var(--font-scale, 1)); }
-    .campo input { font-size: calc(12px * var(--font-scale, 1)); padding: 9px 8px; }
-
-    .heat-table { font-size: calc(10.5px * var(--font-scale, 1)); }
-    .heat-table th, .heat-table td { padding: 5px 6px; }
-    .heat-cell { min-width: 36px; }
-  }
-
-  /* ---------- Celular pequeno (320px-479px) ---------- */
-  @media (max-width: 479px) {
-    .main { padding: 10px 8px 40px; }
-
-    .topbar {
-      gap: 6px;
-      margin-bottom: 12px;
-      padding-bottom: 10px;
-    }
-    .sidebar-toggle-mobile {
-      width: 32px;
-      height: 32px;
-      font-size: calc(14px * var(--font-scale, 1));
-    }
-    .topbar-title { font-size: calc(14px * var(--font-scale, 1)); margin-bottom: 1px; }
-    .status-line { font-size: calc(9px * var(--font-scale, 1)); }
-
-    .identity-bar {
-      font-size: calc(9.5px * var(--font-scale, 1));
-      gap: 4px;
-      width: 100%;
-    }
-    .identity-status { display: none; }
-
-    .panel { padding: 10px 10px; margin-bottom: 12px; }
-    .panel-title { font-size: calc(12px * var(--font-scale, 1)); margin-bottom: 1px; }
-    .panel-hint { font-size: calc(10px * var(--font-scale, 1)); margin-bottom: 8px; line-height: 1.4; }
-
-    .division-head { padding: 8px 10px; }
-    .division-title { font-size: calc(12px * var(--font-scale, 1)); }
-    .division-range { font-size: calc(9px * var(--font-scale, 1)); }
-
-    th, td { padding: 5px 5px; }
-    th { font-size: calc(8.5px * var(--font-scale, 1)); }
-    table { font-size: calc(11px * var(--font-scale, 1)); }
-
-    td.rank { width: 24px; }
-    td.name { min-width: 70px; padding: 5px 5px; }
-
-    tr.top1 td.name::before { content: ''; }
-    tr.top2 td.name::before { content: ''; }
-    tr.top3 td.name::before { content: ''; }
-    tr.top1 td.rank { color: var(--y-color); }
-    tr.top2 td.rank { color: var(--muted); }
-    tr.top3 td.rank { color: var(--muted); }
-
-    .tiebadge { font-size: calc(7px * var(--font-scale, 1)); margin: 0; padding: 0px 2px; }
-
-    button {
-      padding: 10px 12px;
-      font-size: calc(10.5px * var(--font-scale, 1));
-      min-height: 44px;
-    }
-    .del-x-btn { font-size: calc(12px * var(--font-scale, 1)); padding: 0 2px; }
-    .row-actions { padding: 6px 8px; gap: 4px; }
-    .row-actions button { font-size: calc(10px * var(--font-scale, 1)); padding: 5px 8px; }
-
-    input[type="text"], input[type="email"], input[type="password"],
-    input[type="date"], select, textarea {
-      font-size: calc(12px * var(--font-scale, 1)) !important;
-      padding: 8px 7px !important;
-    }
-
-    .launch-columns { grid-template-columns: 1fr; }
-    .launch-col-title { font-size: calc(11px * var(--font-scale, 1)); }
-    .launch-col-count { font-size: calc(9px * var(--font-scale, 1)); }
-    .launch-row { padding: 4px 0; font-size: calc(11px * var(--font-scale, 1)); }
-    .launch-input { width: 70px; font-size: calc(11px * var(--font-scale, 1)); padding: 5px 3px; }
-    .launch-name-input { font-size: calc(11px * var(--font-scale, 1)); padding: 5px 7px; }
-    .launch-add-row button { width: 100%; font-size: calc(10px * var(--font-scale, 1)); }
-
-    #paste-area { min-height: 70px; font-size: calc(11px * var(--font-scale, 1)); padding: 6px; }
-    .paste-actions { gap: 4px; }
-    .paste-actions button { flex: 1; }
-
-    .pending-panel { padding: 10px 10px; }
-    .pending-title { font-size: calc(12px * var(--font-scale, 1)); }
-    .pending-row { font-size: calc(11px * var(--font-scale, 1)); gap: 6px; padding: 4px 0; }
-    .pending-row .pname { font-size: calc(11px * var(--font-scale, 1)); }
-    .pending-controls { gap: 6px; padding: 8px 0; }
-    .pending-controls label { font-size: calc(10px * var(--font-scale, 1)); }
-    .pending-controls select { font-size: calc(11px * var(--font-scale, 1)); padding: 5px 5px; }
-
-    .gemini-leitura-box { gap: 4px; padding: 8px 10px; }
-    .gemini-leitura-box button { font-size: calc(10px * var(--font-scale, 1)); padding: 8px 10px; }
-    .gemini-status-text { font-size: calc(9px * var(--font-scale, 1)); }
-
-    #summary-output { min-height: 150px; font-size: calc(11px * var(--font-scale, 1)); padding: 8px; }
-    .summary-row { gap: 6px; }
-    .summary-row select, .summary-row button { width: 100%; }
-
-    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    .stat-card { padding: 8px; gap: 2px; }
-    .stat-value { font-size: calc(18px * var(--font-scale, 1)); }
-    .stat-label { font-size: calc(9px * var(--font-scale, 1)); }
-
-    .filtro-bar { gap: 4px; }
-    .filtro-modo-btn { font-size: calc(10px * var(--font-scale, 1)); padding: 5px 8px; }
-    .filtro-campos { gap: 6px; padding: 8px; }
-    .filtro-campos label { font-size: calc(10px * var(--font-scale, 1)); }
-    .filtro-campos input[type="date"] { font-size: calc(11px * var(--font-scale, 1)); padding: 5px 6px; }
-
-    .filtro-dia-chip { font-size: calc(10px * var(--font-scale, 1)); padding: 4px 8px; }
-
-    .launch-tabs { gap: 3px; }
-    .launch-tab { padding: 6px 8px; font-size: calc(10px * var(--font-scale, 1)); }
-
-    .auth-card { padding: 16px 12px; }
-    .auth-brand { font-size: calc(12px * var(--font-scale, 1)); margin-bottom: 16px; }
-    .auth-form { gap: 10px; }
-
-    .modal-card { padding: 16px 12px; }
-
-    .a11y-toggle-btn { right: 10px; bottom: 10px; width: 46px; height: 46px; font-size: calc(18px * var(--font-scale, 1)); }
-    .a11y-panel { width: min(85vw, 300px); }
-    .a11y-panel-head { padding: 14px 14px; }
-    .a11y-panel-titulo { font-size: calc(13px * var(--font-scale, 1)); }
-    .a11y-fechar-btn { width: 26px; height: 26px; font-size: calc(12px * var(--font-scale, 1)); }
-    .a11y-panel-body { padding: 12px 14px; gap: 14px; }
-    .a11y-secao { gap: 7px; }
-    .a11y-rotulo { font-size: calc(10.5px * var(--font-scale, 1)); }
-    .a11y-opcao-btn { font-size: calc(11px * var(--font-scale, 1)); padding: 7px 8px; }
-
-    .heat-table { font-size: calc(10px * var(--font-scale, 1)); }
-    .heat-table th, .heat-table td { padding: 4px 4px; }
-    .heat-cell { min-width: 32px; }
-    .heat-name { min-width: 60px; }
-  }
-
-/* Estabilização: recursos visuais da nova estrutura */
-
-  .ocr-upload-box{
-    display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px;
-    padding:11px 13px; background:var(--panel-2); border:1px dashed var(--line); border-radius:8px;
-  }
-  .ocr-status-text{ color:var(--muted); font-size:calc(11px * var(--font-scale, 1)); }
-  .ocr-raw-wrap{ margin-bottom:14px; }
-  .ocr-raw-wrap summary{ font-size:calc(11.5px * var(--font-scale, 1)); }
-  .ocr-raw-wrap pre{ max-height:220px; overflow-y:auto; }
-
-
-  body{
-    margin:0;
-    background:var(--bg);
-    color:var(--text);
-    font-family:'IBM Plex Mono', monospace;
-    /* Respeita a "área segura" do aparelho (notch/entalhe e barra de
-       gestos) quando o app roda instalado como PWA em tela cheia
-       (display:standalone) — em navegador comum esses valores são 0px
-       e não mudam nada. */
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-    padding-bottom: env(safe-area-inset-bottom);
-  }

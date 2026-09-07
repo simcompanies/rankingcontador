@@ -2,32 +2,29 @@
    analises-gerais.js
    ----------------------------------------------------------------------------
    Cartões de estatística geral do Módulo 2 (dias lançados, nº de
-   participantes por faixa, líder de cada faixa — para TODAS as faixas
-   dinâmicas, não só X/Y). O ranking filtrável por período/dias que aparece
-   nessa mesma tela vive em filtros.js — os dois arquivos juntos formam o
-   conteúdo do Módulo 2 (modulo-2.html).
+   participantes por divisão, líder de cada divisão). O ranking filtrável
+   por período/dias que aparece nessa mesma tela vive em filtros.js — os
+   dois arquivos juntos formam o conteúdo do Módulo 2 (modulo-2.html).
 
-   Depende de: estado-global.js (state, obterTodasDivisoes), participantes.js
-   (sortDivision), texto-do-resumo.js (ptsTag).
+   Depende de: estado-global.js (state), participantes.js (sortDivision,
+   usado indiretamente via total já calculado), texto-do-resumo.js (ptsTag).
    ============================================================================ */
 
-/* Preenche os cartões do topo de Análises Gerais: total de dias lançados,
-   e para cada faixa — quantos participantes ela tem e quem lidera o
-   acumulado (via sortDivision, de participantes.js). */
+/* Preenche os 5 cartões do topo de Análises Gerais: total de dias
+   lançados, quantos participantes cada divisão tem, e quem lidera o
+   acumulado em cada uma (via sortDivision, de participantes.js). */
 function renderStatsGrid(){
   const grid = document.getElementById('stats-grid');
   if(!grid) return;
-
-  let html = `<div class="stat-card"><span class="stat-value">${state.days}</span><span class="stat-label">dias lançados</span></div>`;
-
-  obterTodasDivisoes().forEach(div=>{
-    const acc = sortDivision(div.id);
-    const qtd = (div.participantes || []).length;
-    const tituloEscapado = escapeHtml(div.titulo);
-    const lider = acc.length ? `${escapeHtml(acc[0].name)} (${ptsTag(acc[0].total)})` : '—';
-    html += `<div class="stat-card"><span class="stat-value">${qtd}</span><span class="stat-label">participantes ${tituloEscapado}</span></div>`;
-    html += `<div class="stat-card"><span class="stat-value stat-value-sm">${lider}</span><span class="stat-label">líder ${tituloEscapado}</span></div>`;
-  });
-
-  grid.innerHTML = html;
+  const xAcc = sortDivision('x');
+  const yAcc = sortDivision('y');
+  const liderX = xAcc.length ? `${escapeHtml(xAcc[0].name)} (${ptsTag(xAcc[0].total)})` : '—';
+  const liderY = yAcc.length ? `${escapeHtml(yAcc[0].name)} (${ptsTag(yAcc[0].total)})` : '—';
+  grid.innerHTML = `
+    <div class="stat-card"><span class="stat-value">${state.days}</span><span class="stat-label">dias lançados</span></div>
+    <div class="stat-card"><span class="stat-value">${state.x.length}</span><span class="stat-label">participantes Faixa X</span></div>
+    <div class="stat-card"><span class="stat-value">${state.y.length}</span><span class="stat-label">participantes Faixa Y</span></div>
+    <div class="stat-card"><span class="stat-value stat-value-sm">${liderX}</span><span class="stat-label">líder Faixa X</span></div>
+    <div class="stat-card"><span class="stat-value stat-value-sm">${liderY}</span><span class="stat-label">líder Faixa Y</span></div>
+  `;
 }

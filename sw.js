@@ -12,7 +12,7 @@
    baixarem a versão nova em vez de continuarem presos no cache antigo.
    ============================================================================ */
 
-const CACHE_NAME = 'ranking-geral-v2';
+const CACHE_NAME = 'ranking-geral-v3';
 
 const APP_SHELL = [
   './',
@@ -80,6 +80,8 @@ self.addEventListener('fetch', (evento) => {
   // Só intercepta GET do mesmo domínio (o app shell). Chamadas à API do
   // Google Apps Script (outro domínio) e requisições não-GET passam direto
   // pela rede, sem cache — são sempre lançamento/leitura de dado ao vivo.
+  // A API pode redirecionar de script.google.com para
+  // script.googleusercontent.com; a CSP do index.html já libera os dois.
   if (evento.request.method !== 'GET' || url.origin !== self.location.origin) {
     return;
   }

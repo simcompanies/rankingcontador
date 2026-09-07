@@ -1,51 +1,49 @@
 /* ============================================================================
    analises-dashboard.js
    ----------------------------------------------------------------------------
-   Camada mais profunda de Análises Gerais, além dos cartões básicos
+   Camada mais profunda de Análises Gerais, além dos 5 cartões básicos
    (analises-gerais.js) e do mini-ranking filtrado (filtros.js): destaques do
    período (recorde, maior queda, mais consistente, média), um gráfico de
    evolução acumulada (SVG, sem biblioteca externa) para os 5 melhores de
-   CADA faixa, e um mapa de desempenho (participante × dia, em cores) —
-   agora para TODAS as faixas dinâmicas, não só X/Y.
+   cada Faixa, e um mapa de desempenho (participante × dia, em cores).
 
    As três peças SEMPRE respeitam o filtro ativo (por período ou por dias
    específicos) — recebem `dias` já calculado por diasFiltrados() e são
    chamadas de dentro de aplicarFiltroAnalises() (ver filtros.js), então
    atualizam sozinhas toda vez que o filtro muda ou o ranking é alterado.
 
-   Depende de: estado-global.js (state, obterDivisao, obterTodasDivisoes),
-   participantes.js (sortDivision), texto-do-resumo.js (scoreTag, ptsTag),
-   filtros.js (chama as funções daqui de dentro de aplicarFiltroAnalises,
-   passando diasFiltrados()).
+   Depende de: estado-global.js (state), participantes.js (sortDivision),
+   texto-do-resumo.js (scoreTag, ptsTag), filtros.js (chama as funções daqui
+   de dentro de aplicarFiltroAnalises, passando diasFiltrados()).
    ============================================================================ */
 
 /* --------------------------------------------------------------------------
    1. DESTAQUES — recorde do período, maior queda, participante mais
    consistente (menor desvio-padrão entre os dias com lançamento) e a média
-   por lançamento, considerando TODAS as faixas juntas dentro de `dias`.
+   por lançamento, considerando as duas Faixas juntas dentro de `dias`.
    -------------------------------------------------------------------------- */
 function calcularDestaques(dias){
-  let recorde = null;   // { name, divTitulo, day, value }
-  let queda = null;     // { name, divTitulo, day, value }
-  let consistente = null; // { name, divTitulo, desvio }
+  let recorde = null;   // { name, div, day, value }
+  let queda = null;     // { name, div, day, value }
+  let consistente = null; // { name, div, desvio }
   let soma = 0, contagem = 0;
 
-  obterTodasDivisoes().forEach(div=>{
-    (div.participantes || []).forEach(p=>{
+  ['x','y'].forEach(div=>{
+    state[div].forEach(p=>{
       const valores = [];
       dias.forEach(d=>{
         const v = p.scores[d];
         if(v === null || v === undefined) return;
         valores.push(v);
         soma += v; contagem++;
-        if(!recorde || v > recorde.value) recorde = { name:p.name, divTitulo: div.titulo, day:d, value:v };
-        if(!queda   || v < queda.value)   queda   = { name:p.name, divTitulo: div.titulo, day:d, value:v };
+        if(!recorde || v > recorde.value) recorde = { name:p.name, div, day:d, value:v };
+        if(!queda   || v < queda.value)   queda   = { name:p.name, div, day:d, value:v };
       });
       if(valores.length >= 2){
         const media = valores.reduce((s,v)=>s+v,0) / valores.length;
         const variancia = valores.reduce((s,v)=> s + (v-media)*(v-media), 0) / valores.length;
         const desvio = Math.sqrt(variancia);
-        if(!consistente || desvio < consistente.desvio) consistente = { name:p.name, divTitulo: div.titulo, desvio };
+        if(!consistente || desvio < consistente.desvio) consistente = { name:p.name, div, desvio };
       }
     });
   });
@@ -60,7 +58,7 @@ function destaqueCard(icone, rotulo, valor, detalhe){
     <div>
       <div class="destaque-rotulo">${rotulo}</div>
       <div class="destaque-valor">${escapeHtml(valor)}</div>
-      <div class="destaque-detalhe">${escapeHtml(detalhe)}</div>
+      <div class="destaque-detalhe">${detalhe}</div>
     </div>
   </div>`;
 }
@@ -79,17 +77,17 @@ function renderDestaques(dias){
 
   const cRecorde = d.recorde
     ? destaqueCard('🏆', 'Recorde do período', d.recorde.name,
-        `${scoreTag(d.recorde.value)} · Dia ${d.recorde.day+1} · ${d.recorde.divTitulo}`)
+        `${scoreTag(d.recorde.value)} · Dia ${d.recorde.day+1} · Faixa ${d.recorde.div.toUpperCase()}`)
     : destaqueCard('🏆', 'Recorde do período', '—', 'Nenhum lançamento ainda.');
 
   const cQueda = d.queda
     ? destaqueCard('📉', 'Maior queda', d.queda.name,
-        `${scoreTag(d.queda.value)} · Dia ${d.queda.day+1} · ${d.queda.divTitulo}`)
+        `${scoreTag(d.queda.value)} · Dia ${d.queda.day+1} · Faixa ${d.queda.div.toUpperCase()}`)
     : destaqueCard('📉', 'Maior queda', '—', 'Nenhum lançamento ainda.');
 
   const cConsistente = d.consistente
     ? destaqueCard('🎯', 'Mais consistente', d.consistente.name,
-        `desvio médio de ${d.consistente.desvio.toFixed(1)} pts · ${d.consistente.divTitulo}`)
+        `desvio médio de ${d.consistente.desvio.toFixed(1)} pts · Faixa ${d.consistente.div.toUpperCase()}`)
     : destaqueCard('🎯', 'Mais consistente', '—', 'Precisa de ao menos 2 dias lançados p/ alguém.');
 
   const cMedia = d.media !== null
@@ -102,7 +100,7 @@ function renderDestaques(dias){
 
 /* --------------------------------------------------------------------------
    2. GRÁFICO DE EVOLUÇÃO ACUMULADA — SVG construído na mão (sem lib
-   externa), um gráfico por faixa, com os 5 participantes de maior total
+   externa), um gráfico por Faixa, com os 5 participantes de maior total
    dentro do período filtrado. O total "acumulado" aqui nasce em 0 no
    primeiro dia filtrado (mesma semântica de rankingFiltrado, em filtros.js:
    soma só os dias que estão dentro do filtro).
@@ -110,32 +108,16 @@ function renderDestaques(dias){
 const CORES_GRAFICO = ['var(--chart-1)','var(--chart-2)','var(--chart-3)','var(--chart-4)','var(--chart-5)','var(--chart-6)'];
 const TOP_N_EVOLUCAO = 5;
 
-// Monta o HTML de UM card por faixa dentro de #evolucao-chart-board —
-// mesmo padrão de renderBoard()/renderAnalisesRankBoard(). Chamada de
-// dentro de aplicarFiltroAnalises() (filtros.js), antes de renderEvolucaoChart.
-function renderEvolucaoBoard(){
-  const board = document.getElementById('evolucao-chart-board');
-  if(!board) return;
-  board.innerHTML = obterTodasDivisoes().map(div => `
-    <div class="division" data-div-id="${div.id}" style="--div-accent:var(${div.cor || '--muted'})">
-      <div class="division-head"><div><div class="division-title">${escapeHtml(div.titulo)}</div></div></div>
-      <div class="chart-wrap" id="evolucao-chart-${div.id}"></div>
-    </div>
-  `).join('');
-}
-
-function renderEvolucaoChart(divId, dias){
-  const wrap = document.getElementById('evolucao-chart-' + divId);
+function renderEvolucaoChart(div, dias){
+  const wrap = document.getElementById('evolucao-chart-' + div);
   if(!wrap) return;
-  const div = obterDivisao(divId);
-  const participantes = (div && div.participantes) || [];
 
-  if(!dias.length || !participantes.length){
+  if(!dias.length || !state[div].length){
     wrap.innerHTML = '<div class="empty-hint">Sem dados suficientes para o gráfico.</div>';
     return;
   }
 
-  const serie = participantes.map(p=>{
+  const serie = state[div].map(p=>{
     let acumulado = 0;
     const pontos = dias.map(d=>{ acumulado += (p.scores[d] ?? 0); return acumulado; });
     return { name: p.name, pontos, total: acumulado };
@@ -194,7 +176,7 @@ function renderEvolucaoChart(divId, dias){
   }).join('');
 
   wrap.innerHTML = `
-    <svg viewBox="0 0 ${W} ${H}" class="chart-svg" role="img" aria-label="Evolução acumulada da ${escapeHtml(div.titulo)} no período selecionado">
+    <svg viewBox="0 0 ${W} ${H}" class="chart-svg" role="img" aria-label="Evolução acumulada da Faixa ${div.toUpperCase()} no período selecionado">
       ${gradesSvg}
       <line x1="${padL}" y1="${zeroY}" x2="${W-padR}" y2="${zeroY}" class="chart-zero-line"/>
       ${linhasSvg}
@@ -208,26 +190,14 @@ function renderEvolucaoChart(divId, dias){
    3. MAPA DE DESEMPENHO — tabela participante × dia, cada célula colorida
    por verde (ganho) ou vermelho (perda); a intensidade da cor é
    proporcional ao valor, relativa ao maior valor absoluto do período
-   filtrado NAQUELA faixa. Reaproveita .table-wrap (mesmo arrastar-pra-
+   filtrado NAQUELA Faixa. Reaproveita .table-wrap (mesmo arrastar-pra-
    rolar das tabelas de ranking) e a mesma ordenação de sortDivision().
    -------------------------------------------------------------------------- */
-
-// Monta o HTML (título + container) de CADA faixa dentro de #heatmap-board.
-// Chamada de dentro de aplicarFiltroAnalises() (filtros.js), antes de renderHeatmap.
-function renderHeatmapBoard(){
-  const board = document.getElementById('heatmap-board');
-  if(!board) return;
-  board.innerHTML = obterTodasDivisoes().map((div, i) => `
-    <div class="division-title${i>0?' heat-divider':''}" style="color:var(${div.cor || '--muted'});">${escapeHtml(div.titulo)}</div>
-    <div id="heatmap-wrap-${div.id}"></div>
-  `).join('');
-}
-
-function renderHeatmap(divId, dias){
-  const wrap = document.getElementById('heatmap-wrap-' + divId);
+function renderHeatmap(div, dias){
+  const wrap = document.getElementById('heatmap-wrap-' + div);
   if(!wrap) return;
 
-  const lista = sortDivision(divId);
+  const lista = sortDivision(div);
   if(!dias.length || !lista.length){
     wrap.innerHTML = '<div class="empty-hint">Sem dados suficientes para o mapa de desempenho.</div>';
     return;
@@ -243,17 +213,16 @@ function renderHeatmap(divId, dias){
     dias.map(d=>`<th>D${d+1}</th>`).join('') + '</tr>';
 
   const body = lista.map(p=>{
-    const nomeEscapado = escapeHtml(p.name);
     const celulas = dias.map(d=>{
       const v = p.scores[d];
       if(v === null || v === undefined){
-        return `<td class="heat-cell heat-empty" title="${nomeEscapado} — Dia ${d+1}: sem lançamento">·</td>`;
+        return `<td class="heat-cell heat-empty" title="${escapeHtml(p.name, 'atributo')} — Dia ${d+1}: sem lançamento">·</td>`;
       }
       const intensidade = (Math.min(1, Math.abs(v) / maxAbs)).toFixed(2);
       const classe = v > 0 ? 'heat-pos' : v < 0 ? 'heat-neg' : 'heat-zero';
-      return `<td class="heat-cell ${classe}" style="--intensidade:${intensidade}" title="${nomeEscapado} — Dia ${d+1}: ${scoreTag(v)}">${scoreTag(v)}</td>`;
+      return `<td class="heat-cell ${classe}" style="--intensidade:${intensidade}" title="${escapeHtml(p.name, 'atributo')} — Dia ${d+1}: ${scoreTag(v)}">${scoreTag(v)}</td>`;
     }).join('');
-    return `<tr><td class="name heat-name">${nomeEscapado}</td>${celulas}</tr>`;
+    return `<tr><td class="name heat-name">${escapeHtml(p.name)}</td>${celulas}</tr>`;
   }).join('');
 
   wrap.innerHTML = `<div class="table-wrap heat-scroll"><table class="heat-table"><thead>${head}</thead><tbody>${body}</tbody></table></div>`;
