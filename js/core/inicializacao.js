@@ -76,7 +76,7 @@ async function carregarModulosHtml(){
 
 async function iniciarApp(){
   document.body.setAttribute('data-app-screen', 'auth');
-  window.rgStartup?.status('Verificando sessão');
+  window.rgStartup?.status('Preparando ambiente');
   if(localStorage.getItem('rankingGeral_sidebarCollapsed') === '1'){
     toggleSidebarCollapse();
   }
@@ -85,7 +85,7 @@ async function iniciarApp(){
   if(!tokenSalvo){
     document.getElementById('auth-gate')?.classList.remove('hidden');
     window.rgStartup?.status('Aguardando acesso');
-    setTimeout(() => window.rgStartup?.hide(), 700);
+    setTimeout(() => window.rgStartup?.hide(), 6000);
     return;
   }
 
@@ -104,14 +104,14 @@ async function iniciarApp(){
     document.body.setAttribute('data-app-screen', 'app');
     aplicarPermissoesPapel();
     atualizarBarraIdentidade();
-    window.rgStartup?.status('Carregando ranking');
+    window.rgStartup?.status('Carregando dados');
     await Promise.resolve(loadState());
-    setTimeout(() => window.rgStartup?.hide(), 420);
+    setTimeout(() => window.rgStartup?.hide(), 6000);
   }catch(erro){
     console.error('Sessão salva inválida ou expirada', erro);
     encerrarSessaoLocal();
     window.rgStartup?.status('Aguardando acesso');
-    setTimeout(() => window.rgStartup?.hide(), 700);
+    setTimeout(() => window.rgStartup?.hide(), 6000);
   }
 }
 
