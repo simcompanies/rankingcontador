@@ -163,29 +163,34 @@
 
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-head">
-      <span class="sidebar-brand">Ranking Geral</span>
+      <div class="sidebar-brand-wrap"><span class="sidebar-brand">Ranking Geral</span><span class="sidebar-brand-sub">gestão de desempenho</span></div>
       <button type="button" class="sidebar-collapse-btn" id="sidebar-collapse-btn" onclick="toggleSidebarCollapse()" title="Recolher menu">«</button>
     </div>
-    <nav class="sidebar-nav">
+    <nav class="sidebar-nav" aria-label="Navegação principal">
       <button type="button" class="side-link active" data-view="faixas" onclick="mostrarView('faixas')">
-        <span class="side-icon">🏁</span><span class="side-label">Faixa X / Faixa Y</span>
+        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 20V4"></path><path d="M6 5h11l-2 4 2 4H6"></path></svg></span><span class="side-label">Faixas e ranking</span>
       </button>
       <button type="button" class="side-link" data-view="analises" onclick="mostrarView('analises')">
-        <span class="side-icon">📊</span><span class="side-label">Análises Gerais</span>
+        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="m7 15 3-4 3 2 4-6"></path></svg></span><span class="side-label">Análises gerais</span>
       </button>
       <button type="button" class="side-link" data-view="lancar" data-papel="administrador" onclick="mostrarView('lancar')">
-        <span class="side-icon">📝</span><span class="side-label">Lançar Pontuação</span>
+        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"></path><path d="M8 8h8M8 12h8M8 16h5"></path></svg></span><span class="side-label">Lançar pontuação</span>
       </button>
       <button type="button" class="side-link" data-view="config" data-papel="administrador" onclick="mostrarView('config')">
-        <span class="side-icon">⚙️</span><span class="side-label">Configurações Gerais</span>
+        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2 2-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-2.8v-.2a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1-2-2 .1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H4v-2.8h.2a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 2-2 .1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6V4h2.8v.2a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1 2 2-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v2.8h-.2a1.7 1.7 0 0 0-1.6 1z"></path></svg></span><span class="side-label">Configurações</span>
       </button>
     </nav>
+    <div class="sidebar-foot">
+      <span class="sidebar-foot-label">Sistema de ranking</span>
+      <span class="sidebar-foot-sub">Interface responsiva</span>
+    </div>
   </aside>
 
   <div class="main">
     <header class="topbar">
       <button type="button" class="sidebar-toggle-mobile" onclick="toggleSidebarMobile(true)" aria-label="Abrir menu">☰</button>
       <div class="topbar-title-wrap">
+        <div class="topbar-eyebrow">PAINEL DE GESTÃO</div>
         <h1 class="topbar-title">Ranking Geral</h1>
         <div class="status-line"><span class="status-dot" id="status-dot"></span><span id="sync-status">carregando...</span></div>
       </div>
