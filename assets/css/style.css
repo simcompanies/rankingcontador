@@ -2644,3 +2644,14 @@ body.light-mode .resumo-body{
   .main.ui-main{padding:0!important;}
   .panel,.division,.stat-card,.destaque-card,.faixa-card,.conta-card{box-shadow:none!important;background:#fff!important;color:#111!important;break-inside:avoid;}
 }
+
+
+/* ============================================================================
+   BRANDING / STARTUP V7
+   ============================================================================ */
+.brand-mark-image{overflow:hidden;padding:4px!important;background:linear-gradient(135deg,#10293e,#0a1723)!important}
+.brand-mark-image img{width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 3px 8px rgba(47,216,168,.18))}
+.auth-brand-logo{display:flex!important;align-items:center;justify-content:center;gap:11px}
+.auth-brand-logo img{width:40px;height:40px;object-fit:contain;display:block;filter:drop-shadow(0 5px 14px rgba(47,216,168,.18))}
+.auth-brand-logo span{display:inline-block}
+.sidebar.collapsed .brand-mark-image{width:36px!important;height:36px!important;padding:3px!important}

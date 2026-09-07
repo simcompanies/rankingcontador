@@ -12,7 +12,7 @@
    baixarem a versão nova em vez de continuarem presos no cache antigo.
    ============================================================================ */
 
-const CACHE_NAME = 'ranking-geral-v9';
+const CACHE_NAME = 'ranking-geral-v10';
 
 const APP_SHELL = [
   './',
@@ -59,6 +59,8 @@ const APP_SHELL = [
   './js/features/usuarios.js',
   './assets/icons/icon-192.png',
   './assets/icons/icon-512.png',
+  './assets/icons/icon-maskable-512.png',
+  './assets/logo-ranking-geral.png',
 ];
 
 self.addEventListener('install', (evento) => {
@@ -91,6 +93,20 @@ self.addEventListener('fetch', (evento) => {
     return;
   }
 
+  const isCritical = url.pathname.endsWith('/index.html') || url.pathname.endsWith('/sw.js') || url.pathname.endsWith('/manifest.webmanifest');
+  if(isCritical){
+    evento.respondWith(
+      fetch(evento.request).then((respostaRede) => {
+        if(respostaRede && respostaRede.ok){
+          const copia = respostaRede.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(evento.request, copia));
+        }
+        return respostaRede;
+      }).catch(() => caches.match(evento.request))
+    );
+    return;
+  }
+
   evento.respondWith(
     caches.match(evento.request).then((respostaCache) => {
       const buscaRede = fetch(evento.request)
@@ -102,9 +118,6 @@ self.addEventListener('fetch', (evento) => {
           return respostaRede;
         })
         .catch(() => respostaCache);
-
-      // "Stale-while-revalidate": mostra o cache na hora (se existir) e
-      // atualiza em segundo plano; sem cache, espera a rede.
       return respostaCache || buscaRede;
     })
   );

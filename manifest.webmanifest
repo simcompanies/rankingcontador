@@ -1,13 +1,13 @@
 {
   "name": "Ranking Geral — Faixa X / Faixa Y",
   "short_name": "Ranking Geral",
-  "description": "Lançamento e acompanhamento do ranking de pontuação por faixas (X/Y), com dashboard de análises.",
+  "description": "Ranking e análise de desempenho inspirados em mercados e índices do SimCompanies.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#12161d",
-  "theme_color": "#12161d",
+  "background_color": "#071019",
+  "theme_color": "#0b1118",
   "lang": "pt-BR",
   "icons": [
     {
