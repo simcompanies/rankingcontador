@@ -8,3 +8,10 @@ A duração nominal é de aproximadamente 6,6 segundos; o fluxo de login/API per
 
 
 V19: construção cinética orgânica baseada na geometria vetorial oficial, sem as animações mecânicas das versões anteriores.
+
+
+V24 — LOGO SVG DESENHADA DO ZERO
+- assets/logo-vectors/logo-oficial-desenho-zero.svg: fonte vetorial limpa da marca.
+- assets/logo-vectors/logo-oficial-monocromatica.svg: variante monocromática.
+- index.html: splash único com construção cinética em SVG, sem rastreio de imagem/clip-path.
+- A abertura permanece por cerca de 6,4 s e respeita prefers-reduced-motion.

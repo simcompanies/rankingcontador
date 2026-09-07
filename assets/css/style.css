@@ -3351,75 +3351,22 @@ V13 — LOGIN RESPONSIVO POR LIMITE REAL DA TELA / GRID 5x5
 
 
 
+
 /* ============================================================
-   V23 — CONSTRUÇÃO CINÉTICA VETORIAL POR COMPONENTES
-   ------------------------------------------------------------
-   Os vetores foram obtidos por segmentação cromática do logo oficial,
-   limpeza morfológica e simplificação de contorno. A animação usa
-   draw-on de paths normalizados (pathLength=1) + elevação suave.
-   Não usa clip-path, rastreio ao vivo nem sobreposição de PNG.
+   V24 — LOGO OFICIAL DESENHADA EM SVG + CONSTRUÇÃO CINÉTICA
    ============================================================ */
-#rg-startup{
-  position:fixed!important;inset:0!important;z-index:99999!important;
-  display:grid!important;place-items:center!important;overflow:hidden!important;
-  background:#071019!important;opacity:1!important;visibility:visible!important;
-  pointer-events:auto!important;transition:opacity .72s cubic-bezier(.22,1,.36,1),visibility .72s linear!important;
-}
+#rg-startup{position:fixed!important;inset:0!important;z-index:99999!important;display:grid!important;place-items:center!important;overflow:hidden!important;background:radial-gradient(circle at 50% 45%,#0c1a28 0%,#071019 52%,#050b10 100%)!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;transition:opacity .72s cubic-bezier(.22,1,.36,1),visibility .72s linear!important}
 #rg-startup.rg-startup-hide{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
-#rg-startup .rg-startup-stage{width:min(92vw,820px);height:min(88vh,820px);display:grid;place-items:center}
-#rg-startup .rg-vector-lockup{position:relative;width:min(74vw,570px);aspect-ratio:1;display:grid;place-items:center}
-#rg-startup .rg-vector-logo{width:100%;height:100%;overflow:visible;shape-rendering:geometricPrecision}
-#rg-startup .rg-piece{opacity:1;transform-box:view-box;transform-origin:50% 50%;}
-#rg-startup .rg-stroke{opacity:1;stroke-dasharray:1;stroke-dashoffset:1}
-#rg-startup .rg-fill{opacity:0}
-#rg-startup .rg-piece-bars .rg-fill,#rg-startup .rg-piece-people .rg-fill,#rg-startup .rg-piece-podium .rg-fill{transform-box:fill-box;transform-origin:center bottom}
-/* Desenho por contorno: o traçado aparece primeiro e o preenchimento chega logo atrás. */
-#rg-startup .rg-piece-arc-top .rg-stroke{animation:rg23-draw 1.00s cubic-bezier(.33,1,.68,1) .00s forwards}
-#rg-startup .rg-piece-arc-left .rg-stroke{animation:rg23-draw 1.05s cubic-bezier(.33,1,.68,1) .16s forwards}
-#rg-startup .rg-piece-arc-right .rg-stroke{animation:rg23-draw 1.05s cubic-bezier(.33,1,.68,1) .22s forwards}
-#rg-startup .rg-piece-arc-bottom .rg-stroke{animation:rg23-draw 1.00s cubic-bezier(.33,1,.68,1) .30s forwards}
-#rg-startup .rg-piece-bars .rg-stroke{animation:rg23-draw 1.00s cubic-bezier(.33,1,.68,1) .54s forwards}
-#rg-startup .rg-piece-r .rg-stroke{animation:rg23-draw 1.25s cubic-bezier(.33,1,.68,1) 1.08s forwards}
-#rg-startup .rg-piece-g .rg-stroke{animation:rg23-draw 1.25s cubic-bezier(.33,1,.68,1) 1.28s forwards}
-#rg-startup .rg-piece-arrow-down .rg-stroke{animation:rg23-draw 1.00s cubic-bezier(.33,1,.68,1) 1.72s forwards}
-#rg-startup .rg-piece-arrow-up .rg-stroke{animation:rg23-draw 1.15s cubic-bezier(.33,1,.68,1) 1.56s forwards}
-#rg-startup .rg-piece-people .rg-stroke{animation:rg23-draw 1.00s cubic-bezier(.33,1,.68,1) 2.18s forwards}
-#rg-startup .rg-piece-podium .rg-stroke{animation:rg23-draw 1.10s cubic-bezier(.33,1,.68,1) 2.28s forwards}
-
-/* Elevação contínua — sem quicar nem “encaixar” mecanicamente. */
-#rg-startup .rg-piece-bars,#rg-startup .rg-piece-people,#rg-startup .rg-piece-podium{opacity:0;animation:rg23-rise 1.05s cubic-bezier(.22,.9,.28,1) .54s forwards}
-#rg-startup .rg-piece-r{opacity:0;animation:rg23-rise-r 1.25s cubic-bezier(.22,.9,.28,1) 1.08s forwards}
-#rg-startup .rg-piece-g{opacity:0;animation:rg23-rise-g 1.25s cubic-bezier(.22,.9,.28,1) 1.28s forwards}
-#rg-startup .rg-piece-arrow-up{opacity:0;animation:rg23-rise-arrow 1.15s cubic-bezier(.22,.9,.28,1) 1.56s forwards}
-#rg-startup .rg-piece-arrow-down{opacity:0;animation:rg23-rise-arrow-down 1.0s cubic-bezier(.22,.9,.28,1) 1.72s forwards}
-#rg-startup .rg-piece-arc-top,#rg-startup .rg-piece-arc-left,#rg-startup .rg-piece-arc-right,#rg-startup .rg-piece-arc-bottom{animation:rg23-arc-in 1.1s cubic-bezier(.22,.9,.28,1) 0s both}
-
-/* Cada preenchimento segue o próprio contorno; nenhum recorte externo é necessário. */
-#rg-startup .rg-piece-arc-top .rg-fill{animation:rg23-fill 0.48s ease-out .72s forwards}
-#rg-startup .rg-piece-arc-left .rg-fill{animation:rg23-fill 0.48s ease-out .86s forwards}
-#rg-startup .rg-piece-arc-right .rg-fill{animation:rg23-fill 0.48s ease-out .92s forwards}
-#rg-startup .rg-piece-arc-bottom .rg-fill{animation:rg23-fill 0.48s ease-out 1.00s forwards}
-#rg-startup .rg-piece-bars .rg-fill{animation:rg23-fill 0.52s ease-out 1.22s forwards}
-#rg-startup .rg-piece-r .rg-fill{animation:rg23-fill 0.52s ease-out 2.12s forwards}
-#rg-startup .rg-piece-g .rg-fill{animation:rg23-fill 0.52s ease-out 2.32s forwards}
-#rg-startup .rg-piece-arrow-up .rg-fill{animation:rg23-fill 0.45s ease-out 2.36s forwards}
-#rg-startup .rg-piece-arrow-down .rg-fill{animation:rg23-fill 0.45s ease-out 2.48s forwards}
-#rg-startup .rg-piece-people .rg-fill{animation:rg23-fill 0.48s ease-out 2.88s forwards}
-#rg-startup .rg-piece-podium .rg-fill{animation:rg23-fill 0.55s ease-out 3.00s forwards}
-#rg-startup .rg-wordmark{position:absolute;left:50%;bottom:-8.5%;transform:translate(-50%,10px);opacity:0;white-space:nowrap;font-weight:900;font-size:clamp(18px,2.8vw,26px);letter-spacing:.12em;color:#f4f8fb;text-shadow:0 12px 30px rgba(0,0,0,.24);animation:rg23-word 1.0s cubic-bezier(.22,1,.36,1) 4.95s forwards}
-#rg-startup .rg-wordmark b{color:#01AACA;font-weight:950}
-@keyframes rg23-draw{to{stroke-dashoffset:0}}
-@keyframes rg23-fill{from{opacity:0}to{opacity:1}}
-@keyframes rg23-rise{0%{opacity:0;transform:translateY(54px) scale(.985)}65%{opacity:1;transform:translateY(-4px) scale(1.002)}100%{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes rg23-rise-r{0%{opacity:0;transform:translate(0,48px) scale(.985)}70%{opacity:1;transform:translate(0,-3px) scale(1.003)}100%{opacity:1;transform:translate(0,0) scale(1)}}
-@keyframes rg23-rise-g{0%{opacity:0;transform:translate(18px,42px) scale(.982)}70%{opacity:1;transform:translate(0,-3px) scale(1.003)}100%{opacity:1;transform:translate(0,0) scale(1)}}
-@keyframes rg23-rise-arrow{0%{opacity:0;transform:translate(-20px,40px)}70%{opacity:1;transform:translate(3px,-3px)}100%{opacity:1;transform:translate(0,0)}}
-@keyframes rg23-rise-arrow-down{0%{opacity:0;transform:translate(20px,34px)}70%{opacity:1;transform:translate(-2px,-2px)}100%{opacity:1;transform:translate(0,0)}}
-@keyframes rg23-arc-in{0%{transform:scale(.97);opacity:.15}100%{transform:scale(1);opacity:1}}
-@keyframes rg23-word{0%{opacity:0;transform:translate(-50%,12px);letter-spacing:.20em}100%{opacity:1;transform:translate(-50%,0);letter-spacing:.12em}}
-@media(max-width:760px){#rg-startup .rg-startup-stage{width:94vw;height:82vh}#rg-startup .rg-vector-lockup{width:min(82vw,430px)}#rg-startup .rg-wordmark{bottom:-10%;font-size:18px}}
+#rg-startup .rg-startup-stage{width:min(94vw,860px);height:min(92vh,860px);display:grid;place-items:center}
+#rg-startup .rg-startup-lockup{position:relative;width:min(72vw,570px);aspect-ratio:1;display:grid;place-items:center}
+#rg-startup .rg-build-svg{width:100%;height:100%;overflow:visible;shape-rendering:geometricPrecision}
+#rg-startup .rg-build-guides{opacity:0;transform-box:fill-box;transform-origin:center}
+#rg-startup .rg-build-glow{opacity:0;transform-box:fill-box;transform-origin:center}
+#rg-startup .rg-build-bars rect,#rg-startup .rg-build-podium > * ,#rg-startup .rg-build-people > g{opacity:0;transform-box:fill-box;transform-origin:center bottom}
+#rg-startup .draw{stroke-dasharray:1;stroke-dashoffset:1}
+#rg-startup .rg-build-wordmark{position:absolute;left:50%;bottom:-7%;transform:translate(-50%,18px);opacity:0;white-space:nowrap;font-weight:900;font-size:clamp(18px,3vw,30px);letter-spacing:.12em;color:#f4f8fb;text-shadow:0 12px 30px rgba(0,0,0,.35)}
+#rg-startup .rg-build-wordmark strong{color:#39E7F3;font-weight:950}
+#rg-startup .rg-build-svg *{vector-effect:non-scaling-stroke}
+#rg-startup .rg-build-svg #r-glyph{vector-effect:none}
+@media(max-width:760px){#rg-startup .rg-startup-stage{width:96vw;height:84vh}#rg-startup .rg-startup-lockup{width:min(82vw,450px)}#rg-startup .rg-build-wordmark{bottom:-9%;font-size:20px}}
 .rg-reduced-motion #rg-startup *{animation:none!important;transition:none!important}
-.rg-reduced-motion #rg-startup .rg-stroke{opacity:0!important;stroke-dashoffset:0!important}
-.rg-reduced-motion #rg-startup .rg-fill{opacity:1!important}
-.rg-reduced-motion #rg-startup .rg-wordmark{opacity:1!important;transform:translate(-50%,0)!important}
-

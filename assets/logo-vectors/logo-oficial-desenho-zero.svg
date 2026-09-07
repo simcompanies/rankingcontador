@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-labelledby="rgTitle rgDesc">
+  <title id="rgTitle">Ranking Geral</title>
+  <desc id="rgDesc">Símbolo oficial com arcos, barras de crescimento, letras R e G, setas e pódio.</desc>
+  <defs>
+    <linearGradient id="rgCyan" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#39E7F3"/><stop offset="1" stop-color="#01AACA"/></linearGradient>
+    <linearGradient id="rgBlue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#173E63"/><stop offset="1" stop-color="#012443"/></linearGradient>
+    <linearGradient id="rgViolet" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C9B7FF"/><stop offset="1" stop-color="#8F70FF"/></linearGradient>
+    <linearGradient id="rgPink" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF86C0"/><stop offset="1" stop-color="#FF5FAD"/></linearGradient>
+    <linearGradient id="rgDown" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF8A35"/><stop offset="1" stop-color="#FF4E18"/></linearGradient>
+    <filter id="rgSoftGlow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+
+  <!-- guias sutis de construção -->
+  <g id="construction-guides" fill="none" stroke="#2E6C96" stroke-width="3" opacity=".15">
+    <circle cx="500" cy="500" r="390"/>
+    <circle cx="500" cy="500" r="300"/>
+    <path d="M120 500h760M500 120v760"/>
+  </g>
+
+  <!-- brilho ambiente -->
+  <circle cx="500" cy="500" r="270" fill="#01AACA" opacity=".08" filter="url(#rgSoftGlow)"/>
+
+  <!-- arcos da identidade -->
+  <g id="arcs" fill="none" stroke-linecap="round">
+    <path id="arc-left" d="M160 520 A340 340 0 0 1 500 160" stroke="url(#rgCyan)" stroke-width="42" pathLength="1"/>
+    <path id="arc-top" d="M250 265 A340 340 0 0 1 760 245" stroke="url(#rgViolet)" stroke-width="22" pathLength="1"/>
+    <path id="arc-right" d="M815 285 A340 340 0 0 1 845 665" stroke="url(#rgCyan)" stroke-width="32" pathLength="1"/>
+    <path id="arc-bottom" d="M180 700 A340 340 0 0 0 820 735" stroke="url(#rgViolet)" stroke-width="22" pathLength="1"/>
+  </g>
+
+  <!-- barras do gráfico -->
+  <g id="bars" fill="url(#rgCyan)">
+    <rect id="bar-1" x="360" y="300" width="54" height="145" rx="14"/>
+    <rect id="bar-2" x="425" y="255" width="54" height="190" rx="14"/>
+    <rect id="bar-3" x="490" y="205" width="54" height="240" rx="14"/>
+    <rect id="bar-4" x="555" y="150" width="54" height="295" rx="14"/>
+  </g>
+
+  <!-- R -->
+  <g id="letter-r" transform="translate(285 675) scale(.255 -.255)" fill="url(#rgBlue)" stroke="#082F4F" stroke-width="8" stroke-linejoin="round" pathLength="1">
+    <path id="r-glyph" d="M735 831Q856 831 908.5 876.0Q961 921 961 1024Q961 1126 908.5 1170.0Q856 1214 735 1214H573V831ZM573 565V0H188V1493H776Q1071 1493 1208.5 1394.0Q1346 1295 1346 1081Q1346 933 1274.5 838.0Q1203 743 1059 698Q1138 680 1200.5 616.5Q1263 553 1327 424L1536 0H1126L944 371Q889 483 832.5 524.0Q776 565 682 565Z"/>
+  </g>
+
+  <!-- G -->
+  <g id="letter-g" fill="none" stroke="url(#rgCyan)" stroke-width="82" stroke-linecap="round" stroke-linejoin="round">
+    <path id="g-ring" d="M710 485 A190 190 0 1 1 690 320" fill="none" pathLength="1"/>
+    <path id="g-bar" d="M665 485h115" fill="none" pathLength="1"/>
+  </g>
+
+  <!-- seta de crescimento -->
+  <g id="arrow-up" fill="url(#rgCyan)" stroke="#2ADDEA" stroke-linecap="round" stroke-linejoin="round">
+    <path id="arrow-up-shaft" d="M470 590 L745 315" fill="none" stroke-width="40" pathLength="1"/>
+    <path id="arrow-up-head" d="M704 300 L780 270 L752 347 Z" stroke-width="4"/>
+  </g>
+
+  <!-- seta de queda -->
+  <g id="arrow-down" fill="url(#rgDown)" stroke="#FF6B29" stroke-linecap="round" stroke-linejoin="round">
+    <path id="arrow-down-shaft" d="M845 340 A250 250 0 0 1 860 635" fill="none" stroke-width="28" pathLength="1"/>
+    <path id="arrow-down-head" d="M835 625 L862 690 L892 628 Z" stroke-width="4"/>
+  </g>
+
+  <!-- pódio e participantes -->
+  <g id="podium">
+    <path id="podium-base-left" d="M265 820 H480 L420 870 H230 Z" fill="url(#rgBlue)"/>
+    <path id="podium-base-right" d="M520 820 H735 L770 870 H580 Z" fill="url(#rgViolet)"/>
+    <rect id="podium-left" x="285" y="785" width="135" height="110" rx="18" fill="url(#rgBlue)"/>
+    <rect id="podium-center" x="430" y="745" width="140" height="150" rx="20" fill="url(#rgCyan)"/>
+    <rect id="podium-right" x="580" y="785" width="135" height="110" rx="18" fill="url(#rgBlue)"/>
+  </g>
+  <g id="people" fill="#EAF5FF">
+    <g id="person-left"><circle cx="350" cy="740" r="30"/><path d="M300 775 Q350 735 400 775 V805 H300Z" fill="#123B5D"/></g>
+    <g id="person-center"><circle cx="500" cy="700" r="34" fill="#D8FBFF"/><path d="M445 745 Q500 698 555 745 V780 H445Z" fill="#01AACA"/></g>
+    <g id="person-right"><circle cx="650" cy="740" r="30"/><path d="M600 775 Q650 735 700 775 V805 H600Z" fill="#123B5D"/></g>
+  </g>
+
+  <!-- acabamento -->
+  <path id="accent-pink" d="M180 640 L250 580 L305 640" fill="none" stroke="url(#rgPink)" stroke-width="28" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
+</svg>
