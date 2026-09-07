@@ -261,5 +261,17 @@
   <script src="js/core/renderizacao.js"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
   <script src="js/core/inicializacao.js"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
   <script src="v103-ui.js"></script>
+  <script>
+    // V110: garante que uma instalação antiga do Service Worker não mantenha
+    // a página inicial presa em uma versão anterior. Não remove sessão nem
+    // dados locais; apenas solicita atualização do worker.
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.getRegistration().then(function (reg) {
+          if (reg) reg.update().catch(function () {});
+        }).catch(function () {});
+      });
+    }
+  </script>
 </body>
 </html>
