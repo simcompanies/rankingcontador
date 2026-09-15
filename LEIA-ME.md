@@ -41,3 +41,6 @@ node tests/test-regressao.js
 ## Endpoint ativo da API
 
 `https://script.google.com/macros/s/AKfycbz91T9ht4j0ApbkYjhRGa2fUeOOWGqfuLrPFjnYWhJC69SxpzoNGJEZuiotV40z21L_Xg/exec`
+
+## v46 — organização da interface
+A v46 reorganiza as informações por intenção de uso. Visão Geral foi simplificada, regras foram movidas para Regras e Ajuda, dias e resumos foram concentrados em Lançamentos e Administração passou a ser dividida entre Participantes, Faixas, Usuários, Atividade e Sistema. A mecânica de pontuação não foi alterada.

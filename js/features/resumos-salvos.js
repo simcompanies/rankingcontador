@@ -3,7 +3,7 @@
    ----------------------------------------------------------------------------
    Histórico de resumos salvos no backend (aba não editável da planilha —
    sobrevive mesmo se os dados do dia a dia forem limpos). O histórico
-   completo aparece em Configurações Gerais; só o mais recente também
+   completo aparece em Lançamentos; só o mais recente também
    aparece em Análises Gerais (renderUltimoResumo).
 
    Depende de: config-api.js (chamarAPIGet), estado-global.js
@@ -59,12 +59,11 @@ function resumoHistoricoHtml(r, i){
 
 // Desenha a lista completa de resumos salvos (Configurações Gerais), do mais recente para o mais antigo.
 function renderResumosSalvos(){
-  const alvos = [document.getElementById('resumos-salvos-lista'), document.getElementById('resumos-conteudo-lista')].filter(Boolean);
-  if(!alvos.length) return;
-  const html = resumosSalvos.length
+  const wrap = document.getElementById('resumos-salvos-lista');
+  if(!wrap) return;
+  wrap.innerHTML = resumosSalvos.length
     ? resumosSalvos.map((r,i)=>resumoHistoricoHtml(r,i)).join('')
     : '<div class="empty-hint">Nenhum resumo salvo ainda.</div>';
-  alvos.forEach(wrap=>{ wrap.innerHTML = html; });
 }
 
 /* Mostra só o resumo mais recente (resumosSalvos[0] — o backend devolve a

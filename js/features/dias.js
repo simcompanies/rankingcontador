@@ -27,10 +27,10 @@ async function addDay(){
 }
 
 // Remove um dia específico (por índice) de TODAS as faixas, inclusive sua data — usado no painel "Gerenciar dias lançados".
-function removeDay(dayIdx){
+async function removeDay(dayIdx){
   if(!exigirAdministrador()) return;
   if(dayIdx < 0 || dayIdx >= state.days) return;
-  if(!confirm(`Remover o Dia ${dayIdx+1}? Os dias seguintes serão renumerados.`)) return;
+  if(!await uiConfirm(`Remover o Dia ${dayIdx+1}? Os dias seguintes serão renumerados.`, { title:'Remover lançamento', variant:'danger', confirmText:'Remover dia' })) return;
   cancelarEstadoPendenteEstrutural('um dia foi removido');
   obterTodasDivisoes().forEach(div=>{
     (div.participantes || []).forEach(p=>p.scores.splice(dayIdx,1));

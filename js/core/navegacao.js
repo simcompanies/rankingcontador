@@ -23,6 +23,12 @@ const VIEWS_ADMIN = ['lancar','config'];
 // dias lançados), dispara o carregamento na hora em que a view é aberta.
 function mostrarView(nome){
   if(VIEWS_ADMIN.indexOf(nome) !== -1 && !souAdmin()) nome = 'faixas';
+  const TITULOS_VIEW = {
+    faixas:'Visão Geral', analises:'Análises', acumulado:'Acumulado Geral',
+    conteudo:'Regras e Ajuda', lancar:'Lançamentos', config:'Administração', conta:'Minha conta'
+  };
+  const titulo = document.querySelector('.topbar-title');
+  if(titulo) titulo.textContent = TITULOS_VIEW[nome] || 'Ranking Geral';
   const main = document.querySelector('.main');
   if(main) main.setAttribute('data-active-view', nome);
   VIEWS.forEach(function(v){
@@ -32,8 +38,12 @@ function mostrarView(nome){
   document.querySelectorAll('.side-link').forEach(function(btn){
     btn.classList.toggle('active', btn.dataset.view === nome);
   });
-  if(nome === 'config') carregarUsuariosSeNecessario();
-  if(nome === 'config' || nome === 'analises' || nome === 'conteudo') carregarResumosSeNecessario();
+  if(nome === 'config'){
+    carregarUsuariosSeNecessario();
+    if(typeof renderGerenciarParticipantes === 'function') renderGerenciarParticipantes();
+    if(typeof renderSistemaAdmin === 'function') renderSistemaAdmin();
+  }
+  if(nome === 'lancar' || nome === 'analises') carregarResumosSeNecessario();
   if(nome === 'analises'){ popularFiltroDias(); aplicarFiltroAnalises(); }
   if(nome === 'acumulado') carregarHistoricoSeries();
   if(nome === 'conta') renderContaView();

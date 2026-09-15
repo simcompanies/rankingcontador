@@ -13,7 +13,7 @@
    ============================================================================ */
 
 const CACHE_PREFIX = 'ranking-contador-';
-const CACHE_NAME = CACHE_PREFIX + 'v44-api-url';
+const CACHE_NAME = CACHE_PREFIX + 'v46-organizacao';
 
 const APP_SHELL = [
   './',
@@ -40,6 +40,7 @@ const APP_SHELL = [
   './conteudo.html',
   './js/a11y/a11y.js',
   './js/a11y/acessibilidade.js',
+  './js/core/dialogos.js',
   './js/core/config-api.js',
   './js/core/estado-global.js',
   './js/core/identidade.js',
@@ -61,6 +62,7 @@ const APP_SHELL = [
   './js/features/filtros.js',
   './js/features/analises-dashboard.js',
   './js/features/gerenciar-dias-lancados.js',
+  './js/features/organizacao-ui.js',
   './js/features/resumos-salvos.js',
   './js/features/usuarios.js',
   './assets/icons/icon-192.png',

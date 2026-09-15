@@ -10,10 +10,10 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./assets/icons/icon-192.png">
 <link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
-<script src="./js/a11y/a11y.js?v=20260915-series-v44-api"></script>
-<link rel="stylesheet" href="./assets/css/style.css?v=20260915-series-v44-api">
-<link rel="stylesheet" href="./style.css?v=20260915-series-v44-api-root" media="not all" id="style-fallback">
-  <meta name="app-build" content="20260915-series-v44-api">
+<script src="./js/a11y/a11y.js?v=20260915-series-v46-organizacao"></script>
+<link rel="stylesheet" href="./assets/css/style.css?v=20260915-series-v46-organizacao">
+<link rel="stylesheet" href="./style.css?v=20260915-series-v46-organizacao-root" media="not all" id="style-fallback">
+  <meta name="app-build" content="20260915-series-v46-organizacao">
 <style id="screen-guard">
   #app-shell.hidden, body:not([data-app-screen="app"]) #app-shell { display:none !important; }
   body[data-app-screen="app"] #slot-modulo-0 { display:none !important; }
@@ -326,7 +326,7 @@
         <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h16"></path><path d="M6 16l4-5 3 2 5-7"></path><path d="M18 6h-4M18 6v4"></path></svg></span><span class="side-label">Acumulado Geral</span>
       </button>
       <button type="button" class="side-link" data-view="conteudo" onclick="mostrarView('conteudo')">
-        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h9l3 3v15H6z"></path><path d="M15 3v4h4"></path><path d="M9 12h6M9 16h6"></path></svg></span><span class="side-label">Conteúdo</span>
+        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h9l3 3v15H6z"></path><path d="M15 3v4h4"></path><path d="M9 12h6M9 16h6"></path></svg></span><span class="side-label">Regras e Ajuda</span>
       </button>
     </nav>
 
@@ -335,6 +335,10 @@
       <button type="button" class="side-link" data-view="lancar" data-papel="administrador" onclick="mostrarView('lancar')">
         <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h14v16H5z"></path><path d="M8 8h8M8 12h8M8 16h5"></path></svg></span><span class="side-label">Lançamentos</span>
       </button>
+    </nav>
+
+    <div class="sidebar-section-label sidebar-admin-label" data-papel="administrador">Gestão</div>
+    <nav class="sidebar-nav">
       <button type="button" class="side-link" data-view="config" data-papel="administrador" onclick="mostrarView('config')">
         <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .3 1.82l.06.06-1.5 1.5-.06-.06a1.65 1.65 0 0 0-1.82-.3 1.65 1.65 0 0 0-1 1.5V21h-2v-.08a1.65 1.65 0 0 0-1-1.5 1.65 1.65 0 0 0-1.82.3l-.06.06-1.5-1.5.06-.06a1.65 1.65 0 0 0 .3-1.82 1.65 1.65 0 0 0-1.5-1H3v-2h.08a1.65 1.65 0 0 0 1.5-1 1.65 1.65 0 0 0-.3-1.82l-.06-.06 1.5-1.5.06.06a1.65 1.65 0 0 0 1.82.3 1.65 1.65 0 0 0 1-1.5V3h2v.08a1.65 1.65 0 0 0 1 1.5 1.65 1.65 0 0 0 1.82-.3l.06-.06 1.5 1.5-.06.06a1.65 1.65 0 0 0 1.5 1H21v2h-.08a1.65 1.65 0 0 0-1.5 1z"></path></svg></span><span class="side-label">Administração</span>
       </button>
@@ -346,8 +350,12 @@
     <header class="topbar">
       <button type="button" class="sidebar-toggle-mobile" onclick="toggleSidebarMobile(true)" aria-label="Abrir menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
       <div class="topbar-title-wrap">
-        <h1 class="topbar-title">Ranking Geral</h1>
+        <h1 class="topbar-title">Visão Geral</h1>
         <div class="status-line"><span class="status-dot" id="status-dot"></span><span id="sync-status">carregando...</span></div>
+      </div>
+      <div class="topbar-context" aria-label="Contexto da série atual">
+        <span class="topbar-context-chip" id="topbar-series-context">Série —</span>
+        <span class="topbar-context-chip muted" id="topbar-last-launch">Sem lançamentos</span>
       </div>
 
       <div class="identity-bar" id="identity-bar">
@@ -387,30 +395,32 @@
        import/export foi introduzido, para não alterar como os onclick="..." e
        demais funções se enxergam entre si.
        ============================================================================ -->
-  <script src="./js/core/config-api.js?v=20260915-series-v44-api"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
-  <script src="./js/core/estado-global.js?v=20260915-series-v44-api"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
-  <script src="./js/features/faixas-dinamicas.js?v=20260915-series-v44-api"></script><!-- Gerenciamento de faixas dinâmicas. -->
-  <script src="./js/core/identidade.js?v=20260915-series-v44-api"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
-  <script src="./js/core/navegacao.js?v=20260915-series-v44-api"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
-  <script src="./js/core/sidebar.js?v=20260915-series-v44-api"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->
-  <script src="./js/a11y/acessibilidade.js?v=20260915-series-v44-api"></script><!-- Painel de acessibilidade (UI) — liga os controles a window.A11Y, de a11y.js. -->
-  <script src="./js/features/configuracoes-de-conta.js?v=20260915-series-v44-api"></script><!-- Tela "Minha conta". -->
-  <script src="./js/features/modulo-0.js?v=20260915-series-v44-api"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
-  <script src="./js/features/texto-do-resumo.js?v=20260915-series-v44-api"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
-  <script src="./js/features/colagem.js?v=20260915-series-v44-api"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
-  <script src="./js/features/colagem-gemini.js?v=20260915-series-v44-api"></script><!-- Regras de leitura e integração com Gemini — restaura o mecanismo de 22/08. -->
-  <script src="./js/features/planilha-mestra.js?v=20260915-series-v44-api"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
-  <script src="./js/features/series-semanais.js?v=20260915-series-v44-api"></script><!-- Séries de 7 dias, datas retroativas e Acumulado Geral. -->
-  <script src="./js/features/participantes.js?v=20260915-series-v44-api"></script><!-- CRUD de participante + cálculo de ranking (total/tiebreak/sort). -->
-  <script src="./js/features/dias.js?v=20260915-series-v44-api"></script><!-- Adicionar/remover um dia. -->
-  <script src="./js/features/formulario-lancamento-dia.js?v=20260915-series-v44-api"></script><!-- Aba "Preencher" do Lançar Pontuação. -->
-  <script src="./js/features/analises-gerais.js?v=20260915-series-v44-api"></script><!-- Cartões de estatística do Módulo 2. -->
-  <script src="./js/features/filtros.js?v=20260915-series-v44-api"></script><!-- Filtro por período/dias do Módulo 2. -->
-  <script src="./js/features/analises-dashboard.js?v=20260915-series-v44-api"></script><!-- Destaques + gráfico de evolução + mapa de desempenho (chamados de dentro de filtros.js). -->
-  <script src="./js/features/gerenciar-dias-lancados.js?v=20260915-series-v44-api"></script><!-- Lista de dias lançados (Módulos 3 e 4). -->
-  <script src="./js/features/resumos-salvos.js?v=20260915-series-v44-api"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
-  <script src="./js/features/usuarios.js?v=20260915-series-v44-api"></script><!-- Painel de administração de usuários (Módulo 4). -->
-  <script src="./js/core/renderizacao.js?v=20260915-series-v44-api"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
-  <script src="./js/core/inicializacao.js?v=20260915-series-v44-api"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
+  <script src="./js/core/dialogos.js?v=20260915-series-v46-organizacao"></script><!-- Sistema visual unificado para alertas, confirmações e entradas. -->
+  <script src="./js/core/config-api.js?v=20260915-series-v46-organizacao"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
+  <script src="./js/core/estado-global.js?v=20260915-series-v46-organizacao"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
+  <script src="./js/features/faixas-dinamicas.js?v=20260915-series-v46-organizacao"></script><!-- Gerenciamento de faixas dinâmicas. -->
+  <script src="./js/core/identidade.js?v=20260915-series-v46-organizacao"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
+  <script src="./js/core/navegacao.js?v=20260915-series-v46-organizacao"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
+  <script src="./js/core/sidebar.js?v=20260915-series-v46-organizacao"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->
+  <script src="./js/a11y/acessibilidade.js?v=20260915-series-v46-organizacao"></script><!-- Painel de acessibilidade (UI) — liga os controles a window.A11Y, de a11y.js. -->
+  <script src="./js/features/configuracoes-de-conta.js?v=20260915-series-v46-organizacao"></script><!-- Tela "Minha conta". -->
+  <script src="./js/features/modulo-0.js?v=20260915-series-v46-organizacao"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
+  <script src="./js/features/texto-do-resumo.js?v=20260915-series-v46-organizacao"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
+  <script src="./js/features/colagem.js?v=20260915-series-v46-organizacao"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
+  <script src="./js/features/colagem-gemini.js?v=20260915-series-v46-organizacao"></script><!-- Regras de leitura e integração com Gemini — restaura o mecanismo de 22/08. -->
+  <script src="./js/features/planilha-mestra.js?v=20260915-series-v46-organizacao"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
+  <script src="./js/features/series-semanais.js?v=20260915-series-v46-organizacao"></script><!-- Séries de 7 dias, datas retroativas e Acumulado Geral. -->
+  <script src="./js/features/participantes.js?v=20260915-series-v46-organizacao"></script><!-- CRUD de participante + cálculo de ranking (total/tiebreak/sort). -->
+  <script src="./js/features/dias.js?v=20260915-series-v46-organizacao"></script><!-- Adicionar/remover um dia. -->
+  <script src="./js/features/formulario-lancamento-dia.js?v=20260915-series-v46-organizacao"></script><!-- Aba "Preencher" do Lançar Pontuação. -->
+  <script src="./js/features/analises-gerais.js?v=20260915-series-v46-organizacao"></script><!-- Cartões de estatística do Módulo 2. -->
+  <script src="./js/features/filtros.js?v=20260915-series-v46-organizacao"></script><!-- Filtro por período/dias do Módulo 2. -->
+  <script src="./js/features/analises-dashboard.js?v=20260915-series-v46-organizacao"></script><!-- Destaques + gráfico de evolução + mapa de desempenho (chamados de dentro de filtros.js). -->
+  <script src="./js/features/gerenciar-dias-lancados.js?v=20260915-series-v46-organizacao"></script>
+  <script src="./js/features/organizacao-ui.js?v=20260915-series-v46-organizacao"></script><!-- Contexto operacional, gestão central e organização de informação. --><!-- Lista de dias lançados (Módulos 3 e 4). -->
+  <script src="./js/features/resumos-salvos.js?v=20260915-series-v46-organizacao"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
+  <script src="./js/features/usuarios.js?v=20260915-series-v46-organizacao"></script><!-- Painel de administração de usuários (Módulo 4). -->
+  <script src="./js/core/renderizacao.js?v=20260915-series-v46-organizacao"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
+  <script src="./js/core/inicializacao.js?v=20260915-series-v46-organizacao"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
 </body>
 </html>

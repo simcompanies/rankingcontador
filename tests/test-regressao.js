@@ -143,7 +143,7 @@ ok('fila serializada de saves existe', planilha.includes('saveInFlight') && plan
 ok('Service Worker é registrado', init.includes("serviceWorker.register('./sw.js'"));
 ok('SW só remove caches com prefixo próprio', sw.includes('nome.startsWith(CACHE_PREFIX)'));
 ok('Conteúdo está no app shell', sw.includes("'./modules/conteudo.html'"));
-ok('renderer escreve na página Conteúdo', resumos.includes("getElementById('resumos-conteudo-lista')"));
+ok('histórico de resumos foi concentrado em Lançamentos', resumos.includes("getElementById('resumos-salvos-lista')") && !resumos.includes("getElementById('resumos-conteudo-lista')"));
 ok('credencial bootstrap não está hardcoded', !code.includes('ADMIN_PADRAO_SENHA') && code.includes('ADMIN_BOOTSTRAP_SENHA'));
 ok('backend possui controle monotônico de revisão', code.includes("'Ranking_Revision'") && code.includes("codigo:'REVISION_CONFLICT'"));
 ok('backend preserva Data_Adicionado recebida', code.includes('p.createdAt ? new Date(p.createdAt)'));

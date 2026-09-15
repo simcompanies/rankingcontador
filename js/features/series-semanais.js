@@ -71,7 +71,7 @@ async function encerrarSerieAtual(modo){
   const mensagem = modo === 'arquivar'
     ? 'Arquivar os 7 dias desta série no histórico e iniciar uma nova série? Os participantes e faixas serão preservados, mas as pontuações da série ativa serão zeradas.'
     : 'Descartar os 7 dias desta série e iniciar uma nova série? Esses 7 dias NÃO entrarão no Acumulado Geral. Os participantes e faixas serão preservados.';
-  if(!confirm(mensagem)) return;
+  if(!await uiConfirm(mensagem, { title: modo === 'arquivar' ? 'Arquivar série' : 'Descartar série', variant: modo === 'arquivar' ? 'warning' : 'danger', confirmText: modo === 'arquivar' ? 'Arquivar e continuar' : 'Descartar série' })) return;
 
   encerramentoSerieEmAndamento = true;
   const botoes = document.querySelectorAll('#series-close-modal button');

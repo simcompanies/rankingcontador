@@ -69,7 +69,7 @@ function criarFaixa(id, titulo, intervalo){
 /* Remove uma faixa inteira (com confirmação). Todos os participantes dessa
    faixa são perdidos; os dias em si (e as demais faixas) não são afetados.
    Nunca deixa o ranking sem nenhuma faixa. */
-function removerFaixa(divId){
+async function removerFaixa(divId){
   if(!exigirAdministrador()) return false;
 
   const div = obterDivisao(divId);
@@ -81,7 +81,7 @@ function removerFaixa(divId){
     alert(`A faixa "${div.titulo}" possui ${qtd} participante(s). Para proteger o histórico, mova ou remova esses participantes antes de excluir a faixa.`);
     return false;
   }
-  if(!confirm(`Remover "${div.titulo}"?`)) return false;
+  if(!await uiConfirm(`Remover a faixa \"${div.titulo}\"?`, { title:'Remover faixa', variant:'danger', confirmText:'Remover faixa' })) return false;
 
   cancelarEstadoPendenteEstrutural('uma faixa foi removida');
   state.divisoes = state.divisoes.filter(d => d.id !== divId);
@@ -163,21 +163,22 @@ function handleCriarFaixa(){
   }
 }
 
-// Botão de renomear de um card de faixa: pede o novo título/intervalo via
-// prompt() (mesmo padrão usado em renameParticipant, participantes.js).
-function handleRenomearFaixa(divId){
+// Botão de renomear de um card de faixa: usa o diálogo visual do aplicativo
+// para editar título e intervalo sem recorrer a caixas nativas do navegador.
+async function handleRenomearFaixa(divId){
   if(!exigirAdministrador()) return;
   const div = obterDivisao(divId);
   if(!div) return;
 
-  const novoTitulo = prompt('Novo título:', div.titulo);
+  const novoTitulo = await uiPrompt('Defina o novo título da faixa.', div.titulo, { title:'Renomear faixa', inputLabel:'Título da faixa', confirmText:'Continuar' });
   if(!novoTitulo) return;
-  const novoIntervalo = prompt('Novo intervalo (opcional):', div.intervalo || '');
+  const novoIntervalo = await uiPrompt('Atualize o intervalo exibido para esta faixa, se necessário.', div.intervalo || '', { title:'Intervalo da faixa', inputLabel:'Intervalo (opcional)', confirmText:'Salvar faixa' });
+  if(novoIntervalo === null) return;
 
   renomearFaixa(divId, novoTitulo, novoIntervalo);
 }
 
 // Botão de remover de um card de faixa (confirmação já embutida em removerFaixa).
-function handleRemoverFaixa(divId){
-  removerFaixa(divId);
+async function handleRemoverFaixa(divId){
+  await removerFaixa(divId);
 }

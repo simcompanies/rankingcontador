@@ -82,7 +82,7 @@ function separarNomeValorDaLinha(chunk){
 // "Nome, Pontuação;" por linha ou separada por ;), casa cada nome com um
 // participante existente (via findDivision) ou marca como "novo" para o
 // usuário escolher a faixa, e guarda tudo em pendingImport para revisão.
-function processPaste(){
+async function processPaste(){
   if(!exigirAdministrador()) return;
   const area = document.getElementById('paste-area');
   const text = area.value;
@@ -100,7 +100,7 @@ function processPaste(){
     if(porVirgula){
       name = porVirgula.name; valueStr = porVirgula.valueStr;
       if(porVirgula.ambiguous && !origem){
-        const ok = confirm('A linha "' + chunk + '" é ambígua por usar vírgula entre dois trechos numéricos. Ela será interpretada como nome "' + name + '" e pontuação ' + valueStr + '. Se o número fizer parte do nome, cancele e use ponto decimal ou remova a ambiguidade. Continuar?');
+        const ok = await uiConfirm('A linha "' + chunk + '" é ambígua por usar vírgula entre dois trechos numéricos. Ela será interpretada como nome "' + name + '" e pontuação ' + valueStr + '. Se o número fizer parte do nome, cancele e corrija a linha antes de continuar.', { title:'Conferir leitura', variant:'warning', confirmText:'Usar esta interpretação' });
         if(!ok) return;
       }
     } else {

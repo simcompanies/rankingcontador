@@ -50,7 +50,6 @@ function renderBoard(){
       <div class="empty-hint" id="empty-${div.id}" style="display:none;">Nenhum participante ainda.</div>
       <div class="row-actions hidden">
         <button onclick="addParticipant('${div.id}')">+ Participante</button>
-        <button onclick="addDay()">+ Dia em branco</button>
       </div>
     </div>
   `).join('');
@@ -111,7 +110,7 @@ function renderDivision(divId){
       <td class="total">${p.total}</td>
       ${admin ? `<td><div class="row-btns">
         <button class="del-x-btn" onclick="renameParticipant('${divId}', ${p.idx})" title="Renomear">Renomear</button>
-        <button class="del-x-btn" onclick="removeParticipant('${divId}', ${p.idx})" title="Remover">Remover</button>
+        <button class="del-x-btn" onclick="handleRemoverParticipanteAdmin('${p.id}')" title="Remover">Remover</button>
       </div></td>` : ''}
     </tr>`;
   }).join('');
@@ -133,6 +132,8 @@ function render(){
   aplicarFiltroAnalises();
   renderUsuarios();
   renderGerenciarFaixas();
+  if(typeof renderGerenciarParticipantes === 'function') renderGerenciarParticipantes();
+  if(typeof renderContextoOperacional === 'function') renderContextoOperacional();
   if(souAdmin()) renderLaunchForm();
 
   document.querySelectorAll('.row-actions').forEach(el => el.classList.toggle('hidden', !souAdmin()));

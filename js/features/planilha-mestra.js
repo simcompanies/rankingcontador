@@ -195,6 +195,6 @@ async function flushPendingSave(opcoes){
 }
 
 async function recarregarRankingSeguro(){
-  if(stateDirty && !confirm('Existem alterações locais ainda não sincronizadas. Recarregar descartará essas alterações. Continuar?')) return false;
+  if(stateDirty && !await uiConfirm('Existem alterações locais ainda não sincronizadas. Recarregar descartará essas alterações.', { title:'Recarregar dados', variant:'danger', confirmText:'Descartar e recarregar' })) return false;
   return loadState();
 }

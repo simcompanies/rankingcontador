@@ -23,12 +23,12 @@
    ============================================================================ */
 
 // Cadastra um novo participante numa faixa, com pontuação zerada em todos os dias já lançados.
-function addParticipant(divId){
+async function addParticipant(divId){
   if(!exigirAdministrador()) return;
   const div = obterDivisao(divId);
   if(!div){ alert('Faixa não encontrada.'); return; }
 
-  const name = prompt('Nome do participante:');
+  const name = await uiPrompt('Informe o nome do participante.', '', { title:'Novo participante', inputLabel:'Nome do participante', confirmText:'Adicionar' });
   const nome = String(name || '').trim().replace(/\s+/g, ' ');
   if(!nome) return;
   if(nomeParticipanteEmUso(nome)){
@@ -52,13 +52,13 @@ function removeParticipant(divId, idx){
 }
 
 // Renomeia um participante (prompt simples, com validação de nome vazio).
-function renameParticipant(divId, idx){
+async function renameParticipant(divId, idx){
   if(!exigirAdministrador()) return;
   const div = obterDivisao(divId);
   if(!div || !div.participantes || !div.participantes[idx]) return;
 
   const current = div.participantes[idx].name;
-  const name = prompt('Novo nome:', current);
+  const name = await uiPrompt('Altere o nome do participante.', current, { title:'Renomear participante', inputLabel:'Nome do participante', confirmText:'Salvar alteração' });
   const nome = String(name || '').trim().replace(/\s+/g, ' ');
   if(!nome || nome === current) return;
   if(nomeParticipanteEmUso(nome, div.participantes[idx].id)){

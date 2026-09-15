@@ -23,7 +23,7 @@ function walk(dir, ext){
 // Montagem real do DOM: index + módulos carregados dinamicamente.
 const moduleFiles = [
   // modulo-0 e troca-de-senha já vêm embutidos no index e não são reinjetados.
-  'modules/modulo-1.html','modules/modulo-2.html','modules/modulo-3.html','modules/modulo-4.html',
+  'modules/modulo-1.html','modules/modulo-2.html','modules/modulo-3.html','modules/modulo-4.html','modules/modulo-5.html',
   'modules/conteudo.html','modules/configuracoes-de-conta.html'
 ];
 function semComentariosHtml(txt){ return txt.replace(/<!--[\s\S]*?-->/g, ''); }

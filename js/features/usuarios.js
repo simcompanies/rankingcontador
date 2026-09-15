@@ -81,7 +81,7 @@ function renderUsuarios(){
 
 // Botão de alternar papel (membro ↔ administrador) de um usuário, com confirmação.
 async function handleAlterarPapel(idUsuario, novoPapel){
-  if(!confirm('Alterar o papel deste usuário para "' + novoPapel + '"?')) return;
+  if(!await uiConfirm('Alterar o papel deste usuário para \"' + novoPapel + '\"?', { title:'Alterar permissão', variant:'warning', confirmText:'Alterar papel' })) return;
   try{
     const resposta = await chamarAPI({ action:'adminAlterarPapel', token:sessaoUsuario.token, idUsuario:idUsuario, novoPapel:novoPapel });
     if(!resposta.sucesso){ if(tratarErroSessaoOuPermissao(resposta)) return; alert(resposta.erro || 'Não foi possível alterar.'); return; }
@@ -94,7 +94,7 @@ async function handleAlterarPapel(idUsuario, novoPapel){
 
 // Botão de remover um usuário (perde acesso imediatamente), com confirmação.
 async function handleRemoverUsuario(idUsuario){
-  if(!confirm('Remover este usuário? Ele perde o acesso ao sistema imediatamente.')) return;
+  if(!await uiConfirm('Remover este usuário? Ele perderá o acesso ao sistema imediatamente.', { title:'Remover usuário', variant:'danger', confirmText:'Remover usuário' })) return;
   try{
     const resposta = await chamarAPI({ action:'adminRemoverUsuario', token:sessaoUsuario.token, idUsuario:idUsuario });
     if(!resposta.sucesso){ if(tratarErroSessaoOuPermissao(resposta)) return; alert(resposta.erro || 'Não foi possível remover.'); return; }
