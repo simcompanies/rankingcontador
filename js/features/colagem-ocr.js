@@ -11,6 +11,37 @@
    Depende de: config-api.js (chamarAPI, mostrarMsg, definirCarregando).
    ============================================================================ */
 
+// Regra autoritativa de pontuação usada na versão de 22/08/2026.
+// Mantida também no front-end para que a leitura de print não dependa de
+// uma implantação antiga/desatualizada do Code.gs para calcular os pontos.
+function pontosPorPosicaoLeitura(posicao, totalParticipantes){
+  if(posicao <= 10) return 11 - posicao;
+  if(posicao === 11) return 0;
+  if(totalParticipantes <= 14) return -(posicao - 11);
+  return -(Math.floor((posicao - 12) / 2) + 1);
+}
+
+// O backend devolve "Nome, Pontuação;". A ordem reconhecida é a colocação
+// do dia; portanto recalculamos os pontos localmente pela regra autoritativa
+// acima. Isso corrige eventuais divergências de um backend ainda publicado
+// com outra versão sem alterar nomes nem a ordem reconhecida pelo OCR.
+function normalizarPontuacaoOcr(textoFormatado){
+  const linhas = String(textoFormatado || '')
+    .split(/\r?\n|;/)
+    .map(l => l.trim())
+    .filter(Boolean);
+
+  const nomes = linhas.map(function(linha){
+    const ultimaVirgula = linha.lastIndexOf(',');
+    return (ultimaVirgula >= 0 ? linha.slice(0, ultimaVirgula) : linha).trim();
+  }).filter(Boolean);
+
+  const total = nomes.length;
+  return nomes.map(function(nome, i){
+    return `${nome}, ${pontosPorPosicaoLeitura(i + 1, total)};`;
+  }).join('\n');
+}
+
 // Lê um print de ranking usando o OCR nativo do Google Drive no backend e
 // devolve o texto já formatado como "Nome, Pontuação;" direto na caixa de
 // colar — o resto do fluxo (Ler colagem → conferir → Lançar) continua
@@ -39,7 +70,7 @@ async function handleOcrFileSelected(event){
       status.textContent = resposta.erro || 'Não foi possível ler a imagem.';
       return;
     }
-    document.getElementById('paste-area').value = resposta.dados.textoFormatado || '';
+    document.getElementById('paste-area').value = normalizarPontuacaoOcr(resposta.dados.textoFormatado || '');
     status.textContent = resposta.dados.linhas
       ? `${resposta.dados.linhas} participante(s) reconhecido(s) — confira os nomes e a pontuação abaixo antes de clicar em "Ler colagem".`
       : 'Não reconheci nenhum participante nessa imagem — veja o texto bruto abaixo ou digite manualmente.';

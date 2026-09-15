@@ -12,7 +12,7 @@
    baixarem a versão nova em vez de continuarem presos no cache antigo.
    ============================================================================ */
 
-const CACHE_NAME = 'ranking-contador-v30-logo-build';
+const CACHE_NAME = 'ranking-contador-v31-fix-leitura-pontos';
 
 const APP_SHELL = [
   './',
@@ -46,6 +46,7 @@ const APP_SHELL = [
   './js/features/modulo-0.js',
   './js/features/texto-do-resumo.js',
   './js/features/colagem.js',
+  './js/features/colagem-gemini.js',
   './js/features/colagem-ocr.js',
   './js/features/planilha-mestra.js',
   './js/features/participantes.js',
