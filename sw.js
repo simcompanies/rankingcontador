@@ -13,7 +13,7 @@
    ============================================================================ */
 
 const CACHE_PREFIX = 'ranking-contador-';
-const CACHE_NAME = CACHE_PREFIX + 'v43-series';
+const CACHE_NAME = CACHE_PREFIX + 'v44-api-url';
 
 const APP_SHELL = [
   './',

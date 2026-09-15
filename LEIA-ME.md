@@ -36,3 +36,8 @@ node tests/test-regressao.js
 - Faixas continuam dinâmicas; faixas com participantes não podem mais ser apagadas de forma destrutiva.
 - Login otimizado: hash v3 com salt + pepper secreto, migração automática de hashes antigos, sessão sem releitura da aba Usuarios em toda requisição e log de entrada em segundo plano.
 - Contas antigas com hash v2 podem ter um primeiro login mais lento; após o primeiro acesso bem-sucedido, o hash é migrado automaticamente para v3.
+
+
+## Endpoint ativo da API
+
+`https://script.google.com/macros/s/AKfycbz91T9ht4j0ApbkYjhRGa2fUeOOWGqfuLrPFjnYWhJC69SxpzoNGJEZuiotV40z21L_Xg/exec`

@@ -38,7 +38,10 @@ async function chamarAPI(payload, opcoes){
       keepalive: !!opts.keepalive,
       signal: controlador.signal
     });
-    if(!resposta.ok) throw new Error('Erro de rede (HTTP ' + resposta.status + ')');
+    if(!resposta.ok){
+      if(resposta.status === 404) throw new Error('Implantação da API não encontrada (HTTP 404). Verifique se o Web App publicado corresponde à URL configurada.');
+      throw new Error('Erro de rede (HTTP ' + resposta.status + ')');
+    }
     const texto = await resposta.text();
     try{
       return JSON.parse(texto);
@@ -70,7 +73,10 @@ async function chamarAPIGet(params){
       cache: 'no-store',
       signal: controlador.signal
     });
-    if(!resposta.ok) throw new Error('Erro de rede (HTTP ' + resposta.status + ')');
+    if(!resposta.ok){
+      if(resposta.status === 404) throw new Error('Implantação da API não encontrada (HTTP 404). Verifique se o Web App publicado corresponde à URL configurada.');
+      throw new Error('Erro de rede (HTTP ' + resposta.status + ')');
+    }
     const texto = await resposta.text();
     try{
       return JSON.parse(texto);
