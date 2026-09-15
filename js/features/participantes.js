@@ -29,11 +29,16 @@ function addParticipant(divId){
   if(!div){ alert('Faixa não encontrada.'); return; }
 
   const name = prompt('Nome do participante:');
-  if(!name) return;
+  const nome = String(name || '').trim().replace(/\s+/g, ' ');
+  if(!nome) return;
+  if(nomeParticipanteEmUso(nome)){
+    alert('Já existe um participante com esse nome no ranking. Use um nome distinto para evitar associação ambígua.');
+    return;
+  }
 
   if(!div.participantes) div.participantes = [];
-  div.participantes.push({ name: name.trim(), scores: Array(state.days).fill(null) });
-  saveState(); render();
+  div.participantes.push(criarParticipante(nome, state.days));
+  saveState({ immediate:true }); render();
 }
 
 // Remove um participante de uma faixa.
@@ -43,7 +48,7 @@ function removeParticipant(divId, idx){
   if(!div || !div.participantes) return;
 
   div.participantes.splice(idx,1);
-  saveState(); render();
+  saveState({ immediate:true }); render();
 }
 
 // Renomeia um participante (prompt simples, com validação de nome vazio).
@@ -54,9 +59,14 @@ function renameParticipant(divId, idx){
 
   const current = div.participantes[idx].name;
   const name = prompt('Novo nome:', current);
-  if(!name || !name.trim() || name.trim() === current) return;
-  div.participantes[idx].name = name.trim();
-  saveState(); render();
+  const nome = String(name || '').trim().replace(/\s+/g, ' ');
+  if(!nome || nome === current) return;
+  if(nomeParticipanteEmUso(nome, div.participantes[idx].id)){
+    alert('Já existe um participante com esse nome no ranking.');
+    return;
+  }
+  div.participantes[idx].name = nome;
+  saveState({ immediate:true }); render();
 }
 
 // Atualiza a pontuação de um participante num dia específico (campo editável da tabela).
@@ -65,12 +75,14 @@ function updateScore(divId, idx, dayIdx, value){
   const div = obterDivisao(divId);
   if(!div || !div.participantes || !div.participantes[idx]) return;
 
-  let v = value.trim();
-  let num = v === '' ? null : parseFloat(v);
-  if(num !== null && isNaN(num)) num = null;
-  if(num !== null && num > 10) num = 10; // ganho máximo diário
+  const num = parsePontuacao(value);
+  if(Number.isNaN(num)){
+    alert('Pontuação inválida. Use um número, por exemplo 8,5 ou -2.');
+    renderDivision(divId);
+    return;
+  }
   div.participantes[idx].scores[dayIdx] = num;
-  saveState();
+  saveState({ immediate:true });
   renderDivision(divId);
 }
 

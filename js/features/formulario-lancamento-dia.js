@@ -27,7 +27,10 @@
 // Atualiza o rótulo "Lançando o dia N" / data mostrado no topo do formulário.
 function updateLaunchDayLabel(){
   const el = document.getElementById('launch-day-label');
-  if(el) el.textContent = `Dia ${state.days + 1}`;
+  if(el){
+    const serie = state.seriesMeta && state.seriesMeta.currentNumber ? state.seriesMeta.currentNumber : 1;
+    el.textContent = `Série ${serie} · Dia ${state.days + 1}`;
+  }
 }
 
 // Aplica um estilo visual (preenchido/vazio) a um campo de pontuação conforme o usuário digita.
@@ -56,7 +59,7 @@ function updateLaunchProgress(){
     const participantes = div.participantes || [];
     participantes.forEach((p,i)=>{
       totalCount++;
-      if(draft[divId] && draft[divId][i] !== undefined && draft[divId][i] !== '') filled++;
+      if(draft[divId] && draft[divId][p.id] !== undefined && draft[divId][p.id] !== '') filled++;
     });
     (draftNew[divId] || []).forEach(r=>{
       if(r.name.trim()){ totalCount++; if(r.value !== '') filled++; }
@@ -81,7 +84,7 @@ function renderDraftNewRows(divId){
     <div class="launch-row launch-row-new">
       <input class="launch-name-input" type="text" placeholder="Novo participante"
         value="${escapeHtml(row.name)}" oninput="draftNew['${divId}'][${i}].name=this.value; updateLaunchProgress();">
-      <input class="launch-input" type="text" inputmode="numeric" pattern="-?[0-9]*" placeholder="pts"
+      <input class="launch-input" type="text" inputmode="decimal" placeholder="pts"
         value="${escapeHtml(row.value)}"
         oninput="draftNew['${divId}'][${i}].value=this.value; styleLaunchInput(this); updateLaunchProgress();"
         onkeydown="if(event.key==='Enter'){event.preventDefault(); focusNextLaunch(this);}">
@@ -132,9 +135,15 @@ function renderLaunchColumns(){
 
 // (Re)desenha o formulário completo: uma coluna por faixa, um campo por participante existente, mais as linhas de novos.
 function renderLaunchForm(){
-  draft = {};
-  draftNew = {};
-  obterTodasDivisoes().forEach(div=>{ draft[div.id] = {}; draftNew[div.id] = []; });
+  if(typeof garantirDataReferenciaLancamento === 'function') garantirDataReferenciaLancamento();
+  if(!draft || typeof draft !== 'object') draft = {};
+  if(!draftNew || typeof draftNew !== 'object') draftNew = {};
+  obterTodasDivisoes().forEach(div=>{
+    if(!draft[div.id]) draft[div.id] = {};
+    if(!draftNew[div.id]) draftNew[div.id] = [];
+    const idsAtuais = new Set((div.participantes || []).map(p=>String(p.id)));
+    Object.keys(draft[div.id]).forEach(k=>{ if(!idsAtuais.has(String(k))) delete draft[div.id][k]; });
+  });
 
   renderLaunchColumns();
 
@@ -147,8 +156,9 @@ function renderLaunchForm(){
       ? participantes.map((p,i)=>`
         <div class="launch-row">
           <span class="launch-name">${escapeHtml(p.name)}</span>
-          <input class="launch-input" type="text" inputmode="numeric" pattern="-?[0-9]*" placeholder="—"
-            oninput="draft['${divId}'][${i}]=this.value; styleLaunchInput(this); updateLaunchProgress();"
+          <input class="launch-input" type="text" inputmode="decimal" placeholder="—"
+            value="${escapeHtml((draft[divId] && draft[divId][p.id] !== undefined) ? draft[divId][p.id] : '')}"
+            oninput="draft['${divId}']['${p.id}']=this.value; styleLaunchInput(this); updateLaunchProgress();"
             onkeydown="if(event.key==='Enter'){event.preventDefault(); focusNextLaunch(this);}"
             onfocus="this.select()">
         </div>
@@ -163,48 +173,65 @@ function renderLaunchForm(){
 // Botão "Lançar dia": cria os participantes novos pendentes, adiciona um
 // dia com a pontuação preenchida para todo mundo em TODAS as faixas, salva
 // (saveState), dispara o auto-save do resumo do dia e limpa o rascunho.
-function launchDayForm(){
+async function launchDayForm(){
   if(!exigirAdministrador()) return;
-  let hasAny = false;
-  obterTodasDivisoes().forEach(div=>{
-    const divId = div.id;
-    if(Object.values(draft[divId] || {}).some(v => v !== undefined && v !== '')) hasAny = true;
-    if((draftNew[divId] || []).some(r => r.name.trim() && r.value !== '')) hasAny = true;
-  });
-  if(!hasAny){ alert('Preencha ao menos uma pontuação antes de lançar o dia.'); return; }
+  if(typeof podeCriarNovoDia === 'function' && !podeCriarNovoDia()) return;
+  const dataReferencia = typeof obterDataReferenciaLancamento === 'function' ? obterDataReferenciaLancamento() : dataLocalISO();
+  if(!dataReferencia){ alert('Escolha uma data válida para a contagem.'); return; }
 
-  state.days += 1;
-  obterTodasDivisoes().forEach(div=>{ (div.participantes || []).forEach(p=>p.scores.push(null)); });
-  state.dayDates.push(dataLocalISO());
-  const newIdx = state.days - 1;
+  const operacoes = [];
+  const novosNomes = new Set();
+  let erro = null;
 
   obterTodasDivisoes().forEach(div=>{
+    if(erro) return;
     const divId = div.id;
-    if(!div.participantes) div.participantes = [];
-    div.participantes.forEach((p,i)=>{
-      const raw = (draft[divId] || {})[i];
-      if(raw === undefined || raw === '') return;
-      let num = parseFloat(String(raw).replace(',', '.'));
-      if(isNaN(num)) return;
-      if(num > 10) num = 10;
-      p.scores[newIdx] = num;
+    (div.participantes || []).forEach(p=>{
+      const raw = (draft[divId] || {})[p.id];
+      if(raw === undefined || String(raw).trim() === '') return;
+      const num = parsePontuacao(raw);
+      if(Number.isNaN(num)){ erro = `Pontuação inválida para ${p.name}: ${raw}`; return; }
+      operacoes.push({ tipo:'existente', div, p, num });
     });
     (draftNew[divId] || []).forEach(row=>{
-      const name = row.name.trim();
-      if(!name || row.value === '') return;
-      let num = parseFloat(String(row.value).replace(',', '.'));
-      if(isNaN(num)) return;
-      if(num > 10) num = 10;
-      let p = div.participantes.find(pp => pp.name.toLowerCase() === name.toLowerCase());
-      if(!p){
-        p = { name, scores: Array(state.days).fill(null) };
-        div.participantes.push(p);
-      }
-      p.scores[newIdx] = num;
+      if(erro) return;
+      const name = String(row.name || '').trim().replace(/\s+/g,' ');
+      const raw = String(row.value == null ? '' : row.value).trim();
+      if(!name && !raw) return;
+      if(!name || !raw){ erro = 'Todo novo participante precisa ter nome e pontuação.'; return; }
+      const num = parsePontuacao(raw);
+      if(Number.isNaN(num)){ erro = `Pontuação inválida para ${name}: ${raw}`; return; }
+      const norm = normalizarNomeParticipante(name);
+      if(novosNomes.has(norm) || nomeParticipanteEmUso(name)){ erro = `O nome "${name}" já existe ou foi repetido no lançamento.`; return; }
+      novosNomes.add(norm);
+      operacoes.push({ tipo:'novo', div, name, num });
     });
   });
 
-  saveState();
+  if(erro){ alert(erro); return; }
+  if(!operacoes.length){ alert('Preencha ao menos uma pontuação válida antes de lançar o dia.'); return; }
+
+  const newIdx = state.days;
+  state.days += 1;
+  obterTodasDivisoes().forEach(div=>{ (div.participantes || []).forEach(p=>p.scores.push(null)); });
+  state.dayDates.push(dataReferencia);
+  if(!Array.isArray(state.dayIds)) state.dayIds = [];
+  state.dayIds.push('d_' + gerarParticipantId().replace(/^p_/, ''));
+
+  operacoes.forEach(op=>{
+    if(op.tipo === 'existente') op.p.scores[newIdx] = op.num;
+    else {
+      const p = criarParticipante(op.name, state.days);
+      p.scores[newIdx] = op.num;
+      if(!op.div.participantes) op.div.participantes = [];
+      op.div.participantes.push(p);
+    }
+  });
+
+  draft = {};
+  draftNew = {};
+  const salvo = await saveState({ immediate:true });
   render();
-  autoSalvarResumoDoDia(newIdx);
+  if(salvo !== false) await autoSalvarResumoDoDia(newIdx);
+  if(typeof verificarEncerramentoSerie === 'function') verificarEncerramentoSerie();
 }

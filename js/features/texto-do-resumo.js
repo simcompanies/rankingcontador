@@ -65,7 +65,9 @@ function buildDivisionBlock(title, range, entries, formatFn){
 function textoResumoParaDia(dayIdx){
   const divisoes = obterTodasDivisoes();
 
-  let text = `RANKING DIA ${dayIdx+1}\n`;
+  const dataRef = state.dayDates && state.dayDates[dayIdx] ? formatarDataCurta(state.dayDates[dayIdx]) : '';
+  const serieNumero = state.seriesMeta && state.seriesMeta.currentNumber ? state.seriesMeta.currentNumber : 1;
+  let text = `RANKING SÉRIE ${serieNumero} · DIA ${dayIdx+1}${dataRef ? ` • ${dataRef}` : ''}\n`;
   divisoes.forEach((div, i)=>{
     if(i > 0) text += '\n';
     const rankingDia = rankDivisionForDay(div.id, dayIdx);
@@ -86,14 +88,19 @@ function textoResumoParaDia(dayIdx){
 function populateDaySelect(){
   const sel = document.getElementById('summary-day');
   if(!sel) return;
+  const anterior = sel.value;
   sel.innerHTML = '';
   for(let d = 0; d < state.days; d++){
     const opt = document.createElement('option');
     opt.value = d;
-    opt.textContent = `Dia ${d+1}`;
+    const data = state.dayDates && state.dayDates[d] ? formatarDataCurta(state.dayDates[d]) : '';
+    opt.textContent = `Dia ${d+1}${data ? ' · ' + data : ''}`;
     sel.appendChild(opt);
   }
-  if(state.days > 0) sel.value = state.days - 1;
+  if(state.days > 0){
+    const idxAnterior = Number(anterior);
+    sel.value = Number.isInteger(idxAnterior) && idxAnterior >= 0 && idxAnterior < state.days ? String(idxAnterior) : String(state.days - 1);
+  }
 }
 
 // Botão "Gerar resumo": monta o texto (via textoResumoParaDia) e mostra na caixa de pré-visualização.
@@ -135,9 +142,12 @@ async function handleSalvarResumoAtual(){
   const btn = document.getElementById('save-resumo-btn');
   definirCarregando(btn, true, 'Salvar no histórico');
   try{
+    const sincronizado = await flushPendingSave();
+    if(!sincronizado) throw new Error('O ranking ainda não foi sincronizado; o resumo não será salvo separadamente.');
     const resposta = await chamarAPI({
       action:'salvarResumo', token:sessaoUsuario.token,
-      dia: dayIdx+1, texto: document.getElementById('summary-output').value
+      dia: dayIdx+1, dayId: state.dayIds && state.dayIds[dayIdx], dayDate: state.dayDates && state.dayDates[dayIdx],
+      revision: state.revision, texto: document.getElementById('summary-output').value
     });
     if(!resposta.sucesso){ if(tratarErroSessaoOuPermissao(resposta)) return; alert(resposta.erro || 'Não foi possível salvar.'); return; }
     resumosCarregado = false;
@@ -157,10 +167,20 @@ async function handleSalvarResumoAtual(){
 async function autoSalvarResumoDoDia(dayIdx){
   if(!souAdmin()) return;
   try{
-    await chamarAPI({
+    const sincronizado = await flushPendingSave();
+    if(!sincronizado) throw new Error('Ranking não sincronizado; resumo automático adiado.');
+    const resposta = await chamarAPI({
       action:'salvarResumo', token:sessaoUsuario.token,
-      dia: dayIdx+1, texto: textoResumoParaDia(dayIdx)
+      dia: dayIdx+1,
+      dayId: state.dayIds && state.dayIds[dayIdx],
+      dayDate: state.dayDates && state.dayDates[dayIdx],
+      revision: state.revision,
+      texto: textoResumoParaDia(dayIdx)
     });
+    if(!resposta.sucesso){
+      if(tratarErroSessaoOuPermissao(resposta)) return;
+      throw new Error(resposta.erro || 'Falha lógica ao salvar resumo.');
+    }
     resumosCarregado = false;
   }catch(erro){
     console.error('Erro ao salvar resumo automático', erro);

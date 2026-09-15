@@ -1,21 +1,38 @@
-# Ranking Geral — V18
+# Ranking Geral — versão de integridade v42
 
-Versão com reconstrução cinética vetorial da logo oficial.
+Esta versão mantém a identidade visual da versão estética atual e preserva a mecânica de pontuação validada contra o pacote de 22/08/2026, mas corrige as fragilidades encontradas na auditoria completa.
 
-A abertura usa uma única linha do tempo SVG: cada componente da marca é um vetor independente (arcos, cinco barras, R, G, setas e base/pódio) e é elevado/encaixado até a composição final. Não há PNG sobreposto na animação.
+Principais mudanças técnicas:
 
-A duração nominal é de aproximadamente 6,6 segundos; o fluxo de login/API permanece inalterado.
+- IDs estáveis para participantes e dias;
+- revisão monotônica para impedir sobrescrita concorrente;
+- fila de salvamento e gravação imediata das ações do ranking;
+- carregamento seguro: falha de rede nunca vira ranking vazio editável;
+- validação integral de snapshot e migração conservadora;
+- rollback no backend e leitura/gravação protegidas por lock;
+- correções de colagem, filtros, heatmap, resumos e tela Conteúdo;
+- revogação efetiva de sessões e bootstrap sem senha no código;
+- leitura por colagem manual e fluxo assistido opcional pelo Gemini, sempre recalculando a regra de pontos localmente;
+- Service Worker corrigido como **app shell offline** — alterações do ranking exigem rede;
+- testes automatizados sem dependências npm.
 
+Leia antes de publicar:
 
-V19: construção cinética orgânica baseada na geometria vetorial oficial, sem as animações mecânicas das versões anteriores.
+1. `GUIA_CONFIGURACAO.md`
+3. `AUDITORIA_TESTES_E_MELHORIAS.md`
+4. `PLANO_DE_ACAO_CORRECOES_2026-09-15.md`
 
+Teste principal:
 
-V25 — LOGO SVG DESENHADA DO ZERO
-- index.html: splash único com construção cinética em SVG, sem rastreio de imagem/clip-path.
-- A abertura permanece por cerca de 6,4 s e respeita prefers-reduced-motion.
+```bash
+node tests/test-regressao.js
+```
 
-V29 — LIMPEZA E LOGO OFICIAL
-- assets/logo-ranking-geral.png é uma cópia exata do arquivo oficial usado como referência nesta conversa.
-- As pastas e arquivos de rastreio/experimento de animação foram removidos.
-- Os ícones PWA foram derivados diretamente desse mesmo arquivo, sem uma identidade alternativa.
-- A inicialização exibe somente essa logo estática.
+**Importante:** publique o front-end e o `Code.gs` desta versão em conjunto. O backend novo é parte das correções de integridade.
+
+## Ajustes v42
+
+- OCR interno removido por confiabilidade; o fluxo de colagem manual permanece como entrada principal.
+- Faixas continuam dinâmicas; faixas com participantes não podem mais ser apagadas de forma destrutiva.
+- Login otimizado: hash v3 com salt + pepper secreto, migração automática de hashes antigos, sessão sem releitura da aba Usuarios em toda requisição e log de entrada em segundo plano.
+- Contas antigas com hash v2 podem ter um primeiro login mais lento; após o primeiro acesso bem-sucedido, o hash é migrado automaticamente para v3.

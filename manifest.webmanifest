@@ -1,5 +1,5 @@
 {
-  "name": "Ranking Geral — Faixa X / Faixa Y",
+  "name": "Ranking Geral — faixas dinâmicas e análise de desempenho",
   "short_name": "Ranking Geral",
   "description": "Ranking e análise de desempenho inspirados em mercados e índices do SimCompanies.",
   "start_url": "./index.html",

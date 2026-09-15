@@ -27,6 +27,13 @@
     <div class="panel-title">Lançar pontuação do dia <span class="day-tag" id="launch-day-label">Dia —</span></div>
     <div class="panel-hint">Preencha a pontuação de cada participante para fechar o dia, ou cole os dados prontos de outra fonte.</div>
 
+    <div class="launch-date-bar">
+      <label class="campo launch-date-field"><span>Data da contagem</span>
+        <input type="date" id="launch-reference-date" aria-label="Data de referência da contagem">
+      </label>
+      <div class="panel-hint">Use a data em que a contagem realmente foi feita. Ela pode ser anterior ao dia do lançamento e será usada nos filtros e no Acumulado Geral.</div>
+    </div>
+
     <div class="launch-tabs">
       <button type="button" class="launch-tab active" id="tab-form" onclick="switchLaunchTab('form')"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="M13.5 6.5l4 4"></path></svg></span>Preencher</button>
       <button type="button" class="launch-tab" id="tab-paste" onclick="switchLaunchTab('paste')"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="4" width="14" height="17" rx="2"></rect><path d="M9 4V2h6v2M8 9h8M8 13h8M8 17h5"></path></svg></span>Colar</button>
@@ -47,17 +54,6 @@
         <button type="button" id="gemini-copiar-btn" onclick="handleCopiarRegrasGemini()"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="4" width="14" height="17" rx="2"></rect><path d="M9 4V2h6v2M8 9h8M8 13h8M8 17h5"></path></svg></span>Copiar regras de leitura</button>
         <button type="button" onclick="handleAbrirGemini()"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 13a5 5 0 0 0 7.07.07l2-2A5 5 0 0 0 12 4l-1.2 1.2"></path><path d="M14 11a5 5 0 0 0-7.07-.07l-2 2A5 5 0 0 0 12 20l1.2-1.2"></path></svg></span>Abrir Gemini</button>
         <span class="gemini-status-text">1) copie as regras → 2) abra o Gemini, cole as regras e anexe o print do ranking → 3) copie a resposta e cole na caixa abaixo.</span>
-      </div>
-
-      <div class="ocr-upload-box">
-        <input type="file" id="ocr-file-input" accept="image/*" class="hidden" onchange="handleOcrFileSelected(event)">
-        <button type="button" id="ocr-upload-btn" onclick="document.getElementById('ocr-file-input').click()"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h4l1.5-2h5L16 7h4v12H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg></span>Ler pontuação de um print (OCR)</button>
-        <span class="ocr-status-text" id="ocr-status">Sobe o print do ranking do dia (ex.: Simco Tools) e a gente já calcula a pontuação de cada posição pra você.</span>
-      </div>
-      <div class="ocr-raw-wrap hidden" id="ocr-raw-wrap">
-        <details><summary class="link-btn" style="display:inline; cursor:pointer;">ver texto bruto reconhecido pelo OCR</summary>
-          <pre class="resumo-body" id="ocr-raw-text" style="margin-top:8px;"></pre>
-        </details>
       </div>
 
       <textarea id="paste-area" placeholder="João, 8;&#10;Maria, -1;&#10;Grupo Alfa, 8,5;"></textarea>
@@ -99,3 +95,15 @@
     <div class="day-list" id="day-list"></div>
   </div>
 </section>
+
+<div class="series-modal hidden" id="series-close-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="series-close-title">
+  <div class="series-modal-card">
+    <div class="panel-title" id="series-close-title">Série de 7 dias concluída</div>
+    <div class="panel-hint" id="series-close-description">A série atual completou 7 lançamentos.</div>
+    <div class="series-close-options">
+      <button type="button" class="launch-submit" onclick="encerrarSerieAtual('arquivar')">Salvar série e começar nova</button>
+      <button type="button" class="danger" onclick="encerrarSerieAtual('descartar')">Apagar série e começar nova</button>
+    </div>
+    <div class="series-warning">Salvar mantém os 7 dias no histórico e no Acumulado Geral. Apagar remove esses 7 dias do acumulado histórico. Em ambos os casos, participantes e faixas permanecem cadastrados.</div>
+  </div>
+</div>

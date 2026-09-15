@@ -13,7 +13,7 @@
 // Lista de ids de <section class="view"> que qualquer usuário logado pode
 // ver, e a lista estendida (VIEWS_ADMIN) que inclui a view exclusiva de
 // administrador ("config" = Configurações Gerais / painel de usuários).
-const VIEWS = ['faixas','analises','conteudo','lancar','config','conta'];
+const VIEWS = ['faixas','analises','acumulado','conteudo','lancar','config','conta'];
 
 const VIEWS_ADMIN = ['lancar','config'];
 
@@ -35,6 +35,7 @@ function mostrarView(nome){
   if(nome === 'config') carregarUsuariosSeNecessario();
   if(nome === 'config' || nome === 'analises' || nome === 'conteudo') carregarResumosSeNecessario();
   if(nome === 'analises'){ popularFiltroDias(); aplicarFiltroAnalises(); }
+  if(nome === 'acumulado') carregarHistoricoSeries();
   if(nome === 'conta') renderContaView();
   toggleSidebarMobile(false);
   const mainEl = document.querySelector('.main');

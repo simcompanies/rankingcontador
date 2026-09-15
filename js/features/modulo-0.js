@@ -41,6 +41,10 @@ async function handleLogin(event){
     if(!resposta.dados || !resposta.dados.token){ throw new Error('A API não devolveu um token de sessão.'); }
     document.getElementById('login-senha').value = '';
     aplicarSessao(resposta.dados);
+    registrarEventoSessaoEmSegundoPlano(
+      resposta.dados.precisaTrocarSenha ? 'login_temporario' : 'login',
+      resposta.dados.token
+    );
     if(resposta.dados.precisaTrocarSenha) abrirModalNovaSenha();
   }catch(erro){
     console.error(erro);
@@ -121,6 +125,10 @@ async function handleDefinirNovaSenha(event){
   try{
     const resposta = await chamarAPI({ action:'definirNovaSenha', token:sessaoUsuario.token, novaSenha:s1, confirmarNovaSenha:s2 });
     if(!resposta.sucesso){ mostrarMsg('nova-senha-msg', resposta.erro || 'Não foi possível salvar.', false); return; }
+    if(resposta.dados && resposta.dados.token){
+      sessaoUsuario.token = resposta.dados.token;
+      sessionStorage.setItem('rankingGeral_token', resposta.dados.token);
+    }
     fecharModalNovaSenha();
   }catch(erro){
     console.error(erro);

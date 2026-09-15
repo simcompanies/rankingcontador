@@ -22,7 +22,18 @@ function definirTelaAplicacao(modo){
   if(body) body.setAttribute('data-app-screen', modo);
 }
 
-function aplicarSessao(dados){
+function registrarEventoSessaoEmSegundoPlano(tipo, token){
+  if(!token || typeof chamarAPI !== 'function') return;
+  // O log de entrada é administrativo, não pode atrasar a abertura do perfil
+  // nem competir com a primeira carga do ranking.
+  setTimeout(function(){
+    chamarAPI({ action:'registrarEventoSessao', token:token, evento:tipo }).catch(function(erro){
+      console.warn('Não foi possível registrar o evento de sessão em segundo plano.', erro);
+    });
+  }, 2500);
+}
+
+async function aplicarSessao(dados){
   sessaoUsuario = { token: dados.token, idUsuario: dados.idUsuario, nome: dados.nome, email: dados.email, papel: dados.papel };
   sessionStorage.setItem('rankingGeral_token', dados.token);
   document.getElementById('auth-gate').classList.add('hidden');
@@ -31,17 +42,24 @@ function aplicarSessao(dados){
   aplicarPermissoesPapel();
   atualizarBarraIdentidade();
   mostrarView('faixas');
-  loadState();
+  await loadState();
 }
 
 // Clique em "Sair" no topbar: confirma, avisa o backend (best-effort) e
 // limpa a sessão local, voltando para a tela de login.
 async function handleLogout(){
   const token = sessaoUsuario ? sessaoUsuario.token : null;
-  encerrarSessaoLocal();
-  if(token){
-    try{ await chamarAPI({ action:'logout', token:token }); }catch(erro){ /* já saímos localmente, sem problema */ }
+  if(token && souAdmin() && loaded && typeof flushPendingSave === 'function'){
+    const salvo = await flushPendingSave();
+    if(!salvo){
+      alert('Ainda existem alterações que não puderam ser sincronizadas. O logout foi cancelado para evitar perda de dados. Verifique a conexão e tente novamente.');
+      return;
+    }
   }
+  if(token){
+    try{ await chamarAPI({ action:'logout', token:token }); }catch(erro){ console.warn('Não foi possível avisar o backend sobre o logout.', erro); }
+  }
+  encerrarSessaoLocal();
 }
 
 // Limpa toda vestígio da sessão no front-end (memória + sessionStorage) e
@@ -50,12 +68,32 @@ async function handleLogout(){
 function encerrarSessaoLocal(){
   sessaoUsuario = null;
   loaded = false;
+  rankingBloqueado = true;
+  syncConflict = false;
+  ultimoErroCarga = null;
+  pendingImport = null;
+  pendingDayMode = 'new';
+  draft = {};
+  draftNew = {};
+  usuariosRoster = [];
+  atividadeLog = [];
+  usuariosCarregado = false;
+  resumosSalvos = [];
+  resumosCarregado = false;
+  if(typeof historicoSeries !== 'undefined') historicoSeries = [];
+  if(typeof historicoSeriesCarregado !== 'undefined') historicoSeriesCarregado = false;
+  if(typeof filtroDiasSelecionados !== 'undefined' && filtroDiasSelecionados && filtroDiasSelecionados.clear) filtroDiasSelecionados.clear();
+  if(typeof stateDirty !== 'undefined') stateDirty = false;
+  if(typeof estadoVazioPadrao === 'function') state = estadoVazioPadrao();
   sessionStorage.removeItem('rankingGeral_token');
-  document.getElementById('app-shell').classList.add('hidden');
-  document.getElementById('modal-nova-senha').classList.add('hidden');
-  document.getElementById('auth-gate').classList.remove('hidden');
+  const shell = document.getElementById('app-shell');
+  if(shell) shell.classList.add('hidden');
+  const modal = document.getElementById('modal-nova-senha');
+  if(modal) modal.classList.add('hidden');
+  const gate = document.getElementById('auth-gate');
+  if(gate) gate.classList.remove('hidden');
   definirTelaAplicacao('auth');
-  mostrarAuthView('login');
+  if(typeof mostrarAuthView === 'function') mostrarAuthView('login');
 }
 
 // Esconde da interface tudo o que é exclusivo de administrador quando o

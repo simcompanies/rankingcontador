@@ -74,7 +74,10 @@ function renderDivision(divId){
   const admin = souAdmin();
 
   let headHtml = '<th class="rank-h">#</th><th class="name-h" style="text-align:left;">Nome</th>';
-  for(let d=0; d<state.days; d++) headHtml += `<th>D${d+1}</th>`;
+  for(let d=0; d<state.days; d++){
+    const data = state.dayDates && state.dayDates[d] ? formatarDataCurta(state.dayDates[d]) : '';
+    headHtml += `<th title="${escapeHtml(data)}">D${d+1}${data ? `<small class="day-head-date">${escapeHtml(data.slice(0,5))}</small>` : ''}</th>`;
+  }
   headHtml += '<th>Total</th>' + (admin ? '<th></th>' : '');
   head.innerHTML = headHtml;
 
@@ -133,9 +136,13 @@ function render(){
   if(souAdmin()) renderLaunchForm();
 
   document.querySelectorAll('.row-actions').forEach(el => el.classList.toggle('hidden', !souAdmin()));
-  document.getElementById('save-resumo-btn').classList.toggle('hidden', !souAdmin());
+  const saveResumoBtn = document.getElementById('save-resumo-btn');
+  if(saveResumoBtn) saveResumoBtn.classList.toggle('hidden', !souAdmin());
 
   bindDragScroll();
+  if(typeof verificarEncerramentoSerie === 'function') verificarEncerramentoSerie();
+  const main = document.querySelector('.main');
+  if(main && main.getAttribute('data-active-view') === 'acumulado' && typeof renderAcumuladoGeral === 'function') renderAcumuladoGeral();
 }
 
 /* Ativa "arrastar para rolar horizontalmente com o mouse" num contêiner de

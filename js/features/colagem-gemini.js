@@ -67,6 +67,9 @@ function handleAbrirGemini(){
 // uma confirmação no próprio botão — mesmo padrão visual de copySummary()
 // em texto-do-resumo.js.
 function handleCopiarRegrasGemini(){
+  window.rankingPasteSource = 'gemini';
+  const area = document.getElementById('paste-area');
+  if(area) area.dataset.leituraOrigem = 'gemini';
   const btn = document.getElementById('gemini-copiar-btn');
   const textoOriginal = btn.textContent;
   const finalizar = () => {

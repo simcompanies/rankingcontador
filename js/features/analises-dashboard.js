@@ -20,8 +20,8 @@
    ============================================================================ */
 
 /* --------------------------------------------------------------------------
-   1. DESTAQUES — recorde do período, maior queda, participante mais
-   consistente (menor desvio-padrão entre os dias com lançamento) e a média
+   1. DESTAQUES — recorde do período, maior penalidade negativa, menor
+   variação observada (com amostra mínima) e a média
    por lançamento, considerando TODAS as faixas juntas dentro de `dias`.
    -------------------------------------------------------------------------- */
 function calcularDestaques(dias){
@@ -29,6 +29,7 @@ function calcularDestaques(dias){
   let queda = null;     // { name, divTitulo, day, value }
   let consistente = null; // { name, divTitulo, desvio }
   let soma = 0, contagem = 0;
+  const minAmostraConsistencia = Math.min(5, Math.max(3, dias.length));
 
   obterTodasDivisoes().forEach(div=>{
     (div.participantes || []).forEach(p=>{
@@ -39,13 +40,13 @@ function calcularDestaques(dias){
         valores.push(v);
         soma += v; contagem++;
         if(!recorde || v > recorde.value) recorde = { name:p.name, divTitulo: div.titulo, day:d, value:v };
-        if(!queda   || v < queda.value)   queda   = { name:p.name, divTitulo: div.titulo, day:d, value:v };
+        if(v < 0 && (!queda || v < queda.value)) queda = { name:p.name, divTitulo: div.titulo, day:d, value:v };
       });
-      if(valores.length >= 2){
+      if(valores.length >= minAmostraConsistencia){
         const media = valores.reduce((s,v)=>s+v,0) / valores.length;
         const variancia = valores.reduce((s,v)=> s + (v-media)*(v-media), 0) / valores.length;
         const desvio = Math.sqrt(variancia);
-        if(!consistente || desvio < consistente.desvio) consistente = { name:p.name, divTitulo: div.titulo, desvio };
+        if(!consistente || desvio < consistente.desvio || (Math.abs(desvio-consistente.desvio)<1e-9 && valores.length > consistente.amostra)) consistente = { name:p.name, divTitulo: div.titulo, desvio, amostra:valores.length };
       }
     });
   });
@@ -90,14 +91,14 @@ function renderDestaques(dias){
     : destaqueCard(DASHBOARD_ICONS.recorde, 'Recorde do período', '—', 'Nenhum lançamento ainda.');
 
   const cQueda = d.queda
-    ? destaqueCard(DASHBOARD_ICONS.queda, 'Maior queda', d.queda.name,
+    ? destaqueCard(DASHBOARD_ICONS.queda, 'Maior penalidade', d.queda.name,
         `${scoreTag(d.queda.value)} · Dia ${d.queda.day+1} · ${d.queda.divTitulo}`)
-    : destaqueCard(DASHBOARD_ICONS.queda, 'Maior queda', '—', 'Nenhum lançamento ainda.');
+    : destaqueCard(DASHBOARD_ICONS.queda, 'Maior penalidade', '—', 'Nenhuma pontuação negativa no período.');
 
   const cConsistente = d.consistente
-    ? destaqueCard(DASHBOARD_ICONS.consistente, 'Mais consistente', d.consistente.name,
-        `desvio médio de ${d.consistente.desvio.toFixed(1)} pts · ${d.consistente.divTitulo}`)
-    : destaqueCard(DASHBOARD_ICONS.consistente, 'Mais consistente', '—', 'Precisa de ao menos 2 dias lançados p/ alguém.');
+    ? destaqueCard(DASHBOARD_ICONS.consistente, 'Menor variação observada', d.consistente.name,
+        `desvio padrão de ${d.consistente.desvio.toFixed(1)} pts · ${d.consistente.amostra} lançamentos · ${d.consistente.divTitulo}`)
+    : destaqueCard(DASHBOARD_ICONS.consistente, 'Menor variação observada', '—', `Precisa de ao menos ${minAmostraConsistencia} lançamentos no período para comparar.`);
 
   const cMedia = d.media !== null
     ? destaqueCard(DASHBOARD_ICONS.media, 'Média por lançamento', `${d.media >= 0 ? '+' : ''}${d.media.toFixed(2)}`,
@@ -234,7 +235,7 @@ function renderHeatmap(divId, dias){
   const wrap = document.getElementById('heatmap-wrap-' + divId);
   if(!wrap) return;
 
-  const lista = sortDivision(divId);
+  const lista = rankingFiltrado(divId, dias);
   if(!dias.length || !lista.length){
     wrap.innerHTML = '<div class="empty-hint">Sem dados suficientes para o mapa de desempenho.</div>';
     return;

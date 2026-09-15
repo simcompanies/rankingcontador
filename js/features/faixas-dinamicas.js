@@ -60,7 +60,7 @@ function criarFaixa(id, titulo, intervalo){
     participantes: []
   });
 
-  saveState();
+  saveState({ immediate:true });
   render();
   alert(`Faixa "${tituloNorm}" criada com sucesso!`);
   return true;
@@ -77,13 +77,17 @@ function removerFaixa(divId){
   if(obterTodasDivisoes().length <= 1){ alert('Não é possível remover a última faixa.'); return false; }
 
   const qtd = (div.participantes || []).length;
-  const msg = qtd > 0
-    ? `Remover "${div.titulo}"? ${qtd} participante(s) será(ão) perdido(s).`
-    : `Remover "${div.titulo}"?`;
-  if(!confirm(msg)) return false;
+  if(qtd > 0){
+    alert(`A faixa "${div.titulo}" possui ${qtd} participante(s). Para proteger o histórico, mova ou remova esses participantes antes de excluir a faixa.`);
+    return false;
+  }
+  if(!confirm(`Remover "${div.titulo}"?`)) return false;
 
+  cancelarEstadoPendenteEstrutural('uma faixa foi removida');
   state.divisoes = state.divisoes.filter(d => d.id !== divId);
-  saveState();
+  if(draft) delete draft[divId];
+  if(draftNew) delete draftNew[divId];
+  saveState({ immediate:true });
   render();
   return true;
 }
@@ -101,7 +105,7 @@ function renomearFaixa(divId, novoTitulo, novoIntervalo){
   div.titulo = tituloNorm;
   div.intervalo = (novoIntervalo || '').trim();
 
-  saveState();
+  saveState({ immediate:true });
   render();
   return true;
 }

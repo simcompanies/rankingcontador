@@ -23,8 +23,9 @@ function renderGerenciarDias(){
   } else {
     html = '';
     for(let d = state.days - 1; d >= 0; d--){
+      const data = state.dayDates && state.dayDates[d] ? formatarDataCurta(state.dayDates[d]) : 'sem data';
       html += `<div class="day-row">
-        <span class="day-row-label">Dia ${d+1}</span>
+        <span class="day-row-label">Dia ${d+1} <small>${escapeHtml(data)}</small></span>
         <button class="del-x-btn day-remove-btn" ${admin ? '' : 'disabled'} onclick="removeDay(${d})" title="Remover Dia ${d+1}">Remover dia</button>
       </div>`;
     }

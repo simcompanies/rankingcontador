@@ -32,11 +32,14 @@
 // Cada entrada liga um arquivo de módulo HTML ao <div id="..."> (o "slot")
 // de index.html onde seu conteúdo deve ser injetado. Os ids de slot aqui
 // precisam bater exatamente com os ids usados em index.html.
+let modulosHtmlComFalha = [];
+
 const MODULOS_HTML = [
   { arquivo: 'modules/modulo-0.html',               fallback: 'modulo-0.html',               slot: 'slot-modulo-0' },
   { arquivo: 'modules/troca-de-senha.html',         fallback: 'troca-de-senha.html',         slot: 'slot-troca-senha' },
   { arquivo: 'modules/modulo-1.html',               fallback: 'modulo-1.html',               slot: 'slot-modulo-1' },
   { arquivo: 'modules/modulo-2.html',               fallback: 'modulo-2.html',               slot: 'slot-modulo-2' },
+  { arquivo: 'modules/modulo-5.html',               fallback: 'modulo-5.html',               slot: 'slot-modulo-5' },
   { arquivo: 'modules/modulo-3.html',               fallback: 'modulo-3.html',               slot: 'slot-modulo-3' },
   { arquivo: 'modules/modulo-4.html',               fallback: 'modulo-4.html',               slot: 'slot-modulo-4' },
   { arquivo: 'modules/conteudo.html',               fallback: 'conteudo.html',               slot: 'slot-conteudo' },
@@ -49,6 +52,7 @@ const MODULOS_HTML = [
 // uma mensagem de erro visível naquele slot em vez de deixar a tela em
 // branco silenciosamente.
 async function carregarModulosHtml(){
+  modulosHtmlComFalha = [];
   await Promise.all(MODULOS_HTML.map(async function(modulo){
     const el = document.getElementById(modulo.slot);
     if(!el) return;
@@ -67,11 +71,13 @@ async function carregarModulosHtml(){
       el.innerHTML = await resposta.text();
     }catch(erro){
       console.error('Falha ao carregar ' + modulo.arquivo, erro);
+      modulosHtmlComFalha.push(modulo.arquivo);
       el.innerHTML = '<p style="padding:24px;color:#c0392b;font-family:monospace;">'
         + 'Não foi possível carregar o módulo HTML. Verifique se os arquivos existem na publicação do GitHub Pages.'
         + '</p>';
     }
   }));
+  return modulosHtmlComFalha.slice();
 }
 
 async function iniciarApp(){
@@ -110,13 +116,43 @@ async function iniciarApp(){
 
 // Ponto de entrada real, ligado ao DOMContentLoaded lá embaixo: primeiro
 // monta o HTML dos módulos, só então roda a inicialização original do app.
+async function registrarServiceWorker(){
+  if(!('serviceWorker' in navigator)) return;
+  if(location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') return;
+  try{
+    await navigator.serviceWorker.register('./sw.js', { scope:'./' });
+  }catch(erro){
+    console.warn('Service Worker não pôde ser registrado.', erro);
+  }
+}
+
+function atualizarEstadoRede(){
+  const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
+  document.body?.toggleAttribute('data-offline', offline);
+  if(offline){
+    setStatus('offline — alterações bloqueadas', false);
+    return;
+  }
+  if(loaded && !rankingBloqueado && !syncConflict) setStatus('sincronizado · rev. ' + (state.revision || 0), true);
+}
+
 async function iniciarAplicacao(){
-  await carregarModulosHtml();
+  const falhas = await carregarModulosHtml();
+  if(falhas.length){
+    console.error('Interface incompleta; módulos não carregados:', falhas);
+  }
   await iniciarApp();
+  atualizarEstadoRede();
+  registrarServiceWorker();
+}
+
+function flushAoOcultar(){
+  if(typeof flushPendingSave === 'function') flushPendingSave({ keepalive:true, suppressUI:true }).catch(()=>{});
 }
 
 document.addEventListener('DOMContentLoaded', iniciarAplicacao);
-window.addEventListener('beforeunload', saveState);
-window.addEventListener('pagehide', saveState);
-window.addEventListener('blur', saveState);
-document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='hidden') saveState(); });
+window.addEventListener('beforeunload', flushAoOcultar);
+window.addEventListener('pagehide', flushAoOcultar);
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='hidden') flushAoOcultar(); });
+window.addEventListener('online', atualizarEstadoRede);
+window.addEventListener('offline', atualizarEstadoRede);

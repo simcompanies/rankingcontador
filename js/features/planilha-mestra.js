@@ -1,31 +1,19 @@
-/* ============================================================================
-   planilha-mestra.js
-   ----------------------------------------------------------------------------
-   Ponte entre o estado em memória (state, em estado-global.js) e a Planilha
-   Google mestra (via Apps Script): carregar o ranking ao entrar no app,
-   salvar depois de qualquer alteração (com debounce, para não disparar uma
-   chamada de rede a cada tecla) e sincronizar sob demanda.
+/* ==========================================================================
+   planilha-mestra.js — carga e persistência robustas do ranking.
+   - nunca transforma falha de rede em ranking vazio editável;
+   - serializa gravações;
+   - usa revisão otimista para impedir "última gravação vence";
+   - valida invariantes antes de enviar;
+   - permite flush imediato antes de logout/ocultação da página.
+   ========================================================================== */
 
-   Uma única planilha compartilhada — nada fica salvo no navegador, exceto
-   o token de sessão (sessionStorage, some ao fechar a aba).
-
-   FAIXAS DINÂMICAS: o backend pode devolver o ranking em dois formatos —
-   o novo (`dados.divisoes`, se o Code.gs já foi atualizado nesta versão) ou
-   o antigo (`dados.x`/`dados.y`, formato usado antes desta refatoração).
-   migrarEstadoAntigo() (estado-global.js) normaliza os dois para o mesmo
-   formato interno, então o resto do app nunca precisa saber qual dos dois
-   o backend realmente devolveu.
-
-   Depende de: config-api.js (chamarAPI, chamarAPIGet, tratarErroSessaoOuPermissao),
-   estado-global.js (state, loaded, migrarEstadoAntigo), renderizacao.js (render).
-   ============================================================================ */
-
-// Estado inicial "vazio" (Faixa X / Faixa Y sem participantes) — usado tanto
-// como fallback de erro quanto quando o backend não devolve nada aproveitável.
 function estadoVazioPadrao(){
   return {
+    revision: 0,
     days: 0,
     dayDates: [],
+    dayIds: [],
+    seriesMeta: { currentId:'s_inicial', currentNumber:1, maxDays:7 },
     divisoes: [
       { id: 'x', titulo: 'Faixa X', intervalo: '0 a 19.999M', cor: '--x-color', participantes: [] },
       { id: 'y', titulo: 'Faixa Y', intervalo: '20M ou mais', cor: '--y-color', participantes: [] }
@@ -33,7 +21,6 @@ function estadoVazioPadrao(){
   };
 }
 
-// Atualiza o texto de status exibido perto do botão de salvar/sincronizar (ex.: "Salvando...", "Salvo").
 function setStatus(text, ok){
   const el = document.getElementById('sync-status');
   if(el) el.textContent = text;
@@ -41,69 +28,173 @@ function setStatus(text, ok){
   if(dot) dot.style.background = ok === false ? 'var(--neg)' : (ok === 'busy' ? 'var(--y-color)' : 'var(--x-color)');
 }
 
-// Carrega o ranking da planilha mestra ao iniciar o app (ou ao trocar de sessão) e desenha a tela.
+function atualizarBloqueioDados(){
+  const shell = document.getElementById('app-shell');
+  if(shell) shell.toggleAttribute('data-ranking-bloqueado', !!rankingBloqueado);
+  document.querySelectorAll('[data-papel="administrador"] button, [data-papel="administrador"] input, [data-papel="administrador"] select, [data-papel="administrador"] textarea').forEach(el=>{
+    if(el.closest('#identity-bar')) return;
+    if(rankingBloqueado) el.setAttribute('data-ranking-disabled','1');
+    else el.removeAttribute('data-ranking-disabled');
+  });
+}
+
 async function loadState(){
-  if(!sessaoUsuario) return;
+  if(!sessaoUsuario) return false;
+  rankingBloqueado = true;
+  loaded = false;
+  ultimoErroCarga = null;
+  atualizarBloqueioDados();
   setStatus('carregando dados...', 'busy');
+
   try{
     const resposta = await chamarAPIGet({ action:'listarRanking', token: sessaoUsuario.token });
     if(!resposta.sucesso){
-      if(tratarErroSessaoOuPermissao(resposta)) return;
+      if(tratarErroSessaoOuPermissao(resposta)) return false;
       throw new Error(resposta.erro || 'Falha ao carregar');
     }
-    const carregado = resposta.dados;
-    const formatoValido = carregado && typeof carregado.days === "number" &&
-      (Array.isArray(carregado.divisoes) || (Array.isArray(carregado.x) && Array.isArray(carregado.y)));
 
-    if(formatoValido){
-      state = migrarEstadoAntigo(carregado);
-      if(!Array.isArray(state.dayDates)) state.dayDates = new Array(state.days).fill(null);
-      if(!Array.isArray(state.divisoes) || !state.divisoes.length){
-        state.divisoes = estadoVazioPadrao().divisoes;
-      }
-    } else {
-      state = estadoVazioPadrao();
-    }
-    setStatus('sincronizado', true);
+    let carregado = migrarEstadoAntigo(resposta.dados);
+    const validacao = validarInvariantesRanking(carregado);
+    if(!validacao.ok) throw new Error('O servidor devolveu um ranking inconsistente: ' + validacao.erro);
+
+    state = validacao.state;
+    loaded = true;
+    rankingBloqueado = !!(typeof modulosHtmlComFalha !== 'undefined' && modulosHtmlComFalha.length);
+    syncConflict = false;
+    ultimoErroCarga = null;
+    stateDirty = false;
+    setStatus(rankingBloqueado ? 'interface incompleta — edição bloqueada' : ('sincronizado · rev. ' + (state.revision || 0)), rankingBloqueado ? false : true);
+    atualizarBloqueioDados();
+    render();
+    return true;
   }catch(e){
-    console.error("Erro ao carregar dados", e);
-    state = estadoVazioPadrao();
-    setStatus('erro ao carregar — recarregue a página para tentar de novo', false);
+    console.error('Erro ao carregar dados', e);
+    // IMPORTANTE: não substitui `state` por vazio. Mantém em memória o último
+    // snapshot conhecido e bloqueia toda mutação até uma carga válida.
+    ultimoErroCarga = e && e.message ? e.message : String(e);
+    loaded = false;
+    rankingBloqueado = true;
+    setStatus('dados não carregados — edição bloqueada', false);
+    atualizarBloqueioDados();
+    return false;
   }
-  loaded = true;
-  render();
 }
 
-// Timer do debounce de saveState — evita disparar uma gravação a cada pequena alteração.
 let saveTimeout = null;
+let saveInFlight = null;
+let saveRequested = false;
+let stateDirty = false;
+let conflitoAvisado = false;
 
-// Agenda a gravação do estado atual na planilha mestra (debounce de 600ms).
-// Também é chamada diretamente, sem debounce relevante, pelos listeners de
-// saída de página (beforeunload/pagehide/blur/visibilitychange) — ver
-// inicializacao.js — para não perder alterações ao fechar/trocar de aba.
-function saveState(){
-  if(!souAdmin()) return;
-  clearTimeout(saveTimeout);
-  saveTimeout = setTimeout(syncToServer, 900);
+function clonarSnapshotRanking(){
+  return JSON.parse(JSON.stringify(state));
 }
 
-// Execução de fato da gravação na planilha (POST via chamarAPI) — só é
-// chamada pelo setTimeout agendado em saveState(), nunca diretamente. Envia
-// `state` inteiro, agora com `divisoes` no lugar de `x`/`y` — exige que o
-// Code.gs publicado já esteja na versão que entende `estado.divisoes` (ver
-// nota no topo do arquivo e o resumo de implementação).
-async function syncToServer(){
+function saveState(opcoes){
   if(!souAdmin()) return;
-  setStatus('salvando...', 'busy');
-  try{
-    const resposta = await chamarAPI({ action:'salvarRanking', token:sessaoUsuario.token, estado: state });
-    if(!resposta.sucesso){
-      if(tratarErroSessaoOuPermissao(resposta)) return;
-      throw new Error(resposta.erro || 'Falha ao salvar');
-    }
-    setStatus('sincronizado', true);
-  }catch(e){
-    console.error("Erro ao salvar no servidor", e);
-    setStatus('erro ao sincronizar — suas últimas alterações podem não ter sido salvas', false);
+  stateDirty = true;
+  if(!loaded || rankingBloqueado) return;
+  clearTimeout(saveTimeout);
+  const imediato = !!(opcoes && opcoes.immediate);
+  if(imediato){
+    saveTimeout = null;
+    return syncToServer(opcoes);
   }
+  saveTimeout = setTimeout(()=>{
+    saveTimeout = null;
+    syncToServer().catch(()=>{});
+  }, 250);
+}
+
+async function syncToServer(opcoes){
+  const opts = opcoes || {};
+  if(!souAdmin() || !loaded || rankingBloqueado) return false;
+  if(saveInFlight){
+    saveRequested = true;
+    return saveInFlight;
+  }
+  if(!stateDirty) return true;
+
+  saveInFlight = (async function(){
+    let sucessoGeral = true;
+    do{
+      saveRequested = false;
+      if(!stateDirty) break;
+
+      const validacao = validarInvariantesRanking(state);
+      if(!validacao.ok){
+        rankingBloqueado = true;
+        atualizarBloqueioDados();
+        setStatus('estado inconsistente — gravação bloqueada', false);
+        console.error('Snapshot inválido antes de salvar:', validacao.erro);
+        return false;
+      }
+
+      const snapshot = clonarSnapshotRanking();
+      const revisaoEnviada = Number(snapshot.revision) || 0;
+      stateDirty = false;
+      if(!opts.suppressUI) setStatus('salvando...', 'busy');
+
+      try{
+        const resposta = await chamarAPI(
+          { action:'salvarRanking', token:sessaoUsuario.token, estado:snapshot },
+          { keepalive: !!opts.keepalive }
+        );
+        if(!resposta.sucesso){
+          if(tratarErroSessaoOuPermissao(resposta)) return false;
+          if(resposta.codigo === 'REVISION_CONFLICT' || resposta.codigo === 'SERIES_META_CONFLICT'){
+            syncConflict = true;
+            rankingBloqueado = true;
+            stateDirty = true;
+            atualizarBloqueioDados();
+            setStatus('conflito de versão — recarregue os dados', false);
+            if(!conflitoAvisado && !opts.suppressUI){
+              conflitoAvisado = true;
+              alert('O ranking foi alterado por outra sessão. Para proteger os dados, a edição foi bloqueada. Recarregue a página para obter a versão mais recente antes de continuar.');
+            }
+            return false;
+          }
+          throw new Error(resposta.erro || 'Falha ao salvar');
+        }
+
+        const novaRevisao = Number(resposta.revision != null ? resposta.revision : (resposta.dados && resposta.dados.revision));
+        if(Number.isFinite(novaRevisao) && novaRevisao >= revisaoEnviada) state.revision = novaRevisao;
+        conflitoAvisado = false;
+        if(!opts.suppressUI) setStatus('sincronizado · rev. ' + (state.revision || 0), true);
+      }catch(e){
+        sucessoGeral = false;
+        stateDirty = true;
+        console.error('Erro ao salvar no servidor', e);
+        if(!opts.suppressUI) setStatus('erro ao sincronizar — alterações mantidas localmente', false);
+        break;
+      }
+    }while(saveRequested || stateDirty);
+    return sucessoGeral;
+  })();
+
+  try{
+    return await saveInFlight;
+  }finally{
+    saveInFlight = null;
+    if((saveRequested || stateDirty) && loaded && !rankingBloqueado && !opts.keepalive){
+      saveRequested = false;
+      syncToServer().catch(()=>{});
+    }
+  }
+}
+
+async function flushPendingSave(opcoes){
+  clearTimeout(saveTimeout);
+  saveTimeout = null;
+  if(!stateDirty && !saveInFlight) return true;
+  if(saveInFlight){
+    try{ await saveInFlight; }catch(e){ /* segue para eventual nova tentativa */ }
+  }
+  if(!stateDirty) return true;
+  return syncToServer(Object.assign({ immediate:true }, opcoes || {}));
+}
+
+async function recarregarRankingSeguro(){
+  if(stateDirty && !confirm('Existem alterações locais ainda não sincronizadas. Recarregar descartará essas alterações. Continuar?')) return false;
+  return loadState();
 }

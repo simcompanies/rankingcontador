@@ -10,10 +10,10 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./assets/icons/icon-192.png">
 <link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
-<script src="./js/a11y/a11y.js?v=20260907-ui30-logo-build"></script>
-<link rel="stylesheet" href="./assets/css/style.css?v=20260907-ui30-logo-build">
-<link rel="stylesheet" href="./style.css?v=20260907-ui30-logo-build-root" media="not all" id="style-fallback">
-  <meta name="app-build" content="20260907-ui30-logo-build">
+<script src="./js/a11y/a11y.js?v=20260915-series-v43"></script>
+<link rel="stylesheet" href="./assets/css/style.css?v=20260915-series-v43">
+<link rel="stylesheet" href="./style.css?v=20260915-series-v43-root" media="not all" id="style-fallback">
+  <meta name="app-build" content="20260915-series-v43">
 <style id="screen-guard">
   #app-shell.hidden, body:not([data-app-screen="app"]) #app-shell { display:none !important; }
   body[data-app-screen="app"] #slot-modulo-0 { display:none !important; }
@@ -85,9 +85,10 @@
     (function(){
       var splash=document.getElementById('rg-startup');
       if(!splash) return;
+      var reduzir=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       window.setTimeout(function(){
         splash.classList.add('rg-startup-hide');
-      }, 5480);
+      }, reduzir ? 120 : 5480);
     })();
   </script>
 
@@ -247,10 +248,10 @@
           <input type="email" id="cadastro-email" required autocomplete="username">
         </label>
         <label class="campo"><span>Senha</span>
-          <input type="password" id="cadastro-senha" required minlength="6" autocomplete="new-password">
+          <input type="password" id="cadastro-senha" required minlength="8" autocomplete="new-password">
         </label>
         <label class="campo"><span>Repetir senha</span>
-          <input type="password" id="cadastro-senha2" required minlength="6" autocomplete="new-password">
+          <input type="password" id="cadastro-senha2" required minlength="8" autocomplete="new-password">
         </label>
         <button type="submit" class="launch-submit" id="cadastro-btn">Criar conta</button>
       </form>
@@ -301,10 +302,10 @@
     <div class="panel-hint">Você entrou com um código temporário. Defina uma senha nova pra continuar.</div>
     <form class="auth-form" onsubmit="handleDefinirNovaSenha(event)">
       <label class="campo"><span>Nova senha</span>
-        <input type="password" id="nova-senha-1" required minlength="6" autocomplete="new-password">
+        <input type="password" id="nova-senha-1" required minlength="8" autocomplete="new-password">
       </label>
       <label class="campo"><span>Repetir nova senha</span>
-        <input type="password" id="nova-senha-2" required minlength="6" autocomplete="new-password">
+        <input type="password" id="nova-senha-2" required minlength="8" autocomplete="new-password">
       </label>
       <button type="submit" class="launch-submit" id="nova-senha-btn">Salvar nova senha</button>
     </form>
@@ -335,6 +336,9 @@
       </button>
       <button type="button" class="side-link" data-view="analises" onclick="mostrarView('analises')">
         <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="m7 15 3-4 3 2 4-6"></path></svg></span><span class="side-label">Análises</span>
+      </button>
+      <button type="button" class="side-link" data-view="acumulado" onclick="mostrarView('acumulado')">
+        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h16"></path><path d="M6 16l4-5 3 2 5-7"></path><path d="M18 6h-4M18 6v4"></path></svg></span><span class="side-label">Acumulado Geral</span>
       </button>
       <button type="button" class="side-link" data-view="conteudo" onclick="mostrarView('conteudo')">
         <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h9l3 3v15H6z"></path><path d="M15 3v4h4"></path><path d="M9 12h6M9 16h6"></path></svg></span><span class="side-label">Conteúdo</span>
@@ -374,6 +378,9 @@
     <!-- Módulo 2 (Análises Gerais) — preenchido com modulo-2.html -->
     <div id="slot-modulo-2"></div>
 
+    <!-- Módulo 5 (Acumulado Geral / séries anteriores) -->
+    <div id="slot-modulo-5"></div>
+
     <!-- Módulo 3 (Lançar Pontuação) — preenchido com modulo-3.html -->
     <div id="slot-modulo-3"></div>
 
@@ -395,30 +402,30 @@
        import/export foi introduzido, para não alterar como os onclick="..." e
        demais funções se enxergam entre si.
        ============================================================================ -->
-  <script src="./js/core/config-api.js?v=20260907-ui30-logo-build"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
-  <script src="./js/core/estado-global.js?v=20260907-ui30-logo-build"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
-  <script src="./js/features/faixas-dinamicas.js?v=20260907-ui30-logo-build"></script><!-- Gerenciamento de faixas dinâmicas. -->
-  <script src="./js/core/identidade.js?v=20260907-ui30-logo-build"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
-  <script src="./js/core/navegacao.js?v=20260907-ui30-logo-build"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
-  <script src="./js/core/sidebar.js?v=20260907-ui30-logo-build"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->
-  <script src="./js/a11y/acessibilidade.js?v=20260907-ui30-logo-build"></script><!-- Painel de acessibilidade (UI) — liga os controles a window.A11Y, de a11y.js. -->
-  <script src="./js/features/configuracoes-de-conta.js?v=20260907-ui30-logo-build"></script><!-- Tela "Minha conta". -->
-  <script src="./js/features/modulo-0.js?v=20260907-ui30-logo-build"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
-  <script src="./js/features/texto-do-resumo.js?v=20260907-ui30-logo-build"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
-  <script src="./js/features/colagem.js?v=20260907-ui30-logo-build"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
-  <script src="./js/features/colagem-gemini.js?v=20260915-fix-leitura"></script><!-- Regras de leitura e integração com Gemini — restaura o mecanismo de 22/08. -->
-  <script src="./js/features/colagem-ocr.js?v=20260915-fix-leitura"></script><!-- Leitura de print via OCR — alimenta a mesma caixa de colagem.js. -->
-  <script src="./js/features/planilha-mestra.js?v=20260907-ui30-logo-build"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
-  <script src="./js/features/participantes.js?v=20260907-ui30-logo-build"></script><!-- CRUD de participante + cálculo de ranking (total/tiebreak/sort). -->
-  <script src="./js/features/dias.js?v=20260907-ui30-logo-build"></script><!-- Adicionar/remover um dia. -->
-  <script src="./js/features/formulario-lancamento-dia.js?v=20260907-ui30-logo-build"></script><!-- Aba "Preencher" do Lançar Pontuação. -->
-  <script src="./js/features/analises-gerais.js?v=20260907-ui30-logo-build"></script><!-- Cartões de estatística do Módulo 2. -->
-  <script src="./js/features/filtros.js?v=20260907-ui30-logo-build"></script><!-- Filtro por período/dias do Módulo 2. -->
-  <script src="./js/features/analises-dashboard.js?v=20260907-ui30-logo-build"></script><!-- Destaques + gráfico de evolução + mapa de desempenho (chamados de dentro de filtros.js). -->
-  <script src="./js/features/gerenciar-dias-lancados.js?v=20260907-ui30-logo-build"></script><!-- Lista de dias lançados (Módulos 3 e 4). -->
-  <script src="./js/features/resumos-salvos.js?v=20260907-ui30-logo-build"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
-  <script src="./js/features/usuarios.js?v=20260907-ui30-logo-build"></script><!-- Painel de administração de usuários (Módulo 4). -->
-  <script src="./js/core/renderizacao.js?v=20260907-ui30-logo-build"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
-  <script src="./js/core/inicializacao.js?v=20260907-ui30-logo-build"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
+  <script src="./js/core/config-api.js?v=20260915-series-v43"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
+  <script src="./js/core/estado-global.js?v=20260915-series-v43"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
+  <script src="./js/features/faixas-dinamicas.js?v=20260915-series-v43"></script><!-- Gerenciamento de faixas dinâmicas. -->
+  <script src="./js/core/identidade.js?v=20260915-series-v43"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
+  <script src="./js/core/navegacao.js?v=20260915-series-v43"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
+  <script src="./js/core/sidebar.js?v=20260915-series-v43"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->
+  <script src="./js/a11y/acessibilidade.js?v=20260915-series-v43"></script><!-- Painel de acessibilidade (UI) — liga os controles a window.A11Y, de a11y.js. -->
+  <script src="./js/features/configuracoes-de-conta.js?v=20260915-series-v43"></script><!-- Tela "Minha conta". -->
+  <script src="./js/features/modulo-0.js?v=20260915-series-v43"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
+  <script src="./js/features/texto-do-resumo.js?v=20260915-series-v43"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
+  <script src="./js/features/colagem.js?v=20260915-series-v43"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
+  <script src="./js/features/colagem-gemini.js?v=20260915-series-v43"></script><!-- Regras de leitura e integração com Gemini — restaura o mecanismo de 22/08. -->
+  <script src="./js/features/planilha-mestra.js?v=20260915-series-v43"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
+  <script src="./js/features/series-semanais.js?v=20260915-series-v43"></script><!-- Séries de 7 dias, datas retroativas e Acumulado Geral. -->
+  <script src="./js/features/participantes.js?v=20260915-series-v43"></script><!-- CRUD de participante + cálculo de ranking (total/tiebreak/sort). -->
+  <script src="./js/features/dias.js?v=20260915-series-v43"></script><!-- Adicionar/remover um dia. -->
+  <script src="./js/features/formulario-lancamento-dia.js?v=20260915-series-v43"></script><!-- Aba "Preencher" do Lançar Pontuação. -->
+  <script src="./js/features/analises-gerais.js?v=20260915-series-v43"></script><!-- Cartões de estatística do Módulo 2. -->
+  <script src="./js/features/filtros.js?v=20260915-series-v43"></script><!-- Filtro por período/dias do Módulo 2. -->
+  <script src="./js/features/analises-dashboard.js?v=20260915-series-v43"></script><!-- Destaques + gráfico de evolução + mapa de desempenho (chamados de dentro de filtros.js). -->
+  <script src="./js/features/gerenciar-dias-lancados.js?v=20260915-series-v43"></script><!-- Lista de dias lançados (Módulos 3 e 4). -->
+  <script src="./js/features/resumos-salvos.js?v=20260915-series-v43"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
+  <script src="./js/features/usuarios.js?v=20260915-series-v43"></script><!-- Painel de administração de usuários (Módulo 4). -->
+  <script src="./js/core/renderizacao.js?v=20260915-series-v43"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
+  <script src="./js/core/inicializacao.js?v=20260915-series-v43"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
 </body>
 </html>

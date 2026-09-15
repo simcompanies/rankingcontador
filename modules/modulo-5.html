@@ -1,0 +1,25 @@
+<!-- ===================== MÓDULO 5: ACUMULADO GERAL ===================== -->
+<section class="view hidden ui-page ui-analytics-page" id="view-acumulado">
+  <div class="panel">
+    <div class="panel-title">Acumulado Geral</div>
+    <div class="panel-hint">Combina as séries de 7 dias já arquivadas com a série atual. O crescimento líquido é calculado pela soma das pontuações dentro do período selecionado.</div>
+    <div id="acumulado-status" class="series-status">Carregando séries anteriores...</div>
+    <div class="stats-grid" id="acumulado-stats"></div>
+
+    <div class="filtro-bar acumulado-filtros">
+      <label class="campo"><span>De</span><input type="date" id="acum-data-de" onchange="renderAcumuladoGeral()"></label>
+      <label class="campo"><span>Até</span><input type="date" id="acum-data-ate" onchange="renderAcumuladoGeral()"></label>
+      <label class="campo"><span>Série</span><select id="acum-serie" onchange="renderAcumuladoGeral()"><option value="all">Todas as séries</option></select></label>
+      <button type="button" onclick="limparFiltrosAcumulado()">Limpar filtro</button>
+      <button type="button" onclick="carregarHistoricoSeries(true)">Atualizar histórico</button>
+    </div>
+
+    <div id="acumulado-ranking"><div class="empty-hint">Carregando...</div></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Séries anteriores</div>
+    <div class="panel-hint">Cada série arquivada corresponde a um bloco fechado de até 7 lançamentos. Séries descartadas não entram neste histórico.</div>
+    <div id="acumulado-series-lista"><div class="empty-hint">Carregando...</div></div>
+  </div>
+</section>

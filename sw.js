@@ -12,7 +12,8 @@
    baixarem a versão nova em vez de continuarem presos no cache antigo.
    ============================================================================ */
 
-const CACHE_NAME = 'ranking-contador-v31-fix-leitura-pontos';
+const CACHE_PREFIX = 'ranking-contador-';
+const CACHE_NAME = CACHE_PREFIX + 'v43-series';
 
 const APP_SHELL = [
   './',
@@ -25,14 +26,18 @@ const APP_SHELL = [
   './modules/modulo-2.html',
   './modules/modulo-3.html',
   './modules/modulo-4.html',
+  './modules/modulo-5.html',
   './modules/configuracoes-de-conta.html',
+  './modules/conteudo.html',
   './modulo-0.html',
   './troca-de-senha.html',
   './modulo-1.html',
   './modulo-2.html',
   './modulo-3.html',
   './modulo-4.html',
+  './modulo-5.html',
   './configuracoes-de-conta.html',
+  './conteudo.html',
   './js/a11y/a11y.js',
   './js/a11y/acessibilidade.js',
   './js/core/config-api.js',
@@ -47,8 +52,8 @@ const APP_SHELL = [
   './js/features/texto-do-resumo.js',
   './js/features/colagem.js',
   './js/features/colagem-gemini.js',
-  './js/features/colagem-ocr.js',
   './js/features/planilha-mestra.js',
+  './js/features/series-semanais.js',
   './js/features/participantes.js',
   './js/features/dias.js',
   './js/features/formulario-lancamento-dia.js',
@@ -78,7 +83,7 @@ self.addEventListener('activate', (evento) => {
     caches.keys().then((nomes) =>
       Promise.all(
         nomes
-          .filter((nome) => nome !== CACHE_NAME)
+          .filter((nome) => nome.startsWith(CACHE_PREFIX) && nome !== CACHE_NAME)
           .map((nome) => caches.delete(nome))
       )
     )
@@ -105,13 +110,13 @@ self.addEventListener('fetch', (evento) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(evento.request, copia));
         }
         return respostaRede;
-      }).catch(() => caches.match(evento.request))
+      }).catch(() => caches.match(evento.request, { ignoreSearch:true }))
     );
     return;
   }
 
   evento.respondWith(
-    caches.match(evento.request).then((respostaCache) => {
+    caches.match(evento.request, { ignoreSearch:true }).then((respostaCache) => {
       const buscaRede = fetch(evento.request)
         .then((respostaRede) => {
           if (respostaRede && respostaRede.ok) {

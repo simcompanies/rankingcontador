@@ -26,6 +26,26 @@ let filtroModo = 'periodo'; // 'periodo' | 'dias'
 // Set de índices de dia selecionados manualmente no modo 'dias'.
 let filtroDiasSelecionados = new Set();
 
+
+function ajustarFiltroAposRemoverDia(dayIdx){
+  const novo = new Set();
+  filtroDiasSelecionados.forEach(d=>{
+    if(d === dayIdx) return;
+    novo.add(d > dayIdx ? d - 1 : d);
+  });
+  filtroDiasSelecionados = novo;
+  popularFiltroDias();
+}
+
+function desempatarNosDiasFiltrados(a, b, dias){
+  for(let i=dias.length-1;i>=0;i--){
+    const d = dias[i];
+    const av = a.scores[d] ?? 0;
+    const bv = b.scores[d] ?? 0;
+    if(av !== bv) return bv - av;
+  }
+  return String(a.name).localeCompare(String(b.name), 'pt-BR');
+}
 /* Botões "Por período" / "Por dias específicos": troca o modo ativo, mostra
    o bloco de campos correspondente e reaplica o filtro na hora. */
 function setFiltroModo(modo){
@@ -104,11 +124,14 @@ function diasFiltrados(){
 function rankingFiltrado(divId, dias){
   const div = obterDivisao(divId);
   const participantes = (div && div.participantes) || [];
-  const lista = participantes.map(p=>{
-    const totalFiltrado = dias.reduce((s,d)=> s + (p.scores[d] ?? 0), 0);
-    return { name:p.name, total: totalFiltrado };
+  const lista = participantes.map((p,idx)=>({
+    id:p.id, name:p.name, scores:p.scores, idx,
+    total: dias.reduce((s,d)=> s + (p.scores[d] ?? 0), 0)
+  }));
+  lista.sort((a,b)=>{
+    if(b.total !== a.total) return b.total - a.total;
+    return desempatarNosDiasFiltrados(a,b,dias);
   });
-  lista.sort((a,b)=> b.total - a.total || a.name.localeCompare(b.name, 'pt-BR'));
   return lista;
 }
 
