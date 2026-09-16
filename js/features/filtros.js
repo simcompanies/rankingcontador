@@ -142,7 +142,7 @@ function renderAnalisesRankBoard(){
   const board = document.getElementById('analises-rank-board');
   if(!board) return;
   board.innerHTML = obterTodasDivisoes().map(div => `
-    <div class="division" data-div-id="${div.id}" style="--div-accent:var(${div.cor || '--muted'})">
+    <div class="division" data-div-id="${div.id}" style="--div-accent:${corCssFaixa(div.cor)}">
       <div class="division-head"><div><div class="division-title">${escapeHtml(div.titulo)}</div><div class="division-range filtro-resultado-label" id="filtro-label-${div.id}"></div></div></div>
       <div class="mini-rank-list" id="analises-rank-${div.id}"></div>
     </div>

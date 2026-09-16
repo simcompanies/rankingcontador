@@ -228,6 +228,16 @@ function obterTodasDivisoes(){
   return (state.divisoes && Array.isArray(state.divisoes)) ? state.divisoes : [];
 }
 
+// Converte a cor persistida da faixa em um valor CSS seguro. Versões antigas
+// armazenam nomes de custom properties (ex.: --x-color); faixas novas também
+// podem armazenar hexadecimal quando a paleta base já estiver ocupada.
+function corCssFaixa(cor, fallback){
+  const valor = String(cor || '').trim();
+  if(/^--[a-z0-9-]+$/i.test(valor)) return `var(${valor})`;
+  if(/^#[0-9a-f]{6}$/i.test(valor) || /^#[0-9a-f]{3}$/i.test(valor)) return valor;
+  return fallback || 'var(--muted)';
+}
+
 /* Converte um `state` no formato ANTIGO (state.x / state.y — usado antes da
    v2, e ainda o formato que um backend não atualizado devolve) para o novo
    formato dinâmico (state.divisoes). Chamada por loadState() logo após

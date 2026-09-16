@@ -13,13 +13,14 @@
    ============================================================================ */
 
 const CACHE_PREFIX = 'ranking-contador-';
-const CACHE_NAME = CACHE_PREFIX + 'v48-series-reset';
+const CACHE_NAME = CACHE_PREFIX + 'v50-intense-startup-a11y';
 
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
   './assets/css/style.css',
+  './style.css',
   './modules/modulo-0.html',
   './modules/troca-de-senha.html',
   './modules/modulo-1.html',
@@ -41,6 +42,8 @@ const APP_SHELL = [
   './js/a11y/a11y.js',
   './js/a11y/acessibilidade.js',
   './js/core/dialogos.js',
+  './js/core/rg-motion.js',
+  './js/core/startup-motion.js',
   './js/core/config-api.js',
   './js/core/estado-global.js',
   './js/core/identidade.js',

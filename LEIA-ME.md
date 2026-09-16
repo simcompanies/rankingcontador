@@ -40,7 +40,17 @@ node tests/test-regressao.js
 
 ## Endpoint ativo da API
 
-`https://script.google.com/macros/s/AKfycbz91T9ht4j0ApbkYjhRGa2fUeOOWGqfuLrPFjnYWhJC69SxpzoNGJEZuiotV40z21L_Xg/exec`
+`https://script.google.com/macros/s/AKfycbypHFgogRlqWGo00tNOyDNRqnzces3kUT7c_MQ81w8GlbFqHATie2uIW34R0UDWWFdfLw/exec`
 
 ## v46 — organização da interface
 A v46 reorganiza as informações por intenção de uso. Visão Geral foi simplificada, regras foram movidas para Regras e Ajuda, dias e resumos foram concentrados em Lançamentos e Administração passou a ser dividida entre Participantes, Faixas, Usuários, Atividade e Sistema. A mecânica de pontuação não foi alterada.
+
+
+## Reiniciador de séries (v48)
+
+Em **Lançamentos > Reiniciar série**, o administrador pode reiniciar a série atual mantendo a numeração, arquivar uma série parcial e iniciar a próxima ou descartar a série parcial e avançar. Participantes e faixas são preservados em todos os modos. Consulte `ALTERACOES_V48_REINICIADOR_SERIES.md`.
+
+
+## v50 — abertura animada e acessibilidade
+
+A abertura usa a animação oficial em canvas com brilho intenso, enquanto módulos, sessão e ranking carregam em paralelo. A animação respeita `prefers-reduced-motion` e a preferência interna "Reduzir movimento", possui botão para pular a animação e não impõe espera fixa após os dados estarem prontos. Consulte `ALTERACOES_V50_ANIMACAO_ACESSIBILIDADE.md`.

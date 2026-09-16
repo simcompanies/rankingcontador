@@ -3763,3 +3763,27 @@ body[data-keyboard-open] .auth-card{max-height:none!important;}
   .series-reset-option{padding:13px 14px;min-height:66px;}
   .series-reset-footer .rg-dialog-btn{width:100%;}
 }
+
+/* ========================================================================== 
+   v50 — camada transversal de acessibilidade
+   ========================================================================== */
+:where(a,button,input,select,textarea,[role="button"],[role="tab"],[tabindex]):focus-visible{
+  outline:3px solid #21ceec!important;
+  outline-offset:3px!important;
+}
+.side-link[aria-current="page"]{box-shadow:inset 3px 0 0 currentColor;}
+[role="tab"][aria-selected="true"]{position:relative;}
+@media (pointer:coarse){
+  button,.button,[role="button"],[role="tab"],select,input[type="date"],input[type="text"],input[type="email"],input[type="password"]{min-height:44px;}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto!important}
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+}
+:root[data-motion="on"] *,
+:root[data-motion="on"] *::before,
+:root[data-motion="on"] *::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+@media (forced-colors:active){
+  button,.button,input,select,textarea,.card,.modal,.rg-dialog-card{forced-color-adjust:auto;border-color:CanvasText!important}
+  :where(a,button,input,select,textarea,[role="button"],[role="tab"]):focus-visible{outline:3px solid Highlight!important}
+}

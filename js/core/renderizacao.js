@@ -39,7 +39,7 @@ function renderBoard(){
   if(!board) return;
 
   board.innerHTML = obterTodasDivisoes().map(div => `
-    <div class="division" id="div-${div.id}" data-div-id="${div.id}" style="--div-accent:var(${div.cor || '--muted'})">
+    <div class="division" id="div-${div.id}" data-div-id="${div.id}" style="--div-accent:${corCssFaixa(div.cor)}">
       <div class="division-head">
         <div>
           <div class="division-title">${escapeHtml(div.titulo)}</div>

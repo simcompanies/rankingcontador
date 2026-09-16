@@ -121,7 +121,7 @@ function renderLaunchColumns(){
   const container = document.getElementById('launch-columns-container');
   if(!container) return;
   container.innerHTML = obterTodasDivisoes().map(div => `
-    <div class="launch-col" data-div-id="${div.id}" style="--div-accent:var(${div.cor || '--muted'})">
+    <div class="launch-col" data-div-id="${div.id}" style="--div-accent:${corCssFaixa(div.cor)}">
       <div class="launch-col-head">
         <span class="launch-col-title">${escapeHtml(div.titulo)}</span>
         <span class="launch-col-count" id="launch-count-${div.id}"></span>

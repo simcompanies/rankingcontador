@@ -125,7 +125,7 @@ function renderEvolucaoBoard(){
   const board = document.getElementById('evolucao-chart-board');
   if(!board) return;
   board.innerHTML = obterTodasDivisoes().map(div => `
-    <div class="division" data-div-id="${div.id}" style="--div-accent:var(${div.cor || '--muted'})">
+    <div class="division" data-div-id="${div.id}" style="--div-accent:${corCssFaixa(div.cor)}">
       <div class="division-head"><div><div class="division-title">${escapeHtml(div.titulo)}</div></div></div>
       <div class="chart-wrap" id="evolucao-chart-${div.id}"></div>
     </div>
@@ -226,7 +226,7 @@ function renderHeatmapBoard(){
   const board = document.getElementById('heatmap-board');
   if(!board) return;
   board.innerHTML = obterTodasDivisoes().map((div, i) => `
-    <div class="division-title${i>0?' heat-divider':''}" style="color:var(${div.cor || '--muted'});">${escapeHtml(div.titulo)}</div>
+    <div class="division-title${i>0?' heat-divider':''}" style="color:${corCssFaixa(div.cor)};">${escapeHtml(div.titulo)}</div>
     <div id="heatmap-wrap-${div.id}"></div>
   `).join('');
 }

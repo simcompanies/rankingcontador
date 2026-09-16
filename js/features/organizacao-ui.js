@@ -83,7 +83,7 @@ function renderGerenciarParticipantes(){
     <div class="admin-participant-summary"><strong>${total}</strong><span>participante${total===1?'':'s'} em ${divisoes.length} faixa${divisoes.length===1?'':'s'}</span></div>
     <div class="admin-participant-groups">${divisoes.map(div=>{
       const participantes = (div.participantes || []);
-      return `<section class="admin-participant-group" style="--div-accent:var(${div.cor || '--muted'})">
+      return `<section class="admin-participant-group" style="--div-accent:${corCssFaixa(div.cor)}">
         <div class="admin-participant-group-head">
           <div><strong>${escapeHtml(div.titulo)}</strong><span>${escapeHtml(div.intervalo || '')}</span></div>
           <button type="button" onclick="addParticipant('${div.id}')">+ Participante</button>

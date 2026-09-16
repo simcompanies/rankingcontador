@@ -38,10 +38,23 @@ async function aplicarSessao(dados){
   sessaoUsuario = { token: dados.token, idUsuario: dados.idUsuario, nome: dados.nome, email: dados.email, papel: dados.papel };
   sessionStorage.setItem('rankingGeral_token', dados.token);
 
-  // Os módulos começaram a carregar ainda na abertura/login. Esperamos apenas
-  // o que eventualmente ainda estiver pendente, sem bloquear a requisição de auth.
-  if(window.RGStartup) window.RGStartup.status('Preparando interface…', 54);
-  try{ if(window.rgModulosPromise) await window.rgModulosPromise; }catch(e){}
+  // v50: ranking e fragmentos HTML começam juntos assim que o login devolve o token.
+  // Antes, o ranking só era solicitado depois de todos os módulos terminarem de baixar.
+  const rankingPromise = dados.ranking
+    ? Promise.resolve({ sucesso:true, dados:dados.ranking })
+    : chamarAPIGet({ action:'listarRanking', token:dados.token });
+  const interfacePromise = window.rgModulosPromise || Promise.resolve([]);
+
+  if(window.RGStartup) window.RGStartup.status('Carregando interface e ranking…', 54);
+  let resultadoRanking;
+  try{
+    const resultados = await Promise.all([rankingPromise, interfacePromise]);
+    resultadoRanking = resultados[0];
+  }catch(erro){
+    console.error('Falha durante a preparação paralela do painel.', erro);
+    if(window.RGStartup) window.RGStartup.done('Verifique a conexão');
+    return false;
+  }
 
   document.getElementById('auth-gate')?.classList.add('hidden');
   document.getElementById('app-shell')?.classList.remove('hidden');
@@ -50,8 +63,16 @@ async function aplicarSessao(dados){
   atualizarBarraIdentidade();
   mostrarView('faixas');
 
-  if(window.RGStartup) window.RGStartup.status('Carregando ranking…', 76);
-  const ok = dados.ranking ? aplicarRankingRecebido(dados.ranking) : await loadState();
+  if(window.RGStartup) window.RGStartup.status('Montando seus dados…', 84);
+  if(!resultadoRanking || !resultadoRanking.sucesso){
+    if(resultadoRanking && typeof tratarErroSessaoOuPermissao === 'function' && tratarErroSessaoOuPermissao(resultadoRanking)) return false;
+    ultimoErroCarga = (resultadoRanking && resultadoRanking.erro) || 'Não foi possível carregar o ranking.';
+    rankingBloqueado = true; loaded = false;
+    if(typeof atualizarBloqueioDados === 'function') atualizarBloqueioDados();
+    if(window.RGStartup) window.RGStartup.done('Verifique a conexão');
+    return false;
+  }
+  const ok = aplicarRankingRecebido(resultadoRanking.dados);
   if(ok && window.RGStartup) window.RGStartup.done('Painel pronto');
   else if(window.RGStartup) window.RGStartup.done('Verifique a conexão');
   return ok;

@@ -12,6 +12,17 @@ vm.runInContext(`state={revision:0,days:1,dayDates:['2026-09-15'],dayIds:['d1'],
 for(let i=1;i<=6;i++) ctx.criarFaixa('f'+i,'Faixa '+i,'intervalo '+i);
 const qtd=vm.runInContext('state.divisoes.length',ctx); ok('aceita mais que X/Y',qtd===8,'qtd='+qtd);
 const ids=vm.runInContext('state.divisoes.map(d=>d.id)',ctx); ok('IDs das faixas permanecem únicos',new Set(ids).size===ids.length);
+const cores=vm.runInContext('state.divisoes.map(d=>d.cor)',ctx); ok('cada faixa ativa recebe cor diferente',new Set(cores.map(c=>String(c).toLowerCase())).size===cores.length,'cores='+cores.join(','));
+// Cria várias faixas além da paleta original para validar que não há ciclo/repetição.
+for(let i=7;i<=30;i++) ctx.criarFaixa('f'+i,'Faixa '+i,'intervalo '+i);
+const coresMuitas=vm.runInContext('state.divisoes.map(d=>d.cor)',ctx); ok('cores continuam únicas acima da paleta base',new Set(coresMuitas.map(c=>String(c).toLowerCase())).size===coresMuitas.length,'qtd='+coresMuitas.length);
+// Ao remover uma faixa vazia, sua cor torna-se elegível novamente sem colidir com ativas.
+const corLiberada=vm.runInContext(`state.divisoes.find(d=>d.id==='f30').cor`,ctx);
+await ctx.removerFaixa('f30');
+ctx.criarFaixa('f31','Faixa 31','');
+const corNova=vm.runInContext(`state.divisoes.find(d=>d.id==='f31').cor`,ctx);
+const coresAtivas=vm.runInContext(`state.divisoes.map(d=>d.cor)`,ctx);
+ok('cor reutilizada só quando deixa de estar ativa',corNova===corLiberada && new Set(coresAtivas.map(c=>String(c).toLowerCase())).size===coresAtivas.length,'liberada='+corLiberada+' nova='+corNova);
 ok('ID inválido é recusado',ctx.criarFaixa('1invalida','Inválida','')===false);
 vm.runInContext(`state.divisoes.find(d=>d.id==='f1').participantes.push({id:'p1',name:'Ana',scores:[10]});`,ctx);
 alerts.length=0; const rem=await ctx.removerFaixa('f1');

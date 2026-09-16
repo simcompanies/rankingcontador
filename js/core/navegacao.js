@@ -36,7 +36,10 @@ function mostrarView(nome){
     if(el) el.classList.toggle('hidden', v !== nome);
   });
   document.querySelectorAll('.side-link').forEach(function(btn){
-    btn.classList.toggle('active', btn.dataset.view === nome);
+    const ativo = btn.dataset.view === nome;
+    btn.classList.toggle('active', ativo);
+    if(ativo) btn.setAttribute('aria-current','page');
+    else btn.removeAttribute('aria-current');
   });
   if(nome === 'config'){
     carregarUsuariosSeNecessario();
@@ -65,10 +68,18 @@ function switchLaunchTab(tab){
     pasteView.style.display = '';
     tabForm.classList.remove('active');
     tabPaste.classList.add('active');
+    tabForm.setAttribute('aria-selected','false');
+    tabPaste.setAttribute('aria-selected','true');
+    formView.setAttribute('aria-hidden','true');
+    pasteView.setAttribute('aria-hidden','false');
   } else {
     formView.style.display = '';
     pasteView.style.display = 'none';
     tabForm.classList.add('active');
     tabPaste.classList.remove('active');
+    tabForm.setAttribute('aria-selected','true');
+    tabPaste.setAttribute('aria-selected','false');
+    formView.setAttribute('aria-hidden','false');
+    pasteView.setAttribute('aria-hidden','true');
   }
 }

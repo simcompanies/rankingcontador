@@ -207,7 +207,13 @@ function flushAoOcultar(){
   if(typeof flushPendingSave === 'function') flushPendingSave({ keepalive:true, suppressUI:true }).catch(()=>{});
 }
 
-document.addEventListener('DOMContentLoaded', iniciarAplicacao);
+if(document.readyState === 'loading'){
+  // O script já está no fim do <body>: todos os slots necessários já existem.
+  // Inicia na próxima microtarefa para antecipar rede/módulos enquanto a animação roda.
+  Promise.resolve().then(iniciarAplicacao);
+}else{
+  iniciarAplicacao();
+}
 window.addEventListener('beforeunload', flushAoOcultar);
 window.addEventListener('pagehide', flushAoOcultar);
 document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='hidden') flushAoOcultar(); });

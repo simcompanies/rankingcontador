@@ -15,15 +15,68 @@
    renderizacao.js (render).
    ============================================================================ */
 
-// Paleta que uma faixa nova recebe automaticamente, ciclando pelas cores de
-// gráfico já existentes no projeto (as mesmas 6 usadas na Evolução
-// Acumulada) — assim cada faixa nova já nasce visualmente distinta, sem
-// precisar de nenhuma escolha manual de cor.
-const CORES_FAIXA_DISPONIVEIS = ['--x-color', '--y-color', '--chart-3', '--chart-4', '--chart-5', '--chart-6'];
+// Paleta base do sistema. Uma nova faixa nunca recebe uma cor que já esteja
+// sendo usada por outra faixa ATIVA. As seis primeiras mantêm a identidade
+// visual original; depois disso o sistema gera novas cores de forma
+// determinística e perceptualmente espaçada. Uma cor só pode voltar a ser
+// usada depois que a faixa que a utilizava for removida.
+const CORES_FAIXA_DISPONIVEIS = [
+  '--x-color', '--y-color', '--chart-3', '--chart-4', '--chart-5', '--chart-6',
+  '#16b8a6', '#4f8df7', '#e7648d', '#9a6fe8', '#d39a2c', '#00a6c8',
+  '#ef6c57', '#69ad45', '#c45bd6', '#d8792d', '#5376d8', '#32a36d',
+  '#d44c63', '#7a8f2c', '#5b72e8', '#b85c9e', '#1aa5a5', '#c77920'
+];
+
+function hslParaHexFaixa(h, s, l){
+  const sat = Math.max(0, Math.min(100, Number(s))) / 100;
+  const lig = Math.max(0, Math.min(100, Number(l))) / 100;
+  const c = (1 - Math.abs(2 * lig - 1)) * sat;
+  const hp = (((Number(h) % 360) + 360) % 360) / 60;
+  const x = c * (1 - Math.abs((hp % 2) - 1));
+  let r=0,g=0,b=0;
+  if(hp < 1){ r=c; g=x; }
+  else if(hp < 2){ r=x; g=c; }
+  else if(hp < 3){ g=c; b=x; }
+  else if(hp < 4){ g=x; b=c; }
+  else if(hp < 5){ r=x; b=c; }
+  else { r=c; b=x; }
+  const m = lig - c/2;
+  const hex = v => Math.round((v+m)*255).toString(16).padStart(2,'0');
+  return '#' + hex(r) + hex(g) + hex(b);
+}
 
 function proximaCorFaixa(){
-  const usadas = obterTodasDivisoes().length;
-  return CORES_FAIXA_DISPONIVEIS[usadas % CORES_FAIXA_DISPONIVEIS.length];
+  const usadas = new Set(
+    obterTodasDivisoes()
+      .map(div => String(div && div.cor || '').trim().toLowerCase())
+      .filter(Boolean)
+  );
+
+  // Primeiro procura uma cor pronta ainda livre.
+  for(const cor of CORES_FAIXA_DISPONIVEIS){
+    if(!usadas.has(String(cor).toLowerCase())) return cor;
+  }
+
+  // Paleta virtual praticamente ilimitada. O ângulo áureo distribui os tons
+  // ao redor do círculo cromático e evita blocos de cores muito parecidas.
+  const ANGULO_AUREO = 137.508;
+  for(let i=0; i<720; i++){
+    const hue = (18 + i * ANGULO_AUREO) % 360;
+    const sat = 68 + (i % 3) * 5;   // 68, 73, 78
+    const lig = 48 + (i % 2) * 8;   // 48, 56
+    const cor = hslParaHexFaixa(hue, sat, lig);
+    if(!usadas.has(cor.toLowerCase())) return cor;
+  }
+
+  // Fallback extremo: ainda preserva unicidade textual para um volume de
+  // faixas muito acima do uso normal do aplicativo.
+  let n = obterTodasDivisoes().length + 1;
+  while(n < 10000){
+    const cor = hslParaHexFaixa((n * 53) % 360, 74, 52);
+    if(!usadas.has(cor.toLowerCase())) return cor;
+    n++;
+  }
+  return '#22c7d6';
 }
 
 /* --------------------------------------------------------------------------
@@ -131,7 +184,7 @@ function renderGerenciarFaixas(){
   lista.innerHTML = divisoes.map(div=>{
     const qtd = (div.participantes || []).length;
     const podeRemover = admin && divisoes.length > 1;
-    return `<div class="faixa-card" style="--div-accent:var(${div.cor || '--panel-2'})">
+    return `<div class="faixa-card" style="--div-accent:${corCssFaixa(div.cor, 'var(--panel-2)')}">
       <div class="faixa-header">
         <div>
           <div class="faixa-titulo">${escapeHtml(div.titulo)}</div>

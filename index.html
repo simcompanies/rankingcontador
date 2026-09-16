@@ -13,151 +13,58 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./assets/icons/icon-192.png">
 <link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
-<script src="./js/a11y/a11y.js?v=20260915-v48-series-reset"></script>
-<link rel="stylesheet" href="./assets/css/style.css?v=20260915-v48-series-reset">
-<link rel="stylesheet" href="./style.css?v=20260915-v48-series-reset-root" media="not all" id="style-fallback">
-  <meta name="app-build" content="20260915-v48-series-reset">
+<script src="./js/a11y/a11y.js?v=20260916-v50-intense-startup-a11y"></script>
+<script src="./js/core/rg-motion.js?v=20260916-v50-intense-startup-a11y"></script>
+<link rel="stylesheet" href="./assets/css/style.css?v=20260916-v50-intense-startup-a11y">
+<link rel="stylesheet" href="./style.css?v=20260916-v50-intense-startup-a11y-root" media="not all" id="style-fallback">
+  <meta name="app-build" content="20260916-v50-intense-startup-a11y">
 <style id="screen-guard">
   #app-shell.hidden, body:not([data-app-screen="app"]) #app-shell { display:none !important; }
   body[data-app-screen="app"] #slot-modulo-0 { display:none !important; }
 
 </style>
 <style id="rg-startup-critical">
-/* v47 — abertura cinética da marca: animação real, não temporizador de espera. */
-#rg-startup{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:
-  radial-gradient(circle at 50% 42%,rgba(18,104,145,.13),transparent 34%),
-  linear-gradient(180deg,#071019 0%,#08131d 100%);overflow:hidden;opacity:1;visibility:visible;pointer-events:auto;transition:opacity .28s ease,visibility .28s ease}
+/* v50 — animação oficial em canvas, intensa, não bloqueante e acessível. */
+.skip-link{position:fixed;left:12px;top:10px;z-index:100001;padding:10px 14px;border-radius:10px;background:#eef8ff;color:#061b32;font:750 13px/1.2 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;box-shadow:0 8px 28px #0008;transform:translateY(-160%);transition:transform .16s ease}.skip-link:focus{transform:translateY(0);outline:3px solid #21ceec;outline-offset:3px}body[data-startup-visible] .skip-link{display:none}
+#rg-startup{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:radial-gradient(circle at 50% 43%,#042333 0%,#00060b 46%,#000102 100%);overflow:hidden;opacity:1;visibility:visible;pointer-events:auto;transition:opacity .26s ease,visibility .26s ease;padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
 #rg-startup.rg-startup-hide{opacity:0;visibility:hidden;pointer-events:none}
-.rg-startup-card{width:min(88vw,440px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px;box-sizing:border-box}
-.rg-logo-stage{position:relative;width:min(66vw,300px);aspect-ratio:1/1;display:grid;place-items:center;filter:drop-shadow(0 18px 32px rgba(0,0,0,.34))}
-.rg-logo-stage svg{width:100%;height:100%;overflow:visible}
-.rg-logo-stage .rg-grid{opacity:0;transform-origin:400px 400px}
-.rg-logo-stage .rg-orbit-a,.rg-logo-stage .rg-orbit-b,.rg-logo-stage .rg-orbit-c{fill:none;stroke-linecap:round;stroke-dasharray:980;stroke-dashoffset:980}
-.rg-logo-stage .rg-bars rect{transform-box:fill-box;transform-origin:center bottom;transform:scaleY(0);opacity:0}
-.rg-logo-stage .rg-letter{opacity:0;transform-box:fill-box;transform-origin:center;filter:blur(5px)}
-.rg-logo-stage .rg-arrow path{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:480;stroke-dashoffset:480}
-.rg-logo-stage .rg-podium{opacity:0;transform:translateY(48px)}
-.rg-logo-stage .rg-dot{opacity:0;transform-origin:400px 400px}
-.rg-logo-stage .rg-official{opacity:0;transform-origin:400px 400px;transform:scale(.94)}
-.rg-logo-stage .rg-flash{opacity:0;transform-origin:400px 400px}
-#rg-startup.rg-animate .rg-grid{animation:rgGrid .55s ease .05s forwards}
-#rg-startup.rg-animate .rg-orbit-a{animation:rgTrace .7s cubic-bezier(.2,.7,.2,1) .1s forwards}
-#rg-startup.rg-animate .rg-orbit-b{animation:rgTrace .64s cubic-bezier(.2,.7,.2,1) .22s forwards}
-#rg-startup.rg-animate .rg-orbit-c{animation:rgTrace .55s cubic-bezier(.2,.7,.2,1) .32s forwards}
-#rg-startup.rg-animate .rg-bars rect:nth-child(1){animation:rgBar .38s cubic-bezier(.2,.9,.2,1) .36s forwards}
-#rg-startup.rg-animate .rg-bars rect:nth-child(2){animation:rgBar .38s cubic-bezier(.2,.9,.2,1) .42s forwards}
-#rg-startup.rg-animate .rg-bars rect:nth-child(3){animation:rgBar .38s cubic-bezier(.2,.9,.2,1) .48s forwards}
-#rg-startup.rg-animate .rg-bars rect:nth-child(4){animation:rgBar .38s cubic-bezier(.2,.9,.2,1) .54s forwards}
-#rg-startup.rg-animate .rg-bars rect:nth-child(5){animation:rgBar .38s cubic-bezier(.2,.9,.2,1) .60s forwards}
-#rg-startup.rg-animate .rg-letter-r{animation:rgLetterR .52s cubic-bezier(.18,.8,.2,1) .48s forwards}
-#rg-startup.rg-animate .rg-letter-g{animation:rgLetterG .52s cubic-bezier(.18,.8,.2,1) .58s forwards}
-#rg-startup.rg-animate .rg-growth path{animation:rgTrace .55s cubic-bezier(.2,.75,.2,1) .72s forwards}
-#rg-startup.rg-animate .rg-drop path{animation:rgTrace .46s cubic-bezier(.2,.75,.2,1) .78s forwards}
-#rg-startup.rg-animate .rg-podium{animation:rgPodium .46s cubic-bezier(.15,.9,.22,1) .82s forwards}
-#rg-startup.rg-animate .rg-dot-a{animation:rgDotA 1.35s cubic-bezier(.2,.8,.2,1) .24s forwards}
-#rg-startup.rg-animate .rg-dot-b{animation:rgDotB 1.35s cubic-bezier(.2,.8,.2,1) .34s forwards}
-#rg-startup.rg-animate .rg-official{animation:rgOfficial .48s ease 1.16s forwards}
-#rg-startup.rg-animate .rg-flash{animation:rgFlash .5s ease 1.12s forwards}
-.rg-startup-title{margin-top:8px;font:850 clamp(22px,5vw,32px)/1 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:-.045em;color:#f0f7fb;opacity:0;transform:translateY(8px)}
-.rg-startup-title span{color:#35d8e7}
-#rg-startup.rg-animate .rg-startup-title{animation:rgTitle .44s ease 1.02s forwards}
-.rg-startup-status{margin-top:12px;min-height:18px;font:600 11px/1.35 Inter,ui-sans-serif,sans-serif;letter-spacing:.055em;color:rgba(200,219,229,.72);text-align:center;opacity:0}
-#rg-startup.rg-animate .rg-startup-status{animation:rgStatus .35s ease .35s forwards}
-.rg-startup-progress{width:min(230px,58vw);height:3px;margin-top:11px;border-radius:999px;background:rgba(123,161,184,.13);overflow:hidden;opacity:0}
-#rg-startup.rg-animate .rg-startup-progress{animation:rgStatus .35s ease .4s forwards}
-.rg-startup-progress>i{display:block;width:12%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#168bc4,#2bd8e6,#45e2b2);box-shadow:0 0 13px rgba(43,216,230,.32);transition:width .32s cubic-bezier(.2,.8,.2,1)}
-@keyframes rgGrid{from{opacity:0;transform:scale(.86) rotate(-5deg)}to{opacity:.36;transform:scale(1) rotate(0)}}
-@keyframes rgTrace{to{stroke-dashoffset:0}}
-@keyframes rgBar{0%{transform:scaleY(0);opacity:0}65%{opacity:1}100%{transform:scaleY(1);opacity:1}}
-@keyframes rgLetterR{0%{opacity:0;transform:translateX(-28px) scale(.9);filter:blur(5px)}100%{opacity:1;transform:none;filter:blur(0)}}
-@keyframes rgLetterG{0%{opacity:0;transform:translateX(28px) scale(.9);filter:blur(5px)}100%{opacity:1;transform:none;filter:blur(0)}}
-@keyframes rgPodium{0%{opacity:0;transform:translateY(48px)}72%{opacity:1;transform:translateY(-3px)}100%{opacity:1;transform:translateY(0)}}
-@keyframes rgDotA{0%{opacity:0;transform:rotate(-78deg) translateY(-248px) scale(.55)}22%{opacity:1}100%{opacity:.9;transform:rotate(18deg) translateY(-248px) scale(1)}}
-@keyframes rgDotB{0%{opacity:0;transform:rotate(128deg) translateY(-248px) scale(.55)}22%{opacity:1}100%{opacity:.92;transform:rotate(224deg) translateY(-248px) scale(1)}}
-@keyframes rgOfficial{0%{opacity:0;transform:scale(.94)}100%{opacity:1;transform:scale(1)}}
-@keyframes rgFlash{0%{opacity:0;transform:scale(.55)}45%{opacity:.32}100%{opacity:0;transform:scale(1.18)}}
-@keyframes rgTitle{to{opacity:1;transform:translateY(0)}}
-@keyframes rgStatus{to{opacity:1}}
-@media(max-width:560px){.rg-startup-card{padding:16px}.rg-logo-stage{width:min(72vw,270px)}.rg-startup-status{font-size:10.5px}.rg-startup-progress{width:min(220px,62vw)}}
-@media(prefers-reduced-motion:reduce){#rg-startup *{animation:none!important;transition:none!important}.rg-logo-stage .rg-official,.rg-startup-title,.rg-startup-status,.rg-startup-progress{opacity:1!important;transform:none!important}.rg-logo-stage .rg-grid,.rg-logo-stage .rg-orbit-a,.rg-logo-stage .rg-orbit-b,.rg-logo-stage .rg-orbit-c,.rg-logo-stage .rg-bars,.rg-logo-stage .rg-letter,.rg-logo-stage .rg-arrow,.rg-logo-stage .rg-podium,.rg-logo-stage .rg-dot,.rg-logo-stage .rg-flash{opacity:0!important}}
+.rg-startup-card{width:min(92vw,500px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;text-align:center}
+.rg-startup-stage{position:relative;width:min(76vw,390px);aspect-ratio:1/1;display:grid;place-items:center;isolation:isolate}
+#rg-startup-canvas,.rg-startup-fallback{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:contain}
+#rg-startup-canvas{filter:drop-shadow(0 16px 34px rgba(0,0,0,.46))}
+.rg-startup-fallback{padding:7%;filter:drop-shadow(0 14px 30px rgba(0,0,0,.42));opacity:.96}
+.rg-startup-title{margin-top:4px;font:900 clamp(23px,5vw,34px)/1 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:-.045em;color:#f1f8fb}.rg-startup-title span{color:#2ed9e8}
+.rg-startup-status{margin-top:12px;min-height:18px;font:650 11px/1.4 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:.035em;color:#b9ced9}
+.rg-startup-progress{width:min(250px,62vw);height:4px;margin-top:12px;border-radius:999px;background:#173040;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(112,167,193,.12)}
+.rg-startup-progress>i{display:block;width:10%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#098bc4,#24d7e8,#44e2b4);box-shadow:0 0 16px rgba(36,215,232,.48);transition:width .28s cubic-bezier(.2,.8,.2,1)}
+.rg-startup-skip{margin-top:15px;min-height:42px;padding:0 15px;border:1px solid #29485a;border-radius:11px;background:#0b1b25cc;color:#cfe0e8;font:700 12px/1 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer;touch-action:manipulation}.rg-startup-skip:hover{background:#102836}.rg-startup-skip:focus-visible{outline:3px solid #2ed9e8;outline-offset:3px}.rg-startup-skip:disabled{opacity:.65;cursor:default}
+.rg-startup-note{margin:9px 0 0;color:#7794a4;font:550 10.5px/1.4 Inter,ui-sans-serif,sans-serif;max-width:330px}
+@media(max-width:560px){#rg-startup{padding-top:max(12px,env(safe-area-inset-top));padding-bottom:max(12px,env(safe-area-inset-bottom))}.rg-startup-card{width:96vw}.rg-startup-stage{width:min(82vw,330px)}.rg-startup-status{font-size:10.5px}.rg-startup-title{font-size:clamp(21px,7vw,29px)}.rg-startup-skip{min-height:44px}}
+@media(max-height:600px) and (orientation:landscape){.rg-startup-stage{width:min(46vh,280px)}.rg-startup-title{margin-top:0}.rg-startup-note{display:none}.rg-startup-skip{margin-top:10px}}
+@media(prefers-reduced-motion:reduce){#rg-startup,.skip-link,.rg-startup-progress>i{transition:none!important}}
+:root[data-contrast="on"] .rg-startup-status,:root[data-contrast="on"] .rg-startup-note{color:#fff}:root[data-contrast="on"] .rg-startup-skip{border-color:#fff;color:#fff;background:#000}:root[data-contrast="on"] .rg-startup-progress{background:#000;border:1px solid #fff}
 </style>
 <script>document.addEventListener('DOMContentLoaded',function(){var main=document.querySelector('link[href^="./assets/css/style.css"]');var fb=document.getElementById('style-fallback');if(main&&fb){main.addEventListener('error',function(){fb.media='all'});}});</script>
 </head>
 <body>
 
-  <div id="rg-startup" class="rg-startup rg-animate" aria-hidden="true">
+  <a class="skip-link" href="#main-content">Ir para o conteúdo principal</a>
+
+  <div id="rg-startup" role="region" aria-label="Inicialização do Ranking Geral" aria-hidden="false">
     <div class="rg-startup-card">
-      <div class="rg-logo-stage" aria-hidden="true">
-        <svg viewBox="0 0 800 800" focusable="false">
-          <defs>
-            <linearGradient id="rg47Cyan" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#0878d1"/><stop offset="1" stop-color="#25d9e7"/></linearGradient>
-            <linearGradient id="rg47Blue" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#0b62c9"/><stop offset="1" stop-color="#4bd5ef"/></linearGradient>
-            <linearGradient id="rg47Green" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#13b978"/><stop offset="1" stop-color="#5df08c"/></linearGradient>
-            <linearGradient id="rg47Orange" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9a38"/><stop offset="1" stop-color="#ff5d20"/></linearGradient>
-            <linearGradient id="rg47Navy" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0b3d69"/><stop offset="1" stop-color="#061b32"/></linearGradient>
-            <radialGradient id="rg47Flash"><stop offset="0" stop-color="#58e7ef" stop-opacity=".58"/><stop offset="1" stop-color="#58e7ef" stop-opacity="0"/></radialGradient>
-          </defs>
-          <g class="rg-grid" stroke="#56d5e8" stroke-width="1" opacity=".25">
-            <circle cx="400" cy="400" r="266" fill="none"/><circle cx="400" cy="400" r="216" fill="none"/>
-            <path d="M145 400H655M400 145V655"/><path d="M220 220L580 580M580 220L220 580" opacity=".35"/>
-          </g>
-          <g fill="none" stroke-linecap="round">
-            <path class="rg-orbit-a" d="M158 410 A250 250 0 0 1 602 158" stroke="url(#rg47Cyan)" stroke-width="22"/>
-            <path class="rg-orbit-b" d="M642 204 A250 250 0 0 1 612 628" stroke="url(#rg47Blue)" stroke-width="18"/>
-            <path class="rg-orbit-c" d="M188 590 A250 250 0 0 1 158 410" stroke="#0c75bf" stroke-width="13"/>
-          </g>
-          <g class="rg-bars">
-            <rect x="286" y="294" width="34" height="82" rx="5" fill="url(#rg47Blue)"/><rect x="332" y="252" width="34" height="124" rx="5" fill="url(#rg47Blue)"/><rect x="378" y="205" width="34" height="171" rx="5" fill="url(#rg47Cyan)"/><rect x="424" y="150" width="34" height="226" rx="5" fill="url(#rg47Cyan)"/><rect x="470" y="96" width="34" height="280" rx="5" fill="url(#rg47Cyan)"/>
-          </g>
-          <text class="rg-letter rg-letter-r" x="214" y="500" font-family="Arial,Helvetica,sans-serif" font-size="248" font-weight="900" fill="url(#rg47Navy)">R</text>
-          <text class="rg-letter rg-letter-g" x="400" y="500" font-family="Arial,Helvetica,sans-serif" font-size="248" font-weight="900" fill="url(#rg47Cyan)">G</text>
-          <g class="rg-arrow rg-growth" stroke="url(#rg47Green)" stroke-width="24"><path d="M318 404 C385 365 433 330 474 283 C508 245 531 214 555 178"/><path d="M537 182 L562 168 L566 199"/></g>
-          <g class="rg-arrow rg-drop" stroke="url(#rg47Orange)" stroke-width="18"><path d="M180 495 C142 536 148 584 188 612"/><path d="M182 590 L202 615 L169 616"/></g>
-          <g class="rg-podium"><path d="M246 630 L554 630 L614 687 L186 687 Z" fill="url(#rg47Navy)"/><rect x="294" y="612" width="212" height="86" rx="11" fill="#0b75bf" stroke="#1bd7e7" stroke-width="7"/><circle cx="320" cy="600" r="26" fill="#dbeaf5"/><circle cx="400" cy="570" r="31" fill="#dbeaf5"/><circle cx="480" cy="600" r="26" fill="#dbeaf5"/><path d="M281 637 Q320 612 359 637 L359 666 L281 666 Z" fill="#dbeaf5"/><path d="M348 620 Q400 583 452 620 L452 666 L348 666 Z" fill="#edf7fb"/><path d="M441 637 Q480 612 519 637 L519 666 L441 666 Z" fill="#dbeaf5"/></g>
-          <circle class="rg-dot rg-dot-a" cx="400" cy="400" r="8" fill="#2fe0e8"/>
-          <circle class="rg-dot rg-dot-b" cx="400" cy="400" r="7" fill="#ff7a32"/>
-          <circle class="rg-flash" cx="400" cy="400" r="290" fill="url(#rg47Flash)"/>
-          <image class="rg-official" href="./assets/icons/icon-512.png" x="144" y="144" width="512" height="512" preserveAspectRatio="xMidYMid meet"/>
-        </svg>
+      <div class="rg-startup-stage" aria-hidden="true">
+        <canvas id="rg-startup-canvas" width="540" height="540"></canvas>
+        <img id="rg-startup-fallback" class="rg-startup-fallback" src="./assets/logo-ranking-geral.png" alt="">
       </div>
       <div class="rg-startup-title">RANKING <span>GERAL</span></div>
       <div class="rg-startup-status" id="rg-startup-status">Preparando interface…</div>
-      <div class="rg-startup-progress" aria-hidden="true"><i id="rg-startup-progress-bar"></i></div>
+      <div class="rg-startup-progress" id="rg-startup-progress" role="progressbar" aria-label="Progresso de carregamento" aria-valuemin="0" aria-valuemax="100" aria-valuenow="10"><i id="rg-startup-progress-bar"></i></div>
+      <button type="button" class="rg-startup-skip" id="rg-startup-skip">Pular animação</button>
+      <p class="rg-startup-note">A interface e os dados carregam em segundo plano durante a animação.</p>
+      <p id="rg-startup-live" class="sr-only" role="status" aria-live="polite" aria-atomic="true">Carregando Ranking Geral.</p>
     </div>
   </div>
-  <script>
-    (function(){
-      var splash=document.getElementById('rg-startup');
-      var status=document.getElementById('rg-startup-status');
-      var bar=document.getElementById('rg-startup-progress-bar');
-      var shownAt=performance.now();
-      var hidden=false;
-      var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      function replay(){
-        hidden=false; shownAt=performance.now();
-        splash.classList.remove('rg-startup-hide','rg-animate');
-        void splash.offsetWidth;
-        splash.classList.add('rg-animate');
-      }
-      function setStatus(text,progress){
-        if(status&&text) status.textContent=text;
-        if(bar&&Number.isFinite(progress)) bar.style.width=Math.max(8,Math.min(100,progress))+'%';
-      }
-      function done(text){
-        if(hidden) return;
-        if(text) setStatus(text,100);
-        var min=reduce?80:920;
-        var wait=Math.max(0,min-(performance.now()-shownAt));
-        window.setTimeout(function(){splash.classList.add('rg-startup-hide');hidden=true;},wait);
-      }
-      window.RGStartup={
-        show:function(text,progress){replay();setStatus(text||'Carregando…',Number.isFinite(progress)?progress:12);},
-        status:setStatus,
-        done:done,
-        isVisible:function(){return !hidden;}
-      };
-    })();
-  </script>
+  <script src="./js/core/startup-motion.js?v=20260916-v50-intense-startup-a11y"></script>
 
   <!-- ============================================================================
        MENU DE ACESSIBILIDADE — botão flutuante + painel, e a camada do filtro
@@ -428,7 +335,7 @@
     <div class="sidebar-footer"><div class="sidebar-footer-note">Acompanhe classificações, análises e lançamentos em um único painel.</div></div>
   </aside>
 
-  <main class="main ui-main">
+  <main class="main ui-main" id="main-content" tabindex="-1">
     <header class="topbar">
       <button type="button" class="sidebar-toggle-mobile" onclick="toggleSidebarMobile(true)" aria-label="Abrir menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
       <div class="topbar-title-wrap">
@@ -477,32 +384,32 @@
        import/export foi introduzido, para não alterar como os onclick="..." e
        demais funções se enxergam entre si.
        ============================================================================ -->
-  <script src="./js/core/dialogos.js?v=20260915-v48-series-reset"></script><!-- Sistema visual unificado para alertas, confirmações e entradas. -->
-  <script src="./js/core/config-api.js?v=20260915-v48-series-reset"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
-  <script src="./js/core/estado-global.js?v=20260915-v48-series-reset"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
-  <script src="./js/features/faixas-dinamicas.js?v=20260915-v48-series-reset"></script><!-- Gerenciamento de faixas dinâmicas. -->
-  <script src="./js/core/identidade.js?v=20260915-v48-series-reset"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
-  <script src="./js/core/navegacao.js?v=20260915-v48-series-reset"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
-  <script src="./js/core/sidebar.js?v=20260915-v48-series-reset"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->
-  <script src="./js/a11y/acessibilidade.js?v=20260915-v48-series-reset"></script><!-- Painel de acessibilidade (UI) — liga os controles a window.A11Y, de a11y.js. -->
-  <script src="./js/features/configuracoes-de-conta.js?v=20260915-v48-series-reset"></script><!-- Tela "Minha conta". -->
-  <script src="./js/features/modulo-0.js?v=20260915-v48-series-reset"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
-  <script src="./js/features/texto-do-resumo.js?v=20260915-v48-series-reset"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
-  <script src="./js/features/colagem.js?v=20260915-v48-series-reset"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
-  <script src="./js/features/colagem-gemini.js?v=20260915-v48-series-reset"></script><!-- Regras de leitura e integração com Gemini — restaura o mecanismo de 22/08. -->
-  <script src="./js/features/planilha-mestra.js?v=20260915-v48-series-reset"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
-  <script src="./js/features/series-semanais.js?v=20260915-v48-series-reset"></script><!-- Séries de 7 dias, datas retroativas e Acumulado Geral. -->
-  <script src="./js/features/participantes.js?v=20260915-v48-series-reset"></script><!-- CRUD de participante + cálculo de ranking (total/tiebreak/sort). -->
-  <script src="./js/features/dias.js?v=20260915-v48-series-reset"></script><!-- Adicionar/remover um dia. -->
-  <script src="./js/features/formulario-lancamento-dia.js?v=20260915-v48-series-reset"></script><!-- Aba "Preencher" do Lançar Pontuação. -->
-  <script src="./js/features/analises-gerais.js?v=20260915-v48-series-reset"></script><!-- Cartões de estatística do Módulo 2. -->
-  <script src="./js/features/filtros.js?v=20260915-v48-series-reset"></script><!-- Filtro por período/dias do Módulo 2. -->
-  <script src="./js/features/analises-dashboard.js?v=20260915-v48-series-reset"></script><!-- Destaques + gráfico de evolução + mapa de desempenho (chamados de dentro de filtros.js). -->
-  <script src="./js/features/gerenciar-dias-lancados.js?v=20260915-v48-series-reset"></script>
-  <script src="./js/features/organizacao-ui.js?v=20260915-v48-series-reset"></script><!-- Contexto operacional, gestão central e organização de informação. --><!-- Lista de dias lançados (Módulos 3 e 4). -->
-  <script src="./js/features/resumos-salvos.js?v=20260915-v48-series-reset"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
-  <script src="./js/features/usuarios.js?v=20260915-v48-series-reset"></script><!-- Painel de administração de usuários (Módulo 4). -->
-  <script src="./js/core/renderizacao.js?v=20260915-v48-series-reset"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
-  <script src="./js/core/inicializacao.js?v=20260915-v48-series-reset"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
+  <script src="./js/core/dialogos.js?v=20260916-v50-intense-startup-a11y"></script><!-- Sistema visual unificado para alertas, confirmações e entradas. -->
+  <script src="./js/core/config-api.js?v=20260916-v50-intense-startup-a11y"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
+  <script src="./js/core/estado-global.js?v=20260916-v50-intense-startup-a11y"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
+  <script src="./js/features/faixas-dinamicas.js?v=20260916-v50-intense-startup-a11y"></script><!-- Gerenciamento de faixas dinâmicas. -->
+  <script src="./js/core/identidade.js?v=20260916-v50-intense-startup-a11y"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
+  <script src="./js/core/navegacao.js?v=20260916-v50-intense-startup-a11y"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
+  <script src="./js/core/sidebar.js?v=20260916-v50-intense-startup-a11y"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->
+  <script src="./js/a11y/acessibilidade.js?v=20260916-v50-intense-startup-a11y"></script><!-- Painel de acessibilidade (UI) — liga os controles a window.A11Y, de a11y.js. -->
+  <script src="./js/features/configuracoes-de-conta.js?v=20260916-v50-intense-startup-a11y"></script><!-- Tela "Minha conta". -->
+  <script src="./js/features/modulo-0.js?v=20260916-v50-intense-startup-a11y"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
+  <script src="./js/features/texto-do-resumo.js?v=20260916-v50-intense-startup-a11y"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
+  <script src="./js/features/colagem.js?v=20260916-v50-intense-startup-a11y"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
+  <script src="./js/features/colagem-gemini.js?v=20260916-v50-intense-startup-a11y"></script><!-- Regras de leitura e integração com Gemini — restaura o mecanismo de 22/08. -->
+  <script src="./js/features/planilha-mestra.js?v=20260916-v50-intense-startup-a11y"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
+  <script src="./js/features/series-semanais.js?v=20260916-v50-intense-startup-a11y"></script><!-- Séries de 7 dias, datas retroativas e Acumulado Geral. -->
+  <script src="./js/features/participantes.js?v=20260916-v50-intense-startup-a11y"></script><!-- CRUD de participante + cálculo de ranking (total/tiebreak/sort). -->
+  <script src="./js/features/dias.js?v=20260916-v50-intense-startup-a11y"></script><!-- Adicionar/remover um dia. -->
+  <script src="./js/features/formulario-lancamento-dia.js?v=20260916-v50-intense-startup-a11y"></script><!-- Aba "Preencher" do Lançar Pontuação. -->
+  <script src="./js/features/analises-gerais.js?v=20260916-v50-intense-startup-a11y"></script><!-- Cartões de estatística do Módulo 2. -->
+  <script src="./js/features/filtros.js?v=20260916-v50-intense-startup-a11y"></script><!-- Filtro por período/dias do Módulo 2. -->
+  <script src="./js/features/analises-dashboard.js?v=20260916-v50-intense-startup-a11y"></script><!-- Destaques + gráfico de evolução + mapa de desempenho (chamados de dentro de filtros.js). -->
+  <script src="./js/features/gerenciar-dias-lancados.js?v=20260916-v50-intense-startup-a11y"></script>
+  <script src="./js/features/organizacao-ui.js?v=20260916-v50-intense-startup-a11y"></script><!-- Contexto operacional, gestão central e organização de informação. --><!-- Lista de dias lançados (Módulos 3 e 4). -->
+  <script src="./js/features/resumos-salvos.js?v=20260916-v50-intense-startup-a11y"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
+  <script src="./js/features/usuarios.js?v=20260916-v50-intense-startup-a11y"></script><!-- Painel de administração de usuários (Módulo 4). -->
+  <script src="./js/core/renderizacao.js?v=20260916-v50-intense-startup-a11y"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
+  <script src="./js/core/inicializacao.js?v=20260916-v50-intense-startup-a11y"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
 </body>
 </html>
