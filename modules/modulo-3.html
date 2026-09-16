@@ -1,0 +1,138 @@
+<!-- ===================== MÓDULO 3: LANÇAMENTOS ===================== -->
+<section class="view hidden ui-page ui-launch-page" id="view-lancar">
+  <div class="panel launch-series-context">
+    <div class="launch-series-head">
+      <div>
+        <div class="panel-kicker">Ciclo operacional</div>
+        <div class="panel-title" id="launch-series-title">Série —</div>
+        <div class="panel-hint" id="launch-series-last">Nenhum lançamento registrado nesta série.</div>
+      </div>
+      <div class="launch-series-tools">
+        <div class="launch-series-count" id="launch-series-count">0/7</div>
+        <button type="button" class="series-reset-trigger" id="series-reset-btn" onclick="mostrarModalReinicioSerie()" title="Reiniciar ou encerrar manualmente a série atual">
+          <span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 11a8 8 0 1 0-2.34 5.66"></path><path d="M20 5v6h-6"></path></svg></span>
+          Reiniciar série
+        </button>
+      </div>
+    </div>
+    <div class="series-progress-dots" id="launch-series-dots" aria-label="Progresso da série"></div>
+  </div>
+
+  <div class="panel accent-x launch-card" id="launch-card">
+    <div class="panel-title">Novo lançamento <span class="day-tag" id="launch-day-label">Dia —</span></div>
+    <div class="panel-hint">Defina primeiro a data real da contagem; depois preencha a pontuação ou cole os dados prontos.</div>
+
+    <div class="launch-date-bar">
+      <label class="campo launch-date-field"><span>Data da contagem</span>
+        <input type="date" id="launch-reference-date" aria-label="Data de referência da contagem">
+      </label>
+      <div class="panel-hint">A data pode ser retroativa. Ela é usada nos filtros, no histórico e no Acumulado Geral.</div>
+    </div>
+
+    <div class="launch-tabs" role="tablist" aria-label="Modo de lançamento">
+      <button type="button" class="launch-tab active" id="tab-form" role="tab" aria-selected="true" aria-controls="launch-view-form" onclick="switchLaunchTab('form')"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="M13.5 6.5l4 4"></path></svg></span>Preencher</button>
+      <button type="button" class="launch-tab" id="tab-paste" role="tab" aria-selected="false" aria-controls="launch-view-paste" onclick="switchLaunchTab('paste')"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="4" width="14" height="17" rx="2"></rect><path d="M9 4V2h6v2M8 9h8M8 13h8M8 17h5"></path></svg></span>Colar</button>
+    </div>
+
+    <div id="launch-view-form" role="tabpanel" aria-labelledby="tab-form" aria-hidden="false">
+      <div class="launch-columns" id="launch-columns-container"></div>
+      <div class="launch-footer">
+        <span class="launch-progress" id="launch-progress"></span>
+        <button type="button" class="launch-submit" id="launch-submit-btn" onclick="launchDayForm()">Lançar dia</button>
+      </div>
+    </div>
+
+    <div id="launch-view-paste" role="tabpanel" aria-labelledby="tab-paste" aria-hidden="true" style="display:none;">
+      <div class="panel-hint" style="margin-top:0;">Um participante por vez, separado por <strong>ponto e vírgula</strong> ou por <strong>linha</strong>, no formato <strong>Nome, Pontuação</strong>. Depois de ler, escolha se é um dia novo ou se vai substituir um dia já lançado e revise a faixa de cada participante.</div>
+
+      <div class="gemini-leitura-box">
+        <button type="button" id="gemini-copiar-btn" onclick="handleCopiarRegrasGemini()"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="4" width="14" height="17" rx="2"></rect><path d="M9 4V2h6v2M8 9h8M8 13h8M8 17h5"></path></svg></span>Copiar regras de leitura</button>
+        <button type="button" onclick="handleAbrirGemini()"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 13a5 5 0 0 0 7.07.07l2-2A5 5 0 0 0 12 4l-1.2 1.2"></path><path d="M14 11a5 5 0 0 0-7.07-.07l-2 2A5 5 0 0 0 12 20l1.2-1.2"></path></svg></span>Abrir Gemini</button>
+        <span class="gemini-status-text">Copie as regras, use o Gemini para organizar a leitura e cole aqui somente o resultado revisado.</span>
+      </div>
+
+      <textarea id="paste-area" placeholder="João, 8;&#10;Maria, -1;&#10;Grupo Alfa, 8,5;"></textarea>
+      <div class="paste-actions"><button onclick="processPaste()">Ler colagem</button></div>
+      <div class="pending-panel" id="pending-panel" style="display:none;">
+        <div class="pending-title">Confirmar lançamento dos dados colados</div>
+        <div class="pending-controls">
+          <label>Aplicar em: <select id="pending-day-select"></select></label>
+          <label>Faixa para todos: <select id="pending-bulk-div" onchange="applyBulkDiv(this.value)"><option value="">— escolher —</option></select></label>
+        </div>
+        <div id="pending-list"></div>
+        <div class="pending-actions"><button onclick="confirmImport()">Lançar</button><button class="danger" onclick="cancelImport()">Cancelar</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel launch-history-panel">
+    <div class="panel-title-row">
+      <div>
+        <div class="panel-title">Lançamentos desta série</div>
+        <div class="panel-hint">Corrija ou remova dias no mesmo local em que os lançamentos são realizados.</div>
+      </div>
+      <button type="button" onclick="addDay()">+ Dia em branco</button>
+    </div>
+    <div class="day-list" id="day-list"></div>
+  </div>
+
+  <div class="panel accent-y">
+    <div class="panel-title">Resumo do lançamento</div>
+    <div class="panel-hint">Gera o texto do dia e do acumulado para copiar ou guardar no histórico.</div>
+    <div class="summary-row">
+      <label>Dia: <select id="summary-day" onchange="generateSummary()"></select></label>
+      <button onclick="generateSummary()">Gerar resumo</button>
+      <button onclick="copySummary()" id="copy-btn">Copiar</button>
+      <button onclick="handleSalvarResumoAtual()" id="save-resumo-btn" class="hidden"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3h12l3 3v15H5z"></path><path d="M8 3v6h8V3M8 21v-6h8v6"></path></svg></span>Salvar no histórico</button>
+    </div>
+    <textarea id="summary-output" readonly placeholder="O texto aparece aqui assim que houver ao menos um dia lançado..."></textarea>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Histórico de resumos <button type="button" class="refresh-btn" onclick="carregarResumosSeNecessario(true)" title="Atualizar"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 11a8 8 0 0 0-14.8-3L3 11"></path><path d="M3 5v6h6"></path><path d="M4 13a8 8 0 0 0 14.8 3L21 13"></path><path d="M21 19v-6h-6"></path></svg></span>Atualizar</button></div>
+    <div class="panel-hint">Resumos protegidos dos lançamentos anteriores. Eles permanecem registrados mesmo quando a série ativa é reiniciada.</div>
+    <div id="resumos-salvos-lista"><div class="empty-hint">Carregando...</div></div>
+  </div>
+</section>
+
+<div class="series-modal hidden" id="series-close-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="series-close-title">
+  <div class="series-modal-card">
+    <div class="panel-title" id="series-close-title">Série de 7 dias concluída</div>
+    <div class="panel-hint" id="series-close-description">A série atual completou 7 lançamentos.</div>
+    <div class="series-close-options">
+      <button type="button" class="launch-submit" onclick="encerrarSerieAtual('arquivar')">Salvar série e começar nova</button>
+      <button type="button" class="danger" onclick="encerrarSerieAtual('descartar')">Apagar série e começar nova</button>
+    </div>
+    <div class="series-warning">Salvar mantém os 7 dias no histórico e no Acumulado Geral. Apagar remove esses 7 dias do acumulado histórico. Em ambos os casos, participantes e faixas permanecem cadastrados.</div>
+  </div>
+</div>
+
+
+<div class="series-modal hidden" id="series-reset-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="series-reset-title">
+  <div class="series-modal-card series-reset-card">
+    <div class="panel-kicker">Controle administrativo</div>
+    <div class="panel-title" id="series-reset-title">Reiniciar série</div>
+    <div class="panel-hint" id="series-reset-description">Escolha como tratar a série ativa.</div>
+    <div class="series-reset-current" id="series-reset-current">0 lançamentos</div>
+
+    <div class="series-reset-options">
+      <button type="button" class="series-reset-option series-reset-option-neutral" onclick="reiniciarSerieAtualManual('reiniciar')">
+        <strong>Reiniciar esta série</strong>
+        <span>Apaga os lançamentos ativos e mantém o mesmo número da série.</span>
+      </button>
+      <button type="button" class="series-reset-option series-reset-option-archive" id="series-reset-archive-btn" onclick="reiniciarSerieAtualManual('arquivar')">
+        <strong>Arquivar e iniciar próxima</strong>
+        <span>Preserva os lançamentos no Acumulado Geral e avança a numeração.</span>
+      </button>
+      <button type="button" class="series-reset-option series-reset-option-danger" onclick="reiniciarSerieAtualManual('descartar')">
+        <strong>Descartar e iniciar próxima</strong>
+        <span>Apaga os lançamentos ativos sem adicioná-los ao histórico.</span>
+      </button>
+    </div>
+
+    <div class="series-warning">Participantes e faixas nunca são removidos por este reiniciador. Apenas os lançamentos da série ativa são afetados.</div>
+    <div class="series-reset-footer">
+      <button type="button" class="rg-dialog-btn rg-dialog-btn-secondary" onclick="esconderModalReinicioSerie()">Cancelar</button>
+    </div>
+  </div>
+</div>

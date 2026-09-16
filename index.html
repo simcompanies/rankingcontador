@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1118">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://script.google.com" crossorigin>
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+<link rel="dns-prefetch" href="//script.google.com">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./assets/icons/icon-192.png">
+<link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
+<script src="./js/a11y/a11y.js?v=20260916-v52-integrated-motion"></script>
+<script src="./js/core/rg-motion.js?v=20260916-v52-integrated-motion"></script>
+<link rel="stylesheet" href="./assets/css/style.css?v=20260916-v52-integrated-motion">
+<link rel="stylesheet" href="./style.css?v=20260916-v52-integrated-motion-root" media="not all" id="style-fallback">
+  <meta name="app-build" content="20260916-v52-integrated-motion">
+<style id="screen-guard">
+  #app-shell.hidden, body:not([data-app-screen="app"]) #app-shell { display:none !important; }
+  body[data-app-screen="app"] #slot-modulo-0 { display:none !important; }
+
+</style>
+<style id="rg-startup-critical">
+/* v52 — integração real da animação aprovada: somente a animação, sem player. */
+#rg-startup{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:#090f15;overflow:hidden;opacity:1;visibility:visible;pointer-events:auto;transition:opacity .26s ease,visibility .26s ease;padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}
+#rg-startup.rg-startup-hide{opacity:0;visibility:hidden;pointer-events:none}
+.rg-startup-stage{position:relative;width:min(100%,1056px,calc(100svh * 1.6));aspect-ratio:16/10;max-height:100svh;overflow:hidden;background:#090f15}
+#rg-startup-canvas,.rg-startup-fallback{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:contain}
+.rg-startup-fallback{background:#090f15}
+.rg-startup-skip{position:absolute;right:max(14px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));z-index:2;min-height:42px;padding:0 14px;border:1px solid rgba(135,181,205,.30);border-radius:999px;background:rgba(10,25,35,.62);backdrop-filter:blur(8px);color:#dceaf4;font:650 12px/1 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer;touch-action:manipulation;opacity:.62;transition:opacity .18s ease,background .18s ease,border-color .18s ease}
+.rg-startup-skip:hover,.rg-startup-skip:focus-visible{opacity:1;background:rgba(17,38,50,.92);border-color:#4aaec8}.rg-startup-skip:focus-visible{outline:3px solid #00a6c7;outline-offset:3px}
+.rg-startup-live{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+@media(max-width:600px){.rg-startup-stage{width:min(100vw,100svh);aspect-ratio:1;max-height:none}.rg-startup-skip{min-height:44px;right:max(10px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom))}}
+@media(max-height:520px) and (orientation:landscape){.rg-startup-stage{width:min(100vw,calc(100svh * 1.6));aspect-ratio:16/10}.rg-startup-skip{min-height:40px;padding:0 12px}}
+@media(prefers-reduced-motion:reduce){#rg-startup,.rg-startup-skip{transition:none!important}}
+@media(forced-colors:active){.rg-startup-skip{forced-color-adjust:auto;border:1px solid ButtonText;background:Canvas;color:CanvasText}}
+</style>
+<script>document.addEventListener('DOMContentLoaded',function(){var main=document.querySelector('link[href^="./assets/css/style.css"]');var fb=document.getElementById('style-fallback');if(main&&fb){main.addEventListener('error',function(){fb.media='all'});}});</script>
+</head>
+<body>
+
+  <a class="skip-link" href="#main-content">Ir para o conteúdo principal</a>
+  <div id="rg-startup" role="region" aria-label="Abertura do Ranking Geral" aria-hidden="false">
+    <div class="rg-startup-stage" aria-hidden="true">
+      <canvas id="rg-startup-canvas" width="1056" height="660"></canvas>
+      <img id="rg-startup-fallback" class="rg-startup-fallback" src="./assets/logo-ranking-geral.png" alt="" hidden>
+    </div>
+    <button type="button" class="rg-startup-skip" id="rg-startup-skip" aria-label="Pular animação de abertura">Pular abertura</button>
+    <p id="rg-startup-live" class="rg-startup-live" role="status" aria-live="polite" aria-atomic="true">Carregando Ranking Geral.</p>
+  </div>
+  <script src="./js/core/startup-motion.js?v=20260916-v52-integrated-motion"></script>
+
+  <!-- ============================================================================
+       MENU DE ACESSIBILIDADE — botão flutuante + painel, e a camada do filtro
+       de daltonismo. Ficam aqui, direto no corpo de index.html (não são um
+       módulo buscado por fetch como os slots abaixo), de propósito: assim
+       funcionam mesmo na tela de login, antes de qualquer sessão existir.
+       Lógica de UI: acessibilidade.js. Lógica de estado/aplicação: a11y.js.
+       ============================================================================ -->
+  <button type="button" id="a11y-toggle-btn" class="a11y-toggle-btn" aria-haspopup="dialog" aria-expanded="false" aria-controls="a11y-panel" title="Acessibilidade">
+    <span class="a11y-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="10" r="3"></circle><path d="M7.5 19c1.2-2.1 3-3.2 4.5-3.2s3.3 1.1 4.5 3.2"></path><path d="M12 3v3M12 18v3M3 12h3M18 12h3"></path></svg></span>
+    <span class="sr-only">Abrir menu de acessibilidade</span>
+  </button>
+
+  <div id="a11y-panel-overlay" class="a11y-panel-overlay">
+    <aside id="a11y-panel" class="a11y-panel" role="dialog" aria-modal="true" aria-labelledby="a11y-panel-titulo">
+      <div class="a11y-panel-head">
+        <h2 id="a11y-panel-titulo" class="a11y-panel-titulo"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="10" r="3"></circle><path d="M7.5 19c1.2-2.1 3-3.2 4.5-3.2s3.3 1.1 4.5 3.2"></path><path d="M12 3v3M12 18v3M3 12h3M18 12h3"></path></svg></span>Acessibilidade</h2>
+        <button type="button" id="a11y-fechar-btn" class="a11y-fechar-btn" aria-label="Fechar menu de acessibilidade"><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M6 6l12 12M18 6L6 18"></path></svg></span></button>
+      </div>
+      <div class="a11y-panel-body">
+
+        <div class="a11y-secao">
+          <span class="a11y-rotulo">Tema</span>
+          <div class="a11y-botoes-par">
+            <button type="button" class="a11y-opcao-btn" data-a11y-tema="dark" aria-pressed="false"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.2 8.2 0 1 0 20 15.5Z"></path></svg></span>Escuro</button>
+            <button type="button" class="a11y-opcao-btn" data-a11y-tema="light" aria-pressed="false"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg></span>Claro</button>
+          </div>
+        </div>
+
+        <div class="a11y-secao">
+          <label class="a11y-linha-switch" for="a11y-contraste">
+            <span>Alto contraste</span>
+            <input type="checkbox" id="a11y-contraste" class="a11y-switch">
+          </label>
+        </div>
+
+        <div class="a11y-secao">
+          <label class="a11y-linha-switch" for="a11y-leitura">
+            <span>Leitura simplificada</span>
+            <input type="checkbox" id="a11y-leitura" class="a11y-switch">
+          </label>
+        </div>
+
+        <div class="a11y-secao">
+          <label class="a11y-linha-switch" for="a11y-espacamento">
+            <span>Espaçamento amplo</span>
+            <input type="checkbox" id="a11y-espacamento" class="a11y-switch">
+          </label>
+        </div>
+
+        <div class="a11y-secao">
+          <label class="a11y-linha-switch" for="a11y-movimento">
+            <span>Reduzir movimento</span>
+            <input type="checkbox" id="a11y-movimento" class="a11y-switch">
+          </label>
+        </div>
+
+        <div class="a11y-secao">
+          <label class="a11y-rotulo" for="a11y-fonte">Tamanho da fonte <span class="a11y-rotulo-valor" id="a11y-fonte-valor">100%</span></label>
+          <input type="range" id="a11y-fonte" min="0.75" max="1.5" step="0.05" value="1">
+        </div>
+
+        <div class="a11y-secao">
+          <label class="a11y-rotulo" for="a11y-daltonismo">Filtro de daltonismo</label>
+          <select id="a11y-daltonismo">
+            <option value="none">Nenhum</option>
+            <option value="protanopia">Protanopia</option>
+            <option value="deuteranopia">Deuteranopia</option>
+            <option value="tritanopia">Tritanopia</option>
+            <option value="acromatopsia">Acromatopsia</option>
+          </select>
+        </div>
+
+      </div>
+      <div class="a11y-panel-rodape">
+        <button type="button" id="a11y-restaurar-btn" class="a11y-restaurar-btn"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v6h6"></path></svg></span>Restaurar padrão</button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Camada do filtro de daltonismo (ver a11y.js: aplicarDaltonismo) — cobre
+       a tela inteira sem capturar clique, com o filtro SVG escolhido aplicado
+       via backdrop-filter. -->
+  <div id="colorblindOverlay" aria-hidden="true"></div>
+  <svg class="a11y-svg-filtros" aria-hidden="true" focusable="false">
+    <defs>
+      <!-- Matrizes de aproximação padrão para cada tipo de daltonismo. -->
+      <filter id="f-protanopia" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="0.567,0.433,0,0,0  0.558,0.442,0,0,0  0,0.242,0.758,0,0  0,0,0,1,0"/>
+      </filter>
+      <filter id="f-deuteranopia" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="0.625,0.375,0,0,0  0.7,0.3,0,0,0  0,0.3,0.7,0,0  0,0,0,1,0"/>
+      </filter>
+      <filter id="f-tritanopia" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="0.95,0.05,0,0,0  0,0.433,0.567,0,0  0,0.475,0.525,0,0  0,0,0,1,0"/>
+      </filter>
+      <filter id="f-acromatopsia" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="0.299,0.587,0.114,0,0  0.299,0.587,0.114,0,0  0.299,0.587,0.114,0,0  0,0,0,1,0"/>
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- ============================================================================
+       Cada <div id="slot-..."> abaixo começa vazio e é preenchido em tempo de
+       execução por inicializacao.js (função carregarModulosHtml), que busca
+       (fetch) o .html correspondente e injeta seu conteúdo aqui dentro via
+       innerHTML. O resultado final no navegador é idêntico ao HTML que antes
+       ficava tudo junto neste mesmo arquivo — só a ORIGEM do markup mudou.
+       ============================================================================ -->
+
+  <!-- Módulo 0 (login) — preenchido com modulo-0.html -->
+  <div id="slot-modulo-0">
+<!-- ============================================================================
+     modulo-0.html — Tela de autenticação (Módulo 0)
+     ----------------------------------------------------------------------------
+     Contém os três sub-formulários (login / criar conta / esqueci a senha),
+     alternados por mostrarAuthView() em modulo-0.js.
+
+     Injetado por inicializacao.js (carregarModulosHtml) dentro de
+     <div id="slot-modulo-0"> em index.html.
+     Comportamento: modulo-0.js (formulários) + identidade.js (sessão).
+     Estilos: style.css, seção "Módulo 0: tela de login".
+     ============================================================================ -->
+
+<!-- ===================== MÓDULO 0: LOGIN ===================== -->
+<div class="auth-gate ui-auth-gate" id="auth-gate">
+  <div class="auth-card">
+    <div class="auth-brand auth-brand-logo"><img src="./assets/logo-ranking-geral.png" alt="Ranking Geral"><span>Ranking Geral</span></div>
+
+    <div class="auth-view" id="auth-view-login">
+      <div class="panel-title">Entrar</div>
+      <form class="auth-form" onsubmit="handleLogin(event)">
+        <label class="campo"><span>E-mail cadastrado</span>
+          <input type="email" id="login-email" required autocomplete="username">
+        </label>
+        <label class="campo"><span>Senha cadastrada</span>
+          <input type="password" id="login-senha" required autocomplete="current-password">
+        </label>
+        <button type="submit" class="launch-submit" id="login-btn">Entrar</button>
+      </form>
+      <div id="login-msg" class="auth-msg hidden"></div>
+      <div class="auth-links">
+        <button type="button" class="link-btn" onclick="mostrarAuthView('esqueci')">Esqueceu sua senha?</button>
+        <button type="button" class="link-btn" onclick="mostrarAuthView('cadastro')">Crie sua conta</button>
+      </div>
+    </div>
+
+    <div class="auth-view hidden" id="auth-view-cadastro">
+      <div class="panel-title">Crie sua conta</div>
+      <form class="auth-form" onsubmit="handleCadastro(event)">
+        <label class="campo"><span>Nome</span>
+          <input type="text" id="cadastro-nome" required autocomplete="name">
+        </label>
+        <label class="campo"><span>E-mail google</span>
+          <input type="email" id="cadastro-email" required autocomplete="username">
+        </label>
+        <label class="campo"><span>Senha</span>
+          <input type="password" id="cadastro-senha" required minlength="8" autocomplete="new-password">
+        </label>
+        <label class="campo"><span>Repetir senha</span>
+          <input type="password" id="cadastro-senha2" required minlength="8" autocomplete="new-password">
+        </label>
+        <button type="submit" class="launch-submit" id="cadastro-btn">Criar conta</button>
+      </form>
+      <div id="cadastro-msg" class="auth-msg hidden"></div>
+      <div class="auth-links">
+        <button type="button" class="link-btn" onclick="mostrarAuthView('login')">← Voltar para o login</button>
+      </div>
+    </div>
+
+    <div class="auth-view hidden" id="auth-view-esqueci">
+      <div class="panel-title">Esqueceu sua senha?</div>
+      <div class="panel-hint">Informe seu e-mail google cadastrado. Se ele existir, enviamos um código temporário — use-o no lugar da senha pra entrar, e você vai poder definir uma senha nova em seguida.</div>
+      <form class="auth-form" onsubmit="handleEsqueciSenha(event)">
+        <label class="campo"><span>E-mail google</span>
+          <input type="email" id="esqueci-email" required autocomplete="username">
+        </label>
+        <button type="submit" class="launch-submit" id="esqueci-btn">Enviar código</button>
+      </form>
+      <div id="esqueci-msg" class="auth-msg hidden"></div>
+      <div class="auth-links">
+        <button type="button" class="link-btn" onclick="mostrarAuthView('login')">← Voltar para o login</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+  <!-- Modal de troca de senha obrigatória — preenchido com troca-de-senha.html -->
+  <div id="slot-troca-senha">
+<!-- ============================================================================
+     troca-de-senha.html — Modal de troca de senha obrigatória
+     ----------------------------------------------------------------------------
+     Aparece sobre qualquer tela quando o backend indica precisaTrocarSenha
+     (após login com senha temporária) — aberto/fechado por
+     abrirModalNovaSenha()/fecharModalNovaSenha() em modulo-0.js.
+
+     Injetado por inicializacao.js (carregarModulosHtml) dentro de
+     <div id="slot-troca-senha"> em index.html.
+     Comportamento: modulo-0.js (handleDefinirNovaSenha).
+     Estilos: style.css, seção "Modal (troca de senha obrigatória...)".
+     ============================================================================ -->
+
+<!-- ===================== TROCA DE SENHA OBRIGATÓRIA (após código temporário) ===================== -->
+<div class="modal-overlay hidden ui-modal" id="modal-nova-senha">
+  <div class="modal-card">
+    <div class="panel-title">Defina sua nova senha</div>
+    <div class="panel-hint">Você entrou com um código temporário. Defina uma senha nova pra continuar.</div>
+    <form class="auth-form" onsubmit="handleDefinirNovaSenha(event)">
+      <label class="campo"><span>Nova senha</span>
+        <input type="password" id="nova-senha-1" required minlength="8" autocomplete="new-password">
+      </label>
+      <label class="campo"><span>Repetir nova senha</span>
+        <input type="password" id="nova-senha-2" required minlength="8" autocomplete="new-password">
+      </label>
+      <button type="submit" class="launch-submit" id="nova-senha-btn">Salvar nova senha</button>
+    </form>
+    <div id="nova-senha-msg" class="auth-msg hidden"></div>
+  </div>
+</div>
+
+</div>
+
+  <!-- ============================================================================
+       Casca persistente do app (sidebar + topbar): sempre existe no DOM desde
+       o carregamento da página (só fica escondida via a classe "hidden" até o
+       login), então NÃO é um módulo buscado por fetch como os slots acima —
+       fica direto aqui em index.html, junto com a estrutura da página.
+       ============================================================================ -->
+<div class="app-shell hidden ui-shell" id="app-shell">
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebarMobile(false)"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <span class="sidebar-brand"><span class="brand-mark brand-mark-image" aria-hidden="true"><img src="./assets/logo-ranking-geral.png" alt=""></span><span>Ranking Geral</span></span>
+      <button type="button" class="sidebar-collapse-btn" id="sidebar-collapse-btn" onclick="toggleSidebarCollapse()" title="Recolher menu" aria-label="Recolher menu"><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"></path></svg></span></button>
+    </div>
+    <div class="sidebar-section-label">Principal</div>
+    <nav class="sidebar-nav">
+      <button type="button" class="side-link active" data-view="faixas" onclick="mostrarView('faixas')">
+        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="m7 15 3-4 3 2 4-6"></path></svg></span><span class="side-label">Visão Geral</span>
+      </button>
+      <button type="button" class="side-link" data-view="analises" onclick="mostrarView('analises')">
+        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="m7 15 3-4 3 2 4-6"></path></svg></span><span class="side-label">Análises</span>
+      </button>
+      <button type="button" class="side-link" data-view="acumulado" onclick="mostrarView('acumulado')">
+        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h16"></path><path d="M6 16l4-5 3 2 5-7"></path><path d="M18 6h-4M18 6v4"></path></svg></span><span class="side-label">Acumulado Geral</span>
+      </button>
+      <button type="button" class="side-link" data-view="conteudo" onclick="mostrarView('conteudo')">
+        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h9l3 3v15H6z"></path><path d="M15 3v4h4"></path><path d="M9 12h6M9 16h6"></path></svg></span><span class="side-label">Regras e Ajuda</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-section-label sidebar-admin-label" data-papel="administrador">Operação</div>
+    <nav class="sidebar-nav">
+      <button type="button" class="side-link" data-view="lancar" data-papel="administrador" onclick="mostrarView('lancar')">
+        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h14v16H5z"></path><path d="M8 8h8M8 12h8M8 16h5"></path></svg></span><span class="side-label">Lançamentos</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-section-label sidebar-admin-label" data-papel="administrador">Gestão</div>
+    <nav class="sidebar-nav">
+      <button type="button" class="side-link" data-view="config" data-papel="administrador" onclick="mostrarView('config')">
+        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .3 1.82l.06.06-1.5 1.5-.06-.06a1.65 1.65 0 0 0-1.82-.3 1.65 1.65 0 0 0-1 1.5V21h-2v-.08a1.65 1.65 0 0 0-1-1.5 1.65 1.65 0 0 0-1.82.3l-.06.06-1.5-1.5.06-.06a1.65 1.65 0 0 0 .3-1.82 1.65 1.65 0 0 0-1.5-1H3v-2h.08a1.65 1.65 0 0 0 1.5-1 1.65 1.65 0 0 0-.3-1.82l-.06-.06 1.5-1.5.06.06a1.65 1.65 0 0 0 1.82.3 1.65 1.65 0 0 0 1-1.5V3h2v.08a1.65 1.65 0 0 0 1 1.5 1.65 1.65 0 0 0 1.82-.3l.06-.06 1.5 1.5-.06.06a1.65 1.65 0 0 0 1.5 1H21v2h-.08a1.65 1.65 0 0 0-1.5 1z"></path></svg></span><span class="side-label">Administração</span>
+      </button>
+    </nav>
+    <div class="sidebar-footer"><div class="sidebar-footer-note">Acompanhe classificações, análises e lançamentos em um único painel.</div></div>
+  </aside>
+
+  <main class="main ui-main" id="main-content" tabindex="-1">
+    <header class="topbar">
+      <button type="button" class="sidebar-toggle-mobile" onclick="toggleSidebarMobile(true)" aria-label="Abrir menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+      <div class="topbar-title-wrap">
+        <h1 class="topbar-title">Visão Geral</h1>
+        <div class="status-line"><span class="status-dot" id="status-dot"></span><span id="sync-status">carregando...</span></div>
+      </div>
+      <div class="topbar-context" aria-label="Contexto da série atual">
+        <span class="topbar-context-chip" id="topbar-series-context">Série —</span>
+        <span class="topbar-context-chip muted" id="topbar-last-launch">Sem lançamentos</span>
+      </div>
+
+      <div class="identity-bar" id="identity-bar">
+        <span class="identity-status" id="identity-status-texto"></span>
+        <button type="button" class="identity-action" onclick="mostrarView('conta')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3"></circle><path d="M5 20a7 7 0 0 1 14 0"></path></svg><span>Minha conta</span></button>
+        <button type="button" class="identity-action identity-logout" onclick="handleLogout()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 17l5-5-5-5"></path><path d="M15 12H3"></path><path d="M21 3v18"></path></svg><span>Sair</span></button>
+      </div>
+    </header>
+
+    <!-- Módulo 1 (Faixa X / Faixa Y) — preenchido com modulo-1.html -->
+    <div id="slot-modulo-1"></div>
+
+    <!-- Módulo 2 (Análises Gerais) — preenchido com modulo-2.html -->
+    <div id="slot-modulo-2"></div>
+
+    <!-- Módulo 5 (Acumulado Geral / séries anteriores) -->
+    <div id="slot-modulo-5"></div>
+
+    <!-- Módulo 3 (Lançar Pontuação) — preenchido com modulo-3.html -->
+    <div id="slot-modulo-3"></div>
+
+    <!-- Módulo 4 (Configurações Gerais) — preenchido com modulo-4.html -->
+    <div id="slot-modulo-4"></div>
+
+    <!-- Conteúdo — histórico de resumos e materiais -->
+    <div id="slot-conteudo"></div>
+
+    <!-- "Minha conta" — preenchido com configuracoes-de-conta.html -->
+    <div id="slot-configuracoes-conta"></div>
+  </main><!-- /.main -->
+</div><!-- /.app-shell -->
+
+  <!-- ============================================================================
+       Scripts, na ordem de dependência (ver o cabeçalho de cada arquivo para
+       detalhes). Scripts clássicos (sem type="module"): todas as funções ficam
+       no escopo global, exatamente como no arquivo monolítico original — nenhum
+       import/export foi introduzido, para não alterar como os onclick="..." e
+       demais funções se enxergam entre si.
+       ============================================================================ -->
+  <script src="./js/core/dialogos.js?v=20260916-v52-integrated-motion"></script><!-- Sistema visual unificado para alertas, confirmações e entradas. -->
+  <script src="./js/core/config-api.js?v=20260916-v52-integrated-motion"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
+  <script src="./js/core/estado-global.js?v=20260916-v52-integrated-motion"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
+  <script src="./js/features/faixas-dinamicas.js?v=20260916-v52-integrated-motion"></script><!-- Gerenciamento de faixas dinâmicas. -->
+  <script src="./js/core/identidade.js?v=20260916-v52-integrated-motion"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
+  <script src="./js/core/navegacao.js?v=20260916-v52-integrated-motion"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
+  <script src="./js/core/sidebar.js?v=20260916-v52-integrated-motion"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->
+  <script src="./js/a11y/acessibilidade.js?v=20260916-v52-integrated-motion"></script><!-- Painel de acessibilidade (UI) — liga os controles a window.A11Y, de a11y.js. -->
+  <script src="./js/features/configuracoes-de-conta.js?v=20260916-v52-integrated-motion"></script><!-- Tela "Minha conta". -->
+  <script src="./js/features/modulo-0.js?v=20260916-v52-integrated-motion"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
+  <script src="./js/features/texto-do-resumo.js?v=20260916-v52-integrated-motion"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
+  <script src="./js/features/colagem.js?v=20260916-v52-integrated-motion"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
+  <script src="./js/features/colagem-gemini.js?v=20260916-v52-integrated-motion"></script><!-- Regras de leitura e integração com Gemini — restaura o mecanismo de 22/08. -->
+  <script src="./js/features/planilha-mestra.js?v=20260916-v52-integrated-motion"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
+  <script src="./js/features/series-semanais.js?v=20260916-v52-integrated-motion"></script><!-- Séries de 7 dias, datas retroativas e Acumulado Geral. -->
+  <script src="./js/features/participantes.js?v=20260916-v52-integrated-motion"></script><!-- CRUD de participante + cálculo de ranking (total/tiebreak/sort). -->
+  <script src="./js/features/dias.js?v=20260916-v52-integrated-motion"></script><!-- Adicionar/remover um dia. -->
+  <script src="./js/features/formulario-lancamento-dia.js?v=20260916-v52-integrated-motion"></script><!-- Aba "Preencher" do Lançar Pontuação. -->
+  <script src="./js/features/analises-gerais.js?v=20260916-v52-integrated-motion"></script><!-- Cartões de estatística do Módulo 2. -->
+  <script src="./js/features/filtros.js?v=20260916-v52-integrated-motion"></script><!-- Filtro por período/dias do Módulo 2. -->
+  <script src="./js/features/analises-dashboard.js?v=20260916-v52-integrated-motion"></script><!-- Destaques + gráfico de evolução + mapa de desempenho (chamados de dentro de filtros.js). -->
+  <script src="./js/features/gerenciar-dias-lancados.js?v=20260916-v52-integrated-motion"></script>
+  <script src="./js/features/organizacao-ui.js?v=20260916-v52-integrated-motion"></script><!-- Contexto operacional, gestão central e organização de informação. --><!-- Lista de dias lançados (Módulos 3 e 4). -->
+  <script src="./js/features/resumos-salvos.js?v=20260916-v52-integrated-motion"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
+  <script src="./js/features/usuarios.js?v=20260916-v52-integrated-motion"></script><!-- Painel de administração de usuários (Módulo 4). -->
+  <script src="./js/core/renderizacao.js?v=20260916-v52-integrated-motion"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
+  <script src="./js/core/inicializacao.js?v=20260916-v52-integrated-motion"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
+</body>
+</html>
