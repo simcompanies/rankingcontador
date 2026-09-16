@@ -1,93 +1,68 @@
-# Ranking Geral — versão modular
+# Ranking Geral — versão de integridade v42
 
-Este é o mesmo app "Ranking — Faixa X / Faixa Y" que antes vivia num único
-`index.html`, agora dividido em 30 arquivos organizados por responsabilidade.
-**A funcionalidade é 100% idêntica à versão anterior** — nada de
-comportamento, regra de pontuação, layout ou fluxo foi alterado; só a
-organização do código mudou.
+Esta versão mantém a identidade visual da versão estética atual e preserva a mecânica de pontuação validada contra o pacote de 22/08/2026, mas corrige as fragilidades encontradas na auditoria completa.
 
-## Estrutura
+Principais mudanças técnicas:
 
-```
-index.html                      casca da página (sidebar/topbar fixos + "slots" vazios)
-style.css                       todo o CSS
+- IDs estáveis para participantes e dias;
+- revisão monotônica para impedir sobrescrita concorrente;
+- fila de salvamento e gravação imediata das ações do ranking;
+- carregamento seguro: falha de rede nunca vira ranking vazio editável;
+- validação integral de snapshot e migração conservadora;
+- rollback no backend e leitura/gravação protegidas por lock;
+- correções de colagem, filtros, heatmap, resumos e tela Conteúdo;
+- revogação efetiva de sessões e bootstrap sem senha no código;
+- leitura por colagem manual e fluxo assistido opcional pelo Gemini, sempre recalculando a regra de pontos localmente;
+- Service Worker corrigido como **app shell offline** — alterações do ranking exigem rede;
+- testes automatizados sem dependências npm.
 
-modulo-0.html                   tela de login/cadastro/esqueci-senha
-troca-de-senha.html             modal de troca de senha obrigatória
-modulo-1.html                   Faixa X / Faixa Y
-modulo-2.html                   Análises Gerais (dashboard)
-modulo-3.html                   Lançar Pontuação
-modulo-4.html                   Configurações Gerais
-configuracoes-de-conta.html     "Minha conta"
+Leia antes de publicar:
 
-a11y.js                         memória de acessibilidade (tema/fonte/contraste/daltonismo/…)
-acessibilidade.js               painel visual de acessibilidade (liga a UI a window.A11Y)
-config-api.js                   URL da API + chamarAPI/chamarAPIGet
-estado-global.js                estado compartilhado (sessão, ranking, caches)
-identidade.js                   sessão: aplicar/encerrar, permissões, barra de identidade
-navegacao.js                    troca de view/aba
-sidebar.js                      abrir/recolher a sidebar
-configuracoes-de-conta.js       lógica de "Minha conta"
-modulo-0.js                     formulários de login/cadastro/esqueci-senha/nova-senha
-texto-do-resumo.js              geração do texto de resumo
-colagem.js / colagem-ocr.js     aba "Colar" + leitura de print via OCR
-planilha-mestra.js              loadState/saveState/syncToServer (Google Sheets)
-participantes.js / dias.js      CRUD de participante/dia + cálculo de ranking
-formulario-lancamento-dia.js    aba "Preencher"
-analises-gerais.js / filtros.js estatísticas e filtro de Análises Gerais
-analises-dashboard.js           destaques + gráfico de evolução + mapa de desempenho
-gerenciar-dias-lancados.js      lista de dias lançados
-resumos-salvos.js               histórico de resumos
-usuarios.js                     painel de administração de usuários
-renderizacao.js                 renderDivision + render() geral
-inicializacao.js                carrega os módulos HTML e inicia o app (ver abaixo)
-```
+1. `GUIA_CONFIGURACAO.md`
+3. `AUDITORIA_TESTES_E_MELHORIAS.md`
+4. `PLANO_DE_ACAO_CORRECOES_2026-09-15.md`
 
-## Acessibilidade
-
-O botão ♿ (canto inferior direito, em qualquer tela — inclusive no login)
-abre um painel com tema claro/escuro, alto contraste, leitura simplificada,
-espaçamento amplo, redução de movimento, tamanho de fonte e um filtro de
-daltonismo (protanopia/deuteranopia/tritanopia/acromatopsia). Tudo é
-memorizado (localStorage) por `a11y.js`, que também é quem aplica cada
-preferência na página; `acessibilidade.js` só cuida do painel visual em
-cima disso. Ver os comentários de cabeçalho de ambos os arquivos para
-detalhes de como estender (ex.: um oitavo controle novo).
-
-Cada arquivo começa com um comentário explicando sua responsabilidade e de
-quais outros arquivos ele depende.
-
-## Como os módulos HTML são montados
-
-Como não há nenhum passo de build (é HTML/CSS/JS puro, para hospedagem
-estática), `index.html` carrega o conteúdo de cada `modulo-N.html` **em
-tempo de execução**, via `fetch()`, injetando o resultado dentro de um
-`<div id="slot-...">` correspondente. Isso é feito por
-`carregarModulosHtml()`, em `inicializacao.js`, e roda automaticamente antes
-do app iniciar.
-
-**Por isso, testar localmente abrindo o `index.html` direto do disco
-(clique duplo, `file://`) não funciona** — o navegador bloqueia esses
-`fetch()` por segurança. Para testar localmente, sirva a pasta com um
-servidor HTTP simples, por exemplo:
+Teste principal:
 
 ```bash
-python -m http.server 8000
-# depois acesse http://localhost:8000
+node tests/test-regressao.js
 ```
 
-ou a extensão **Live Server** do VS Code. Em qualquer hospedagem HTTP real
-— **GitHub Pages incluso** — isso já funciona sem nenhum passo extra, contanto
-que todos os 30 arquivos estejam na mesma pasta (sem subpastas).
+**Importante:** publique o front-end e o `Code.gs` desta versão em conjunto. O backend novo é parte das correções de integridade.
 
-## Verificação feita nesta refatoração
+## Ajustes v42
 
-- As 108 funções/variáveis do arquivo original foram extraídas
-  programaticamente (não redigitadas), e cada uma foi conferida como
-  presente em exatamente um arquivo final, com o texto idêntico ao original.
-- Todo o CSS e todo o HTML de cada módulo também foram conferidos linha a
-  linha contra o arquivo original.
-- Os 21 arquivos `.js` passam validação de sintaxe.
-- A montagem final foi testada de ponta a ponta contra um servidor local
-  (carregamento dos 7 módulos via fetch, execução de todos os scripts,
-  inicialização do app) — sem erros.
+- OCR interno removido por confiabilidade; o fluxo de colagem manual permanece como entrada principal.
+- Faixas continuam dinâmicas; faixas com participantes não podem mais ser apagadas de forma destrutiva.
+- Login otimizado: hash v3 com salt + pepper secreto, migração automática de hashes antigos, sessão sem releitura da aba Usuarios em toda requisição e log de entrada em segundo plano.
+- Contas antigas com hash v2 podem ter um primeiro login mais lento; após o primeiro acesso bem-sucedido, o hash é migrado automaticamente para v3.
+
+
+## Endpoint ativo da API
+
+`https://script.google.com/macros/s/AKfycbypHFgogRlqWGo00tNOyDNRqnzces3kUT7c_MQ81w8GlbFqHATie2uIW34R0UDWWFdfLw/exec`
+
+## v46 — organização da interface
+A v46 reorganiza as informações por intenção de uso. Visão Geral foi simplificada, regras foram movidas para Regras e Ajuda, dias e resumos foram concentrados em Lançamentos e Administração passou a ser dividida entre Participantes, Faixas, Usuários, Atividade e Sistema. A mecânica de pontuação não foi alterada.
+
+
+## Reiniciador de séries (v48)
+
+Em **Lançamentos > Reiniciar série**, o administrador pode reiniciar a série atual mantendo a numeração, arquivar uma série parcial e iniciar a próxima ou descartar a série parcial e avançar. Participantes e faixas são preservados em todos os modos. Consulte `ALTERACOES_V48_REINICIADOR_SERIES.md`.
+
+
+## v50 — abertura animada e acessibilidade
+
+A abertura usa a animação oficial em canvas com brilho intenso, enquanto módulos, sessão e ranking carregam em paralelo. A animação respeita `prefers-reduced-motion` e a preferência interna "Reduzir movimento", possui botão para pular a animação e não impõe espera fixa após os dados estarem prontos. Consulte `ALTERACOES_V50_ANIMACAO_ACESSIBILIDADE.md`.
+
+## v51 — animação de abertura fiel ao arquivo aprovado
+
+A integração da abertura foi corrigida para preservar o motor `RGMotion`, a imagem, a duração de 6,4 s, a velocidade 1x, o brilho intenso e o enquadramento responsivo do HTML fornecido pelo usuário. A aplicação continua carregando em paralelo, mas não acelera nem retemporiza a animação. Em acessibilidade com movimento reduzido, o quadro final estático é usado. Consulte `ALTERACOES_V51_ANIMACAO_EXATA.md`.
+
+## v53 — correção do boot da animação no Edge/Chrome/PWA
+
+A v53 corrige o caso em que a abertura podia aparecer diretamente no quadro final. `motion=false` explícito agora reproduz a animação mesmo quando o sistema operacional pede redução de movimento; `motion=true` continua usando a alternativa acessível. Quando não há escolha explícita, a preferência do sistema é respeitada. Os arquivos críticos da abertura e da API receberam nomes físicos v53 para impedir que um Service Worker antigo entregue JavaScript de outra versão. O primeiro quadro é pintado antes de o relógio começar. A sequência foi validada no Chromium 144 em seis checkpoints reais. Consulte `ALTERACOES_V53_BOOT_ANIMACAO.md` e `RELATORIO_TESTE_CHROMIUM_V53.md`.
+
+
+## v54 — abertura animada
+A imagem de fallback foi corrigida para não cobrir o canvas. O pacote inclui uma gravação real de Chromium em `tests/browser-prova-v54/`.

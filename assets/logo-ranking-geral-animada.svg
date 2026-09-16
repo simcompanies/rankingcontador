@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Ranking Geral">
+  <defs>
+    <radialGradient id="rgHalo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2ae1f1" stop-opacity=".24"/>
+      <stop offset="38%" stop-color="#11a3d4" stop-opacity=".18"/>
+      <stop offset="100%" stop-color="#071019" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="rgGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <style>
+    .halo{opacity:0;transform-origin:256px 256px;animation:haloIn .82s ease .12s forwards, haloPulse 2.4s ease-in-out 1.3s infinite alternate;}
+    .orbit{opacity:0;transform-origin:256px 256px;animation:orbitIn .72s cubic-bezier(.18,.74,.16,1) .62s forwards;}
+    .logo{opacity:0;transform-origin:256px 256px;animation:logoIn .94s cubic-bezier(.18,.78,.2,1) .26s forwards, logoFloat 3.2s ease-in-out 1.45s infinite;}
+    .shine{opacity:0;animation:shine 1.12s ease 1.04s forwards;}
+    @keyframes logoIn{0%{opacity:0;transform:translateY(24px) scale(.7)}70%{opacity:1;transform:translateY(-6px) scale(1.03)}100%{opacity:1;transform:translateY(0) scale(1)}}
+    @keyframes logoFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-6px) scale(1.01)}}
+    @keyframes haloIn{0%{opacity:0;transform:scale(.72)}100%{opacity:1;transform:scale(1)}}
+    @keyframes haloPulse{0%{opacity:.72}100%{opacity:1}}
+    @keyframes orbitIn{0%{opacity:0;transform:scale(.88) rotate(-12deg)}100%{opacity:1;transform:scale(1) rotate(0deg)}}
+    @keyframes shine{0%{opacity:0;transform:translateX(-120px) rotate(-18deg)}30%{opacity:.45}100%{opacity:0;transform:translateX(120px) rotate(-18deg)}}
+  </style>
+
+  <circle class="halo" cx="256" cy="256" r="212" fill="url(#rgHalo)" filter="url(#rgGlow)"/>
+  <circle class="orbit" cx="256" cy="256" r="233" fill="none" stroke="rgba(90,215,240,.18)" stroke-width="1.6"/>
+  <circle class="orbit" cx="402" cy="104" r="5" fill="#25d9e7" filter="url(#rgGlow)"/>
+  <circle class="orbit" cx="113" cy="361" r="4.5" fill="#ff6e34" filter="url(#rgGlow)"/>
+  <image class="logo" href="./icons/icon-512.png" x="0" y="0" width="512" height="512"/>
+  <g class="shine">
+    <ellipse cx="256" cy="256" rx="154" ry="154" fill="none"/>
+    <path d="M112 146 L176 146 L400 370 L336 370 Z" fill="rgba(255,255,255,.18)" filter="url(#rgGlow)"/>
+  </g>
+</svg>

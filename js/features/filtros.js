@@ -6,9 +6,15 @@
    exclusivos (o modo ativo é filtroModo). Sem nenhum filtro aplicado,
    mostra o acumulado de todos os dias lançados.
 
-   Depende de: estado-global.js (state, loaded), estado próprio deste
-   arquivo (filtroModo, filtroDiasSelecionados — não centralizado em
-   estado-global.js por ser específico desta feature).
+   FAIXAS DINÂMICAS: o mini-ranking filtrado tinha dois cards fixos (Faixa
+   X / Faixa Y, em modulo-2.html). Agora renderAnalisesRankBoard() monta um
+   card por faixa dentro de #analises-rank-board a cada aplicarFiltroAnalises(),
+   igual ao padrão de renderBoard() em renderizacao.js.
+
+   Depende de: estado-global.js (state, loaded, obterDivisao,
+   obterTodasDivisoes), estado próprio deste arquivo (filtroModo,
+   filtroDiasSelecionados — não centralizado em estado-global.js por ser
+   específico desta feature).
    ============================================================================ */
 
 /* --------------------------------------------------------------------------
@@ -20,6 +26,26 @@ let filtroModo = 'periodo'; // 'periodo' | 'dias'
 // Set de índices de dia selecionados manualmente no modo 'dias'.
 let filtroDiasSelecionados = new Set();
 
+
+function ajustarFiltroAposRemoverDia(dayIdx){
+  const novo = new Set();
+  filtroDiasSelecionados.forEach(d=>{
+    if(d === dayIdx) return;
+    novo.add(d > dayIdx ? d - 1 : d);
+  });
+  filtroDiasSelecionados = novo;
+  popularFiltroDias();
+}
+
+function desempatarNosDiasFiltrados(a, b, dias){
+  for(let i=dias.length-1;i>=0;i--){
+    const d = dias[i];
+    const av = a.scores[d] ?? 0;
+    const bv = b.scores[d] ?? 0;
+    if(av !== bv) return bv - av;
+  }
+  return String(a.name).localeCompare(String(b.name), 'pt-BR');
+}
 /* Botões "Por período" / "Por dias específicos": troca o modo ativo, mostra
    o bloco de campos correspondente e reaplica o filtro na hora. */
 function setFiltroModo(modo){
@@ -93,36 +119,56 @@ function diasFiltrados(){
   return Array.from({length: state.days}, (_,i)=>i); // sem filtro ativo: todos os dias
 }
 
-/* Soma, para cada participante de uma divisão, só a pontuação dos dias em
+/* Soma, para cada participante de uma faixa, só a pontuação dos dias em
    `dias` (não o acumulado geral) e devolve a lista já ordenada. */
-function rankingFiltrado(div, dias){
-  const lista = state[div].map(p=>{
-    const totalFiltrado = dias.reduce((s,d)=> s + (p.scores[d] ?? 0), 0);
-    return { name:p.name, total: totalFiltrado };
+function rankingFiltrado(divId, dias){
+  const div = obterDivisao(divId);
+  const participantes = (div && div.participantes) || [];
+  const lista = participantes.map((p,idx)=>({
+    id:p.id, name:p.name, scores:p.scores, idx,
+    total: dias.reduce((s,d)=> s + (p.scores[d] ?? 0), 0)
+  }));
+  lista.sort((a,b)=>{
+    if(b.total !== a.total) return b.total - a.total;
+    return desempatarNosDiasFiltrados(a,b,dias);
   });
-  lista.sort((a,b)=> b.total - a.total || a.name.localeCompare(b.name, 'pt-BR'));
   return lista;
 }
 
+/* Monta o HTML de UM card por faixa dentro de #analises-rank-board (Módulo
+   2) — mesmo padrão de renderBoard(), em renderizacao.js, mas para o
+   mini-ranking filtrado. Chamada no início de aplicarFiltroAnalises(). */
+function renderAnalisesRankBoard(){
+  const board = document.getElementById('analises-rank-board');
+  if(!board) return;
+  board.innerHTML = obterTodasDivisoes().map(div => `
+    <div class="division" data-div-id="${div.id}" style="--div-accent:${corCssFaixa(div.cor)}">
+      <div class="division-head"><div><div class="division-title">${escapeHtml(div.titulo)}</div><div class="division-range filtro-resultado-label" id="filtro-label-${div.id}"></div></div></div>
+      <div class="mini-rank-list" id="analises-rank-${div.id}"></div>
+    </div>
+  `).join('');
+}
+
 /* Recalcula diasFiltrados(), atualiza o rótulo "N de M dia(s)" e redesenha
-   o mini-ranking filtrado de cada divisão na tela de Análises Gerais. */
+   o mini-ranking filtrado de cada faixa na tela de Análises Gerais. */
 function aplicarFiltroAnalises(){
   if(!loaded) return;
   const dias = diasFiltrados();
   const rotulo = state.days && dias.length === state.days ? 'todos os dias' : `${dias.length} de ${state.days} dia(s)`;
-  const labelX = document.getElementById('filtro-label-x');
-  const labelY = document.getElementById('filtro-label-y');
-  if(labelX) labelX.textContent = rotulo;
-  if(labelY) labelY.textContent = rotulo;
 
-  ['x','y'].forEach(div=>{
-    const wrap = document.getElementById('analises-rank-'+div);
+  renderAnalisesRankBoard();
+
+  obterTodasDivisoes().forEach(div=>{
+    const divId = div.id;
+    const label = document.getElementById('filtro-label-'+divId);
+    if(label) label.textContent = rotulo;
+    const wrap = document.getElementById('analises-rank-'+divId);
     if(!wrap) return;
-    const ranking = rankingFiltrado(div, dias);
+    const ranking = rankingFiltrado(divId, dias);
     wrap.innerHTML = ranking.length
       ? ranking.map((p,i)=>`<div class="mini-rank-row">
           <span class="mini-rank-pos">${i+1}°</span>
-          <span class="mini-rank-name">${p.name}</span>
+          <span class="mini-rank-name">${escapeHtml(p.name)}</span>
           <span class="mini-rank-total ${p.total<0?'val-neg':p.total>0?'val-pos':''}">${ptsTag(p.total)}</span>
         </div>`).join('')
       : '<div class="empty-hint">Nenhum participante ainda.</div>';
@@ -131,9 +177,11 @@ function aplicarFiltroAnalises(){
   // Dashboards mais profundos (ver analises-dashboard.js) — sempre dentro
   // dos mesmos `dias` do filtro acima, pra tudo na tela contar a mesma história.
   renderDestaques(dias);
-  renderEvolucaoChart('x', dias);
-  renderEvolucaoChart('y', dias);
-  renderHeatmap('x', dias);
-  renderHeatmap('y', dias);
+  renderEvolucaoBoard();
+  renderHeatmapBoard();
+  obterTodasDivisoes().forEach(div=>{
+    renderEvolucaoChart(div.id, dias);
+    renderHeatmap(div.id, dias);
+  });
   bindDragScroll(); // religa o arrastar-pra-rolar nas tabelas do mapa de desempenho, recriadas acima
 }

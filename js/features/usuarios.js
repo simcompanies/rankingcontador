@@ -44,7 +44,7 @@ function renderUsuarios(){
           const souEu = sessaoUsuario && String(u.idUsuario) === String(sessaoUsuario.idUsuario);
           const badge = `<span class="role-badge ${u.papel==='administrador'?'admin':''}">${u.papel}</span>`;
           const pendente = u.resetPendente
-            ? `<span class="pending-reset-badge">🔑 solicitou nova senha</span>`
+            ? `<span class="pending-reset-badge">Solicitou nova senha</span>`
             : '';
           let acoes = '<span class="empty-hint" style="padding:0;">é você</span>';
           if(!souEu){
@@ -54,10 +54,10 @@ function renderUsuarios(){
             if(u.resetPendente){
               acoes += `<button class="del-x-btn" onclick="handleAdminEnviarReset('${u.idUsuario}')" title="Enviar código temporário">Enviar código</button>`;
             }
-            acoes += `<button class="del-x-btn" onclick="handleRemoverUsuario('${u.idUsuario}')" title="Remover">✕</button>`;
+            acoes += `<button class="del-x-btn" onclick="handleRemoverUsuario('${u.idUsuario}')" title="Remover">Remover</button>`;
           }
           return `<div class="user-row">
-            <span class="user-row-name">${u.nome} <span class="user-row-email">${u.email}</span> ${badge} ${pendente}</span>
+            <span class="user-row-name">${escapeHtml(u.nome)} <span class="user-row-email">${escapeHtml(u.email)}</span> ${badge} ${pendente}</span>
             <span class="row-btns">${acoes}</span>
           </div>`;
         }).join('')
@@ -71,8 +71,8 @@ function renderUsuarios(){
           const data = l.dataHora ? new Date(l.dataHora).toLocaleString('pt-BR') : '—';
           return `<div class="log-row">
             <span class="log-row-data">${data}</span>
-            <span class="log-row-usuario">${l.usuario}</span>
-            <span class="log-row-acao">${l.acao}</span>
+            <span class="log-row-usuario">${escapeHtml(l.usuario)}</span>
+            <span class="log-row-acao">${escapeHtml(l.acao)}</span>
           </div>`;
         }).join('')
       : '<div class="empty-hint">Nenhuma atividade registrada ainda.</div>';
@@ -81,7 +81,7 @@ function renderUsuarios(){
 
 // Botão de alternar papel (membro ↔ administrador) de um usuário, com confirmação.
 async function handleAlterarPapel(idUsuario, novoPapel){
-  if(!confirm('Alterar o papel deste usuário para "' + novoPapel + '"?')) return;
+  if(!await uiConfirm('Alterar o papel deste usuário para \"' + novoPapel + '\"?', { title:'Alterar permissão', variant:'warning', confirmText:'Alterar papel' })) return;
   try{
     const resposta = await chamarAPI({ action:'adminAlterarPapel', token:sessaoUsuario.token, idUsuario:idUsuario, novoPapel:novoPapel });
     if(!resposta.sucesso){ if(tratarErroSessaoOuPermissao(resposta)) return; alert(resposta.erro || 'Não foi possível alterar.'); return; }
@@ -94,7 +94,7 @@ async function handleAlterarPapel(idUsuario, novoPapel){
 
 // Botão de remover um usuário (perde acesso imediatamente), com confirmação.
 async function handleRemoverUsuario(idUsuario){
-  if(!confirm('Remover este usuário? Ele perde o acesso ao sistema imediatamente.')) return;
+  if(!await uiConfirm('Remover este usuário? Ele perderá o acesso ao sistema imediatamente.', { title:'Remover usuário', variant:'danger', confirmText:'Remover usuário' })) return;
   try{
     const resposta = await chamarAPI({ action:'adminRemoverUsuario', token:sessaoUsuario.token, idUsuario:idUsuario });
     if(!resposta.sucesso){ if(tratarErroSessaoOuPermissao(resposta)) return; alert(resposta.erro || 'Não foi possível remover.'); return; }

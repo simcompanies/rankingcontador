@@ -5,13 +5,21 @@
    com a classificação de um dia específico ou o acumulado) — usado tanto
    pelo botão "Gerar resumo" quanto pelo auto-save de resumo ao lançar um dia.
 
-   Depende de: estado-global.js (state), participantes.js (total, tiebreakDay,
-   sortDivision — cálculo do ranking que o texto descreve), config-api.js
-   (chamarAPI, para o auto-save gravar o resumo no backend).
+   FAIXAS DINÂMICAS: antes o texto tinha dois blocos hardcoded (FAIXA X /
+   FAIXA Y). Agora textoResumoParaDia() percorre obterTodasDivisoes() e
+   gera um bloco por faixa, usando o título/intervalo de cada uma (o mesmo
+   texto exibido no board do Módulo 1) — então o resumo sempre reflete
+   exatamente as faixas que existem no momento, sem precisar de nenhuma
+   alteração aqui quando uma faixa é criada/renomeada/removida.
+
+   Depende de: estado-global.js (state, obterDivisao, obterTodasDivisoes),
+   participantes.js (total, tiebreakDay, sortDivision — cálculo do ranking
+   que o texto descreve), config-api.js (chamarAPI, para o auto-save gravar
+   o resumo no backend).
    ============================================================================ */
 
 /* --------------------------------------------------------------------------
-   Pequenos formatadores de texto: tag textual da colocação (🥇, "2º" etc.)
+   Pequenos formatadores de texto: tag textual da colocação (1º, 2º etc.)
    e tag textual da pontuação do dia (+10, -1, 0...).
    -------------------------------------------------------------------------- */
 function scoreTag(v){
@@ -24,10 +32,15 @@ function ptsTag(v){
   return `${v} ${abs === 1 ? 'pt' : 'pts'}`;
 }
 
-// Ordena os participantes de UMA divisão pela pontuação de UM dia específico
+// Marcadores visuais não usam mais emojis; a estrutura textual das faixas
+// permanece intacta e cada bloco começa diretamente pelo título da faixa.
+
+// Ordena os participantes de UMA faixa pela pontuação de UM dia específico
 // (não pelo acumulado) — usado para montar o resumo "do dia".
-function rankDivisionForDay(div, dayIdx){
-  const list = state[div].filter(p => p.scores[dayIdx] !== null && p.scores[dayIdx] !== undefined);
+function rankDivisionForDay(divId, dayIdx){
+  const div = obterDivisao(divId);
+  const participantes = (div && div.participantes) || [];
+  const list = participantes.filter(p => p.scores[dayIdx] !== null && p.scores[dayIdx] !== undefined);
   list.sort((a,b)=>{
     const av = a.scores[dayIdx] ?? 0;
     const bv = b.scores[dayIdx] ?? 0;
@@ -37,32 +50,37 @@ function rankDivisionForDay(div, dayIdx){
   return list;
 }
 
-// Monta o bloco de texto de uma divisão (cabeçalho + uma linha por
+// Monta o bloco de texto de uma faixa (cabeçalho + uma linha por
 // participante) para um dado ranking já ordenado — reaproveitado tanto no
 // resumo "do dia" quanto no "acumulado".
-function buildDivisionBlock(title, range, emoji, entries, formatFn){
+function buildDivisionBlock(title, range, entries, formatFn){
   const bar = '━━━━━━━━━━━━━━━━━━';
-  let out = `${bar} \n${emoji} ${title} • ${range} \n${bar}\n`;
+  let out = `${bar} \n${title}${range ? ` • ${range}` : ''} \n${bar}\n`;
   out += entries.map((e, i) => `${i+1}° ${e.name} — ${formatFn(e)}`).join('\n');
   return out;
 }
 
-// Monta o texto completo do resumo: cabeçalho com a data, bloco da Faixa X
-// e bloco da Faixa Y, escolhendo ranking do dia ou acumulado conforme o modo.
+// Monta o texto completo do resumo: cabeçalho com o dia, um bloco por faixa
+// com o ranking DO DIA, depois um bloco por faixa com o ranking ACUMULADO.
 function textoResumoParaDia(dayIdx){
-  const xDay = rankDivisionForDay('x', dayIdx);
-  const yDay = rankDivisionForDay('y', dayIdx);
-  const xAcc = sortDivision('x');
-  const yAcc = sortDivision('y');
+  const divisoes = obterTodasDivisoes();
 
-  let text = `🏆 RANKING DIA ${dayIdx+1}\n`;
-  text += buildDivisionBlock('FAIXA X', '0 ~ 19.999M', '📗', xDay, e => scoreTag(e.scores[dayIdx]));
-  text += '\n';
-  text += buildDivisionBlock('FAIXA Y', '20M ~ ∞', '📘', yDay, e => scoreTag(e.scores[dayIdx]));
-  text += '\n🏆 RANKING ACUMULADO\n';
-  text += buildDivisionBlock('FAIXA X', '0 ~ 19.999M', '📗', xAcc, e => ptsTag(e.total));
-  text += '\n';
-  text += buildDivisionBlock('FAIXA Y', '20M ~ ∞', '📘', yAcc, e => ptsTag(e.total));
+  const dataRef = state.dayDates && state.dayDates[dayIdx] ? formatarDataCurta(state.dayDates[dayIdx]) : '';
+  const serieNumero = state.seriesMeta && state.seriesMeta.currentNumber ? state.seriesMeta.currentNumber : 1;
+  let text = `RANKING SÉRIE ${serieNumero} · DIA ${dayIdx+1}${dataRef ? ` • ${dataRef}` : ''}\n`;
+  divisoes.forEach((div, i)=>{
+    if(i > 0) text += '\n';
+    const rankingDia = rankDivisionForDay(div.id, dayIdx);
+    text += buildDivisionBlock(div.titulo.toUpperCase(), div.intervalo || '', rankingDia, e => scoreTag(e.scores[dayIdx]));
+  });
+
+  text += '\nRANKING ACUMULADO\n';
+  divisoes.forEach((div, i)=>{
+    if(i > 0) text += '\n';
+    const acc = sortDivision(div.id);
+    text += buildDivisionBlock(div.titulo.toUpperCase(), div.intervalo || '', acc, e => ptsTag(e.total));
+  });
+
   return text;
 }
 
@@ -70,14 +88,19 @@ function textoResumoParaDia(dayIdx){
 function populateDaySelect(){
   const sel = document.getElementById('summary-day');
   if(!sel) return;
+  const anterior = sel.value;
   sel.innerHTML = '';
   for(let d = 0; d < state.days; d++){
     const opt = document.createElement('option');
     opt.value = d;
-    opt.textContent = `Dia ${d+1}`;
+    const data = state.dayDates && state.dayDates[d] ? formatarDataCurta(state.dayDates[d]) : '';
+    opt.textContent = `Dia ${d+1}${data ? ' · ' + data : ''}`;
     sel.appendChild(opt);
   }
-  if(state.days > 0) sel.value = state.days - 1;
+  if(state.days > 0){
+    const idxAnterior = Number(anterior);
+    sel.value = Number.isInteger(idxAnterior) && idxAnterior >= 0 && idxAnterior < state.days ? String(idxAnterior) : String(state.days - 1);
+  }
 }
 
 // Botão "Gerar resumo": monta o texto (via textoResumoParaDia) e mostra na caixa de pré-visualização.
@@ -117,11 +140,14 @@ async function handleSalvarResumoAtual(){
   const dayIdx = parseInt(document.getElementById('summary-day').value, 10);
   if(!document.getElementById('summary-output').value) generateSummary();
   const btn = document.getElementById('save-resumo-btn');
-  definirCarregando(btn, true, '💾 Salvar no histórico');
+  definirCarregando(btn, true, 'Salvar no histórico');
   try{
+    const sincronizado = await flushPendingSave();
+    if(!sincronizado) throw new Error('O ranking ainda não foi sincronizado; o resumo não será salvo separadamente.');
     const resposta = await chamarAPI({
       action:'salvarResumo', token:sessaoUsuario.token,
-      dia: dayIdx+1, texto: document.getElementById('summary-output').value
+      dia: dayIdx+1, dayId: state.dayIds && state.dayIds[dayIdx], dayDate: state.dayDates && state.dayDates[dayIdx],
+      revision: state.revision, texto: document.getElementById('summary-output').value
     });
     if(!resposta.sucesso){ if(tratarErroSessaoOuPermissao(resposta)) return; alert(resposta.erro || 'Não foi possível salvar.'); return; }
     resumosCarregado = false;
@@ -130,7 +156,7 @@ async function handleSalvarResumoAtual(){
     console.error(erro);
     alert('Erro de conexão ao salvar o resumo.');
   }finally{
-    definirCarregando(btn, false, '💾 Salvar no histórico');
+    definirCarregando(btn, false, 'Salvar no histórico');
   }
 }
 
@@ -141,10 +167,20 @@ async function handleSalvarResumoAtual(){
 async function autoSalvarResumoDoDia(dayIdx){
   if(!souAdmin()) return;
   try{
-    await chamarAPI({
+    const sincronizado = await flushPendingSave();
+    if(!sincronizado) throw new Error('Ranking não sincronizado; resumo automático adiado.');
+    const resposta = await chamarAPI({
       action:'salvarResumo', token:sessaoUsuario.token,
-      dia: dayIdx+1, texto: textoResumoParaDia(dayIdx)
+      dia: dayIdx+1,
+      dayId: state.dayIds && state.dayIds[dayIdx],
+      dayDate: state.dayDates && state.dayDates[dayIdx],
+      revision: state.revision,
+      texto: textoResumoParaDia(dayIdx)
     });
+    if(!resposta.sucesso){
+      if(tratarErroSessaoOuPermissao(resposta)) return;
+      throw new Error(resposta.erro || 'Falha lógica ao salvar resumo.');
+    }
     resumosCarregado = false;
   }catch(erro){
     console.error('Erro ao salvar resumo automático', erro);

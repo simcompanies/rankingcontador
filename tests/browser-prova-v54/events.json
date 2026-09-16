@@ -1,0 +1,182 @@
+[
+  {
+    "t": 0.1,
+    "state": {
+      "diag": {
+        "build": "20260916-v54-fallback-overlay-fix",
+        "time": 0.11669999999999994,
+        "appReady": true,
+        "finished": false,
+        "skipped": false,
+        "visible": true,
+        "animationStarted": true,
+        "reduced": false,
+        "renderer": true,
+        "phase": "playing"
+      },
+      "fallbackHidden": true,
+      "fallbackDisplay": "none",
+      "splashOpacity": "1",
+      "loginDisplay": "block"
+    },
+    "sha": "ca752f4e6a6394d1af8f82502b17f66315b8d954d07082d98843052f634289fa"
+  },
+  {
+    "t": 0.5,
+    "state": {
+      "diag": {
+        "build": "20260916-v54-fallback-overlay-fix",
+        "time": 0.8333,
+        "appReady": true,
+        "finished": false,
+        "skipped": false,
+        "visible": true,
+        "animationStarted": true,
+        "reduced": false,
+        "renderer": true,
+        "phase": "playing"
+      },
+      "fallbackHidden": true,
+      "fallbackDisplay": "none",
+      "splashOpacity": "1",
+      "loginDisplay": "block"
+    },
+    "sha": "a41ed057f67631890ceecd8e9b6caed12d7ff3ea11569a6b88f8187bb534c42d"
+  },
+  {
+    "t": 1.0,
+    "state": {
+      "diag": {
+        "build": "20260916-v54-fallback-overlay-fix",
+        "time": 1.6498999999999995,
+        "appReady": true,
+        "finished": false,
+        "skipped": false,
+        "visible": true,
+        "animationStarted": true,
+        "reduced": false,
+        "renderer": true,
+        "phase": "playing"
+      },
+      "fallbackHidden": true,
+      "fallbackDisplay": "none",
+      "splashOpacity": "1",
+      "loginDisplay": "block"
+    },
+    "sha": "d414350d07e282f09313766604672e93359be051a12fc1833ccf74d3e2f3a98a"
+  },
+  {
+    "t": 2.0,
+    "state": {
+      "diag": {
+        "build": "20260916-v54-fallback-overlay-fix",
+        "time": 3.0165999999999964,
+        "appReady": true,
+        "finished": false,
+        "skipped": false,
+        "visible": true,
+        "animationStarted": true,
+        "reduced": false,
+        "renderer": true,
+        "phase": "playing"
+      },
+      "fallbackHidden": true,
+      "fallbackDisplay": "none",
+      "splashOpacity": "1",
+      "loginDisplay": "block"
+    },
+    "sha": "ec74416f02a8c791413e4a537d1f329033c80610398171c21cf75436ec5cfefb"
+  },
+  {
+    "t": 3.2,
+    "state": {
+      "diag": {
+        "build": "20260916-v54-fallback-overlay-fix",
+        "time": 4.566499999999997,
+        "appReady": true,
+        "finished": false,
+        "skipped": false,
+        "visible": true,
+        "animationStarted": true,
+        "reduced": false,
+        "renderer": true,
+        "phase": "playing"
+      },
+      "fallbackHidden": true,
+      "fallbackDisplay": "none",
+      "splashOpacity": "1",
+      "loginDisplay": "block"
+    },
+    "sha": "4977528b55ba86eb0e5443945d9965f0040b756a3cf9657d86082c39b471ad3f"
+  },
+  {
+    "t": 4.8,
+    "state": {
+      "diag": {
+        "build": "20260916-v54-fallback-overlay-fix",
+        "time": 6.4,
+        "appReady": true,
+        "finished": true,
+        "skipped": false,
+        "visible": true,
+        "animationStarted": true,
+        "reduced": false,
+        "renderer": true,
+        "phase": "finished"
+      },
+      "fallbackHidden": true,
+      "fallbackDisplay": "none",
+      "splashOpacity": "1",
+      "loginDisplay": "block"
+    },
+    "sha": "22f24a85806bf302c1b8662ba04551e2e9c94804d0b065294c6d5cff27bd3dca"
+  },
+  {
+    "t": 6.2,
+    "state": {
+      "diag": {
+        "build": "20260916-v54-fallback-overlay-fix",
+        "time": 6.4,
+        "appReady": true,
+        "finished": true,
+        "skipped": false,
+        "visible": false,
+        "animationStarted": true,
+        "reduced": false,
+        "renderer": true,
+        "phase": "hidden"
+      },
+      "fallbackHidden": true,
+      "fallbackDisplay": "none",
+      "splashOpacity": "0",
+      "loginDisplay": "block"
+    },
+    "sha": "0de7e5ffcbcefa4a79e8c3142ebad827e0c0d52c6d901d359bf1d5754e9bf108"
+  },
+  {
+    "t": 7.0,
+    "state": {
+      "diag": {
+        "build": "20260916-v54-fallback-overlay-fix",
+        "time": 6.4,
+        "appReady": true,
+        "finished": true,
+        "skipped": false,
+        "visible": false,
+        "animationStarted": true,
+        "reduced": false,
+        "renderer": true,
+        "phase": "hidden"
+      },
+      "fallbackHidden": true,
+      "fallbackDisplay": "none",
+      "splashOpacity": "0",
+      "loginDisplay": "block"
+    },
+    "sha": "0de7e5ffcbcefa4a79e8c3142ebad827e0c0d52c6d901d359bf1d5754e9bf108"
+  },
+  {
+    "video": "/mnt/data/v54_recording_clean/video/154d1db98d40e6c1315422458ce2af18.webm",
+    "elapsed": 9.806989978999923
+  }
+]

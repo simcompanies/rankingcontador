@@ -17,25 +17,82 @@
 // Chamada ao concluir login/cadastro com sucesso: grava a sessão em memória
 // e em sessionStorage (sobrevive a F5, mas não a fechar a aba), some com a
 // tela de login e mostra a casca do app já no módulo correto para o papel.
-function aplicarSessao(dados){
+function definirTelaAplicacao(modo){
+  const body = document.body;
+  if(body) body.setAttribute('data-app-screen', modo);
+}
+
+function registrarEventoSessaoEmSegundoPlano(tipo, token){
+  if(!token || typeof chamarAPI !== 'function') return;
+  // O log de entrada é administrativo, não pode atrasar a abertura do perfil
+  // nem competir com a primeira carga do ranking.
+  setTimeout(function(){
+    chamarAPI({ action:'registrarEventoSessao', token:token, evento:tipo }).catch(function(erro){
+      console.warn('Não foi possível registrar o evento de sessão em segundo plano.', erro);
+    });
+  }, 2500);
+}
+
+async function aplicarSessao(dados){
+  if(window.RGStartup) window.RGStartup.show('Abrindo seu painel…', 30);
   sessaoUsuario = { token: dados.token, idUsuario: dados.idUsuario, nome: dados.nome, email: dados.email, papel: dados.papel };
   sessionStorage.setItem('rankingGeral_token', dados.token);
-  document.getElementById('auth-gate').classList.add('hidden');
-  document.getElementById('app-shell').classList.remove('hidden');
+
+  // v50: ranking e fragmentos HTML começam juntos assim que o login devolve o token.
+  // Antes, o ranking só era solicitado depois de todos os módulos terminarem de baixar.
+  const rankingPromise = dados.ranking
+    ? Promise.resolve({ sucesso:true, dados:dados.ranking })
+    : chamarAPIGet({ action:'listarRanking', token:dados.token });
+  const interfacePromise = window.rgModulosPromise || Promise.resolve([]);
+
+  if(window.RGStartup) window.RGStartup.status('Carregando interface e ranking…', 54);
+  let resultadoRanking;
+  try{
+    const resultados = await Promise.all([rankingPromise, interfacePromise]);
+    resultadoRanking = resultados[0];
+  }catch(erro){
+    console.error('Falha durante a preparação paralela do painel.', erro);
+    if(window.RGStartup) window.RGStartup.done('Verifique a conexão');
+    return false;
+  }
+
+  document.getElementById('auth-gate')?.classList.add('hidden');
+  document.getElementById('app-shell')?.classList.remove('hidden');
+  definirTelaAplicacao('app');
   aplicarPermissoesPapel();
   atualizarBarraIdentidade();
   mostrarView('faixas');
-  loadState();
+
+  if(window.RGStartup) window.RGStartup.status('Montando seus dados…', 84);
+  if(!resultadoRanking || !resultadoRanking.sucesso){
+    if(resultadoRanking && typeof tratarErroSessaoOuPermissao === 'function' && tratarErroSessaoOuPermissao(resultadoRanking)) return false;
+    ultimoErroCarga = (resultadoRanking && resultadoRanking.erro) || 'Não foi possível carregar o ranking.';
+    rankingBloqueado = true; loaded = false;
+    if(typeof atualizarBloqueioDados === 'function') atualizarBloqueioDados();
+    if(window.RGStartup) window.RGStartup.done('Verifique a conexão');
+    return false;
+  }
+  const ok = aplicarRankingRecebido(resultadoRanking.dados);
+  if(ok && window.RGStartup) window.RGStartup.done('Painel pronto');
+  else if(window.RGStartup) window.RGStartup.done('Verifique a conexão');
+  return ok;
 }
 
 // Clique em "Sair" no topbar: confirma, avisa o backend (best-effort) e
 // limpa a sessão local, voltando para a tela de login.
 async function handleLogout(){
   const token = sessaoUsuario ? sessaoUsuario.token : null;
-  encerrarSessaoLocal();
-  if(token){
-    try{ await chamarAPI({ action:'logout', token:token }); }catch(erro){ /* já saímos localmente, sem problema */ }
+  if(token && souAdmin() && loaded && typeof flushPendingSave === 'function'){
+    const salvo = await flushPendingSave();
+    if(!salvo){
+      alert('Ainda existem alterações que não puderam ser sincronizadas. O logout foi cancelado para evitar perda de dados. Verifique a conexão e tente novamente.');
+      return;
+    }
   }
+  if(token){
+    try{ await chamarAPI({ action:'logout', token:token }); }catch(erro){ console.warn('Não foi possível avisar o backend sobre o logout.', erro); }
+  }
+  encerrarSessaoLocal();
 }
 
 // Limpa toda vestígio da sessão no front-end (memória + sessionStorage) e
@@ -44,11 +101,32 @@ async function handleLogout(){
 function encerrarSessaoLocal(){
   sessaoUsuario = null;
   loaded = false;
+  rankingBloqueado = true;
+  syncConflict = false;
+  ultimoErroCarga = null;
+  pendingImport = null;
+  pendingDayMode = 'new';
+  draft = {};
+  draftNew = {};
+  usuariosRoster = [];
+  atividadeLog = [];
+  usuariosCarregado = false;
+  resumosSalvos = [];
+  resumosCarregado = false;
+  if(typeof historicoSeries !== 'undefined') historicoSeries = [];
+  if(typeof historicoSeriesCarregado !== 'undefined') historicoSeriesCarregado = false;
+  if(typeof filtroDiasSelecionados !== 'undefined' && filtroDiasSelecionados && filtroDiasSelecionados.clear) filtroDiasSelecionados.clear();
+  if(typeof stateDirty !== 'undefined') stateDirty = false;
+  if(typeof estadoVazioPadrao === 'function') state = estadoVazioPadrao();
   sessionStorage.removeItem('rankingGeral_token');
-  document.getElementById('app-shell').classList.add('hidden');
-  document.getElementById('modal-nova-senha').classList.add('hidden');
-  document.getElementById('auth-gate').classList.remove('hidden');
-  mostrarAuthView('login');
+  const shell = document.getElementById('app-shell');
+  if(shell) shell.classList.add('hidden');
+  const modal = document.getElementById('modal-nova-senha');
+  if(modal) modal.classList.add('hidden');
+  const gate = document.getElementById('auth-gate');
+  if(gate) gate.classList.remove('hidden');
+  definirTelaAplicacao('auth');
+  if(typeof mostrarAuthView === 'function') mostrarAuthView('login');
 }
 
 // Esconde da interface tudo o que é exclusivo de administrador quando o

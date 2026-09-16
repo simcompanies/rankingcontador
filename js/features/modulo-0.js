@@ -35,14 +35,21 @@ async function handleLogin(event){
   const senha = document.getElementById('login-senha').value;
   esconderMsg('login-msg');
   definirCarregando(btn, true, 'Entrar');
+  if(window.RGStartup) window.RGStartup.show('Validando acesso…', 18);
   try{
     const resposta = await chamarAPI({ action:'login', email:email, senha:senha });
-    if(!resposta.sucesso){ mostrarMsg('login-msg', resposta.erro || 'Não foi possível entrar.', false); return; }
+    if(!resposta || !resposta.sucesso){ if(window.RGStartup) window.RGStartup.done('Acesso não autorizado'); mostrarMsg('login-msg', (resposta && (resposta.erro || resposta.mensagem)) || 'E-mail ou senha incorretos.', false); return; }
+    if(!resposta.dados || !resposta.dados.token){ throw new Error('A API não devolveu um token de sessão.'); }
     document.getElementById('login-senha').value = '';
-    aplicarSessao(resposta.dados);
+    await aplicarSessao(resposta.dados);
+    registrarEventoSessaoEmSegundoPlano(
+      resposta.dados.precisaTrocarSenha ? 'login_temporario' : 'login',
+      resposta.dados.token
+    );
     if(resposta.dados.precisaTrocarSenha) abrirModalNovaSenha();
   }catch(erro){
     console.error(erro);
+    if(window.RGStartup) window.RGStartup.done('Não foi possível entrar');
     mostrarMsg('login-msg', 'Erro de conexão. Verifique a URL da API (API_URL) e sua internet.', false);
   }finally{
     definirCarregando(btn, false, 'Entrar');
@@ -60,12 +67,14 @@ async function handleCadastro(event){
   esconderMsg('cadastro-msg');
   if(senha !== senha2){ mostrarMsg('cadastro-msg', 'As senhas não conferem.', false); return; }
   definirCarregando(btn, true, 'Criar conta');
+  if(window.RGStartup) window.RGStartup.show('Criando sua conta…', 18);
   try{
     const resposta = await chamarAPI({ action:'cadastrar', nome:nome, email:email, senha:senha, confirmarSenha:senha2 });
-    if(!resposta.sucesso){ mostrarMsg('cadastro-msg', resposta.erro || 'Não foi possível criar a conta.', false); return; }
-    aplicarSessao(resposta.dados);
+    if(!resposta.sucesso){ if(window.RGStartup) window.RGStartup.done('Cadastro não concluído'); mostrarMsg('cadastro-msg', resposta.erro || 'Não foi possível criar a conta.', false); return; }
+    await aplicarSessao(resposta.dados);
   }catch(erro){
     console.error(erro);
+    if(window.RGStartup) window.RGStartup.done('Não foi possível criar a conta');
     mostrarMsg('cadastro-msg', 'Erro de conexão. Verifique a URL da API (API_URL) e sua internet.', false);
   }finally{
     definirCarregando(btn, false, 'Criar conta');
@@ -120,6 +129,10 @@ async function handleDefinirNovaSenha(event){
   try{
     const resposta = await chamarAPI({ action:'definirNovaSenha', token:sessaoUsuario.token, novaSenha:s1, confirmarNovaSenha:s2 });
     if(!resposta.sucesso){ mostrarMsg('nova-senha-msg', resposta.erro || 'Não foi possível salvar.', false); return; }
+    if(resposta.dados && resposta.dados.token){
+      sessaoUsuario.token = resposta.dados.token;
+      sessionStorage.setItem('rankingGeral_token', resposta.dados.token);
+    }
     fecharModalNovaSenha();
   }catch(erro){
     console.error(erro);

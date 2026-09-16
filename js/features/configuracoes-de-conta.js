@@ -15,9 +15,9 @@ function renderContaView(){
   const info = document.getElementById('conta-info');
   if(info){
     info.innerHTML =
-      '<div class="linha"><span class="rotulo">Nome</span><span>' + sessaoUsuario.nome + '</span></div>' +
-      '<div class="linha"><span class="rotulo">E-mail</span><span>' + sessaoUsuario.email + '</span></div>' +
-      '<div class="linha"><span class="rotulo">Papel</span><span class="role-badge ' + (souAdmin() ? 'admin' : '') + '">' + sessaoUsuario.papel + '</span></div>';
+      '<div class="linha"><span class="rotulo">Nome</span><span>' + escapeHtml(sessaoUsuario.nome) + '</span></div>' +
+      '<div class="linha"><span class="rotulo">E-mail</span><span>' + escapeHtml(sessaoUsuario.email) + '</span></div>' +
+      '<div class="linha"><span class="rotulo">Papel</span><span class="role-badge ' + (souAdmin() ? 'admin' : '') + '">' + escapeHtml(sessaoUsuario.papel) + '</span></div>';
   }
   document.getElementById('conta-membro-area').classList.toggle('hidden', souAdmin());
   document.getElementById('conta-admin-area').classList.toggle('hidden', !souAdmin());
