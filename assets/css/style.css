@@ -3787,3 +3787,251 @@ body[data-keyboard-open] .auth-card{max-height:none!important;}
   button,.button,input,select,textarea,.card,.modal,.rg-dialog-card{forced-color-adjust:auto;border-color:CanvasText!important}
   :where(a,button,input,select,textarea,[role="button"],[role="tab"]):focus-visible{outline:3px solid Highlight!important}
 }
+
+
+/* v56 — proteção visual da colagem e rótulo estável do botão Gemini. */
+.gemini-copy-label{display:inline-block;white-space:nowrap;}
+.paste-sanitize-status{margin-top:8px;padding:9px 11px;border:1px solid rgba(47,215,232,.28);border-radius:10px;background:rgba(47,215,232,.07);color:#9feaf2;font-size:calc(11px * var(--font-scale,1));line-height:1.45;}
+.paste-sanitize-status[hidden]{display:none!important;}
+:root[data-theme="light"] .paste-sanitize-status,body.light-mode .paste-sanitize-status{background:#eefbfc;border-color:#a9dfe4;color:#195d67;}
+
+/* ========================================================================== */
+/* v57 — consolidação visual / proteção contra controles nativos sem estilo  */
+/* ========================================================================== */
+:where(input:not([type="checkbox"]):not([type="radio"]), select, textarea){
+  box-sizing:border-box;max-width:100%;color:var(--text,#e7f2f7);background:var(--surface-2,#162330);
+  border:1px solid var(--line,#2a4050);border-radius:10px;min-height:42px;padding:9px 12px;
+  font:inherit;outline:none;transition:border-color .15s ease,box-shadow .15s ease,background .15s ease;
+}
+:where(input:not([type="checkbox"]):not([type="radio"]), select, textarea):focus-visible{
+  border-color:var(--accent,#35d8e7);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent,#35d8e7) 22%,transparent);
+}
+:where(select){appearance:auto;color-scheme:dark}
+html[data-theme="light"] :where(select),body.light-mode :where(select){color-scheme:light}
+#paste-area{display:block;width:100%;min-height:180px;resize:vertical;line-height:1.5;white-space:pre-wrap}
+.paste-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+#paste-read-btn{min-height:44px}
+@media(max-width:700px){#paste-area{min-height:220px}.paste-actions>*{flex:1 1 auto}}
+
+/* ========================================================================== */
+/* V58 — fonte final de verdade para temas e cores                          */
+/* -------------------------------------------------------------------------- */
+/*
+   A v57 acumulou camadas visuais de versões anteriores. Algumas delas usam
+   --ux-*, outras --theme-* e outras ainda tinham literais escuros com
+   !important. Este bloco fica deliberadamente por último: ele fecha a
+   precedência sem tocar em IDs, handlers, dados ou mecânicas.
+*/
+:root{
+  --surface:var(--theme-surface,var(--ux-surface));
+  --surface-2:var(--theme-surface-2,var(--ux-surface-2));
+  --surface-3:var(--theme-surface-3,var(--ux-surface-3));
+  --border:var(--theme-line,var(--ux-line));
+  --text:var(--theme-text,var(--ux-text));
+  --muted:var(--theme-muted,var(--ux-muted));
+  --accent:var(--ux-primary,#32d7ab);
+  --rg-table-head:var(--theme-table-head,#111a24);
+  --rg-hover:var(--theme-hover,rgba(255,255,255,.026));
+  --rg-overlay:rgba(4,10,17,.78);
+}
+
+/* O modo claro altera também as famílias legadas, para que elementos
+   dinâmicos que ainda usam --ux-* não voltem para a paleta escura. */
+:root[data-theme="light"],body.light-mode{
+  --ux-bg:#edf2f7;
+  --ux-bg-2:#f5f8fb;
+  --ux-surface:#ffffff;
+  --ux-surface-2:#f5f7fa;
+  --ux-surface-3:#e9eef3;
+  --ux-surface-4:#dde5ec;
+  --ux-line:#d2dbe4;
+  --ux-line-soft:#e1e7ed;
+  --ux-text:#18222d;
+  --ux-muted:#5f6d7c;
+  --ux-subtle:#718092;
+  --ux-primary:#087f68;
+  --ux-primary-soft:rgba(8,127,104,.11);
+  --ux-primary-border:rgba(8,127,104,.34);
+  --ux-blue:#3155bd;
+  --ux-blue-soft:rgba(49,85,189,.10);
+  --ux-yellow:#8a5700;
+  --ux-yellow-soft:rgba(138,87,0,.12);
+  --ux-red:#b42336;
+  --ux-red-soft:rgba(180,35,54,.10);
+  --ux-panel-glow:rgba(16,31,48,.06);
+  --ux-panel-inner:rgba(16,31,48,.025);
+  --ux-row:rgba(16,31,48,.018);
+  --ux-row-hover:rgba(8,127,104,.07);
+  --ux-focus-ring:rgba(8,127,104,.20);
+  --ux-scroll:#aebbc7;
+  --ui-bg:#edf2f7;
+  --ui-surface:#ffffff;
+  --ui-surface-2:#f5f7fa;
+  --ui-surface-3:#e9eef3;
+  --ui-border:#d2dbe4;
+  --ui-border-strong:#aebbc7;
+  --ui-text:#18222d;
+  --ui-muted:#5f6d7c;
+  --ui-subtle:#718092;
+  --ui-accent:#087f68;
+  --ui-accent-soft:rgba(8,127,104,.11);
+  --ui-warning:#8a5700;
+  --ui-danger:#b42336;
+  --ui-blue:#3155bd;
+  --a11y-accent:#087f68;
+  --a11y-accent-strong:#056952;
+  --a11y-accent-soft:rgba(8,127,104,.11);
+  --a11y-surface:#ffffff;
+  --a11y-surface-2:#f2f6f8;
+  --a11y-line:#d2dbe4;
+  --a11y-text:#18222d;
+  --a11y-muted:#5f6d7c;
+  --theme-page:#edf2f7;
+  --theme-surface:#ffffff;
+  --theme-surface-2:#f5f7fa;
+  --theme-surface-3:#e9eef3;
+  --theme-surface-4:#dde5ec;
+  --theme-line:#d2dbe4;
+  --theme-line-soft:#e1e7ed;
+  --theme-text:#18222d;
+  --theme-muted:#5f6d7c;
+  --theme-subtle:#718092;
+  --theme-table-head:#eef3f7;
+  --theme-hover:rgba(31,80,70,.055);
+  --theme-inset:rgba(20,39,56,.022);
+  --theme-shadow:0 14px 34px rgba(25,43,60,.08);
+  --surface:var(--theme-surface);
+  --surface-2:var(--theme-surface-2);
+  --surface-3:var(--theme-surface-3);
+  --border:var(--theme-line);
+  --text:var(--theme-text);
+  --muted:var(--theme-muted);
+  --accent:var(--ux-primary);
+  --rg-table-head:var(--theme-table-head);
+  --rg-hover:var(--theme-hover);
+  --rg-overlay:rgba(22,37,51,.30);
+}
+
+/* Superfícies estruturais que não podem permanecer com gradiente escuro. */
+:root[data-theme="light"] body,body.light-mode{
+  background:
+    radial-gradient(900px 500px at 12% -10%,rgba(8,127,104,.045),transparent 62%),
+    radial-gradient(720px 460px at 100% 0,rgba(49,85,189,.035),transparent 60%),
+    linear-gradient(180deg,#edf2f7 0%,#e7edf3 100%)!important;
+  color:var(--text)!important;
+}
+:root[data-theme="light"] .sidebar,body.light-mode .sidebar{background:rgba(250,252,254,.97)!important;border-color:var(--border)!important;box-shadow:10px 0 28px rgba(27,44,59,.07)!important;}
+:root[data-theme="light"] .topbar,body.light-mode .topbar{background:rgba(246,249,252,.92)!important;border-color:var(--border)!important;}
+:root[data-theme="light"] .panel,body.light-mode .panel,
+:root[data-theme="light"] .division,body.light-mode .division,
+:root[data-theme="light"] .stat-card,body.light-mode .stat-card,
+:root[data-theme="light"] .destaque-card,body.light-mode .destaque-card,
+:root[data-theme="light"] .faixa-card,body.light-mode .faixa-card,
+:root[data-theme="light"] .resumo-card,body.light-mode .resumo-card,
+:root[data-theme="light"] .conta-card,body.light-mode .conta-card{
+  background:linear-gradient(145deg,#ffffff,#f5f8fb)!important;
+  color:var(--text)!important;border-color:var(--border)!important;box-shadow:var(--theme-shadow)!important;
+}
+:root[data-theme="light"] #view-lancar>.launch-card,
+body.light-mode #view-lancar>.launch-card{
+  background:linear-gradient(145deg,#ffffff,#f5f8fb)!important;
+  color:var(--text)!important;border-color:var(--border)!important;box-shadow:var(--theme-shadow)!important;
+}
+:root[data-theme="light"] .division-head,body.light-mode .division-head,
+:root[data-theme="light"] .launch-col-head,body.light-mode .launch-col-head{background:#f2f6f9!important;border-color:var(--border)!important;}
+:root[data-theme="light"] .launch-col,body.light-mode .launch-col{background:#f8fafb!important;border-color:var(--border)!important;}
+:root[data-theme="light"] .launch-tabs,body.light-mode .launch-tabs,
+:root[data-theme="light"] .filtro-bar,body.light-mode .filtro-bar,
+:root[data-theme="light"] .gemini-leitura-box,body.light-mode .gemini-leitura-box,
+:root[data-theme="light"] .filtro-campos,body.light-mode .filtro-campos{background:var(--surface)!important;border-color:var(--border)!important;}
+:root[data-theme="light"] .filtro-campos,body.light-mode .filtro-campos{background:#f7f9fb!important;}
+:root[data-theme="light"] .rules-note,body.light-mode .rules-note,
+:root[data-theme="light"] .locked-msg,body.light-mode .locked-msg,
+:root[data-theme="light"] .empty-hint,body.light-mode .empty-hint{background:var(--surface-2)!important;color:var(--muted)!important;border-color:var(--border)!important;}
+
+/* Tabelas, mapas e cabeçalhos fixos seguem a mesma superfície clara. */
+:root[data-theme="light"] th,body.light-mode th,
+:root[data-theme="light"] td.name,body.light-mode td.name,
+:root[data-theme="light"] td.rank,body.light-mode td.rank,
+:root[data-theme="light"] th.name-h,body.light-mode th.name-h,
+:root[data-theme="light"] th.rank-h,body.light-mode th.rank-h,
+:root[data-theme="light"] .heat-table th,body.light-mode .heat-table th,
+:root[data-theme="light"] .heat-name,body.light-mode .heat-name{background:var(--rg-table-head)!important;color:var(--theme-subtle)!important;border-color:var(--border)!important;}
+:root[data-theme="light"] td,body.light-mode td{color:var(--text)!important;border-color:var(--theme-line-soft)!important;}
+:root[data-theme="light"] tbody tr:hover td,body.light-mode tbody tr:hover td{background:var(--rg-hover)!important;}
+:root[data-theme="light"] tbody tr:hover td.name,body.light-mode tbody tr:hover td.name,
+:root[data-theme="light"] tbody tr:hover td.rank,body.light-mode tbody tr:hover td.rank{background:#e8f3ef!important;}
+
+/* Controles genéricos e elementos criados em runtime. */
+:root[data-theme="light"] :where(input:not([type="checkbox"]):not([type="radio"]),select,textarea),
+body.light-mode :where(input:not([type="checkbox"]):not([type="radio"]),select,textarea),
+:root[data-theme="light"] input.score,body.light-mode input.score,
+:root[data-theme="light"] .launch-input,body.light-mode .launch-input,
+:root[data-theme="light"] .launch-name-input,body.light-mode .launch-name-input{
+  background:#ffffff!important;color:var(--text)!important;border-color:var(--border)!important;color-scheme:light!important;
+}
+:root[data-theme="light"] select,body.light-mode select{color-scheme:light!important;}
+:root[data-theme="light"] button,body.light-mode button{color:var(--text);}
+:root[data-theme="light"] .launch-tab.active,body.light-mode .launch-tab.active,
+:root[data-theme="light"] .filtro-modo-btn.active,body.light-mode .filtro-modo-btn.active,
+:root[data-theme="light"] .filtro-dia-chip.active,body.light-mode .filtro-dia-chip.active{background:#e7f5f0!important;color:#087052!important;border-color:#8bd0b8!important;}
+:root[data-theme="light"] #paste-area,body.light-mode #paste-area,
+:root[data-theme="light"] #summary-output,body.light-mode #summary-output{background:#ffffff!important;color:var(--text)!important;border-color:var(--border)!important;}
+
+/* Dialogs, bottom sheets e overlays também obedecem ao tema atual. */
+:root[data-theme="light"] .modal-overlay.ui-modal,body.light-mode .modal-overlay.ui-modal,
+:root[data-theme="light"] .series-modal,body.light-mode .series-modal,
+:root[data-theme="light"] .rg-dialog-overlay,body.light-mode .rg-dialog-overlay,
+:root[data-theme="light"] .a11y-panel-overlay,body.light-mode .a11y-panel-overlay{background:var(--rg-overlay)!important;}
+:root[data-theme="light"] .modal-card,body.light-mode .modal-card,
+:root[data-theme="light"] .series-modal-card,body.light-mode .series-modal-card,
+:root[data-theme="light"] .rg-dialog-card,body.light-mode .rg-dialog-card,
+:root[data-theme="light"] .a11y-panel,body.light-mode .a11y-panel{background:linear-gradient(180deg,#ffffff,#f4f7fa)!important;color:var(--text)!important;border-color:var(--border)!important;box-shadow:0 26px 60px rgba(24,37,50,.18)!important;}
+:root[data-theme="light"] .rg-dialog-field input,body.light-mode .rg-dialog-field input,
+:root[data-theme="light"] .rg-dialog-field textarea,body.light-mode .rg-dialog-field textarea{background:#ffffff!important;color:var(--text)!important;border-color:var(--border)!important;}
+
+/* Alto contraste não herda tokens semânticos do modo oposto. */
+:root[data-contrast="on"] body,body.high-contrast{background:#000!important;color:#fff!important;}
+:root[data-contrast="on"] body:not(.light-mode) .sidebar,
+:root[data-contrast="on"] body:not(.light-mode) .topbar,
+:root[data-contrast="on"] body:not(.light-mode) .panel,
+:root[data-contrast="on"] body:not(.light-mode) .division,
+:root[data-contrast="on"] body:not(.light-mode) .stat-card,
+:root[data-contrast="on"] body:not(.light-mode) .destaque-card,
+:root[data-contrast="on"] body:not(.light-mode) .faixa-card,
+:root[data-contrast="on"] body:not(.light-mode) .resumo-card,
+:root[data-contrast="on"] body:not(.light-mode) .conta-card{background:#050505!important;color:#fff!important;border-color:#aeb7c3!important;box-shadow:none!important;}
+:root[data-theme="light"][data-contrast="on"] body,body.light-mode.high-contrast{background:#fff!important;color:#000!important;}
+:root[data-theme="light"][data-contrast="on"] body .sidebar,
+:root[data-theme="light"][data-contrast="on"] body .topbar,
+:root[data-theme="light"][data-contrast="on"] body .panel,
+:root[data-theme="light"][data-contrast="on"] body .division,
+:root[data-theme="light"][data-contrast="on"] body .stat-card,
+:root[data-theme="light"][data-contrast="on"] body .destaque-card,
+:root[data-theme="light"][data-contrast="on"] body .faixa-card,
+:root[data-theme="light"][data-contrast="on"] body .resumo-card,
+:root[data-theme="light"][data-contrast="on"] body .conta-card{background:#fff!important;color:#000!important;border-color:#171717!important;box-shadow:none!important;}
+:root[data-theme="light"][data-contrast="on"] body :where(input,select,textarea),body.light-mode.high-contrast :where(input,select,textarea){background:#fff!important;color:#000!important;border-color:#171717!important;color-scheme:light!important;}
+
+/* Em daltonismo, a camada de simulação só muda a percepção cromática. A
+   semântica permanece disponível por texto, borda, posição e padrões. */
+[data-colorblind="protanopia"] .division.x,
+[data-colorblind="deuteranopia"] .division.x,
+[data-colorblind="tritanopia"] .division.x,
+[data-colorblind="acromatopsia"] .division.x{border-left:4px solid var(--ux-primary)!important;}
+[data-colorblind="protanopia"] .division.y,
+[data-colorblind="deuteranopia"] .division.y,
+[data-colorblind="tritanopia"] .division.y,
+[data-colorblind="acromatopsia"] .division.y{border-left:4px dashed var(--ux-yellow)!important;}
+.division.x .division-title::before,.launch-col.x .launch-col-title::before{content:"X · ";}
+.division.y .division-title::before,.launch-col.y .launch-col-title::before{content:"Y · ";}
+.heat-cell.heat-pos::after{content:"+";font-weight:800;margin-left:2px;}
+.heat-cell.heat-neg::after{content:"−";font-weight:800;margin-left:2px;}
+
+/* Compatibilidade: o nome correto do modo é light-mode, não theme-light. */
+html[data-theme="light"] :where(select),body.light-mode :where(select){color-scheme:light!important;}
+
+@media(forced-colors:active){
+  *,*::before,*::after{forced-color-adjust:auto!important;}
+  :where(button,input,select,textarea){border-color:ButtonText!important;background:Canvas!important;color:CanvasText!important;}
+}

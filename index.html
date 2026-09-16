@@ -13,11 +13,10 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./assets/icons/icon-192.png">
 <link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
-<script src="./js/a11y/a11y.js?v=20260916-v52-integrated-motion"></script>
-<script src="./js/core/rg-motion.js?v=20260916-v52-integrated-motion"></script>
-<link rel="stylesheet" href="./assets/css/style.css?v=20260916-v52-integrated-motion">
-<link rel="stylesheet" href="./style.css?v=20260916-v52-integrated-motion-root" media="not all" id="style-fallback">
-  <meta name="app-build" content="20260916-v52-integrated-motion">
+<script src="./js/a11y/a11y.js"></script>
+<script src="./js/core/rg-motion-v57.js"></script>
+<link rel="stylesheet" href="./assets/css/app-v57.css">
+  <meta name="app-build" content="20260916-v58-cores">
 <style id="screen-guard">
   #app-shell.hidden, body:not([data-app-screen="app"]) #app-shell { display:none !important; }
   body[data-app-screen="app"] #slot-modulo-0 { display:none !important; }
@@ -25,24 +24,34 @@
 </style>
 <style id="rg-startup-critical">
 /* v52 — integração real da animação aprovada: somente a animação, sem player. */
-#rg-startup{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:#090f15;overflow:hidden;opacity:1;visibility:visible;pointer-events:auto;transition:opacity .26s ease,visibility .26s ease;padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}
+#rg-startup{position:fixed;inset:0;z-index:99999;display:block;width:100vw;height:100dvh;min-height:100vh;background:#090f15;overflow:hidden;opacity:1;visibility:visible;pointer-events:auto;transition:opacity .26s ease,visibility .26s ease;padding:0;margin:0}
 #rg-startup.rg-startup-hide{opacity:0;visibility:hidden;pointer-events:none}
-.rg-startup-stage{position:relative;width:min(100%,1056px,calc(100svh * 1.6));aspect-ratio:16/10;max-height:100svh;overflow:hidden;background:#090f15}
-#rg-startup-canvas,.rg-startup-fallback{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:contain}
+.rg-startup-stage{position:absolute;inset:0;width:100vw;height:100dvh;min-height:100vh;max-width:none;max-height:none;aspect-ratio:auto;overflow:hidden;background:#090f15}
+#rg-startup-canvas,.rg-startup-fallback{position:absolute;inset:0;width:100vw;height:100dvh;min-height:100vh;display:block;object-fit:contain}
 .rg-startup-fallback{background:#090f15}
+.rg-startup-fallback[hidden]{display:none!important}
 .rg-startup-skip{position:absolute;right:max(14px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));z-index:2;min-height:42px;padding:0 14px;border:1px solid rgba(135,181,205,.30);border-radius:999px;background:rgba(10,25,35,.62);backdrop-filter:blur(8px);color:#dceaf4;font:650 12px/1 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer;touch-action:manipulation;opacity:.62;transition:opacity .18s ease,background .18s ease,border-color .18s ease}
 .rg-startup-skip:hover,.rg-startup-skip:focus-visible{opacity:1;background:rgba(17,38,50,.92);border-color:#4aaec8}.rg-startup-skip:focus-visible{outline:3px solid #00a6c7;outline-offset:3px}
 .rg-startup-live{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
-@media(max-width:600px){.rg-startup-stage{width:min(100vw,100svh);aspect-ratio:1;max-height:none}.rg-startup-skip{min-height:44px;right:max(10px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom))}}
-@media(max-height:520px) and (orientation:landscape){.rg-startup-stage{width:min(100vw,calc(100svh * 1.6));aspect-ratio:16/10}.rg-startup-skip{min-height:40px;padding:0 12px}}
+@media(max-width:600px){.rg-startup-stage,#rg-startup-canvas,.rg-startup-fallback{width:100vw;height:100dvh;min-height:100vh;aspect-ratio:auto;max-height:none}.rg-startup-skip{min-height:44px;right:max(10px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom))}}
+@media(max-height:520px) and (orientation:landscape){.rg-startup-stage,#rg-startup-canvas,.rg-startup-fallback{width:100vw;height:100dvh;aspect-ratio:auto}.rg-startup-skip{min-height:40px;padding:0 12px}}
 @media(prefers-reduced-motion:reduce){#rg-startup,.rg-startup-skip{transition:none!important}}
 @media(forced-colors:active){.rg-startup-skip{forced-color-adjust:auto;border:1px solid ButtonText;background:Canvas;color:CanvasText}}
+/* v55 — camada crítica para impedir controles/links nativos sem estilo durante o boot. */
+html,body{background:#090f15;color:#dceaf4;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+:where(button,input,select,textarea,a){font:inherit}
+:where(a){color:#9fc5d8;text-underline-offset:2px}
+:where(button){color:#dceaf4}
+/* Link de salto: acessível ao teclado, invisível no fluxo visual normal. */
+.skip-link{position:fixed!important;left:12px!important;top:12px!important;z-index:100000!important;max-width:calc(100vw - 24px)!important;padding:10px 14px!important;border:1px solid #35566a!important;border-radius:10px!important;background:#102431!important;color:#e9f7fc!important;font:700 14px/1.2 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;text-decoration:none!important;box-shadow:0 8px 24px rgba(0,0,0,.3)!important;transform:translateY(calc(-100% - 32px))!important;opacity:0!important;pointer-events:none!important;transition:transform .14s ease,opacity .14s ease!important}
+.skip-link:focus,.skip-link:focus-visible{transform:translateY(0)!important;opacity:1!important;pointer-events:auto!important;outline:3px solid #28d6e7!important;outline-offset:3px!important}
+body[data-startup-visible="true"]>.skip-link{visibility:hidden!important;pointer-events:none!important}
+@media(prefers-reduced-motion:reduce){.skip-link{transition:none!important}}
 </style>
-<script>document.addEventListener('DOMContentLoaded',function(){var main=document.querySelector('link[href^="./assets/css/style.css"]');var fb=document.getElementById('style-fallback');if(main&&fb){main.addEventListener('error',function(){fb.media='all'});}});</script>
 </head>
 <body>
 
-  <a class="skip-link" href="#main-content">Ir para o conteúdo principal</a>
+  <a class="skip-link" href="#main-content" style="position:fixed;left:12px;top:12px;transform:translateY(-200%);opacity:0;pointer-events:none;text-decoration:none">Ir para o conteúdo principal</a>
   <div id="rg-startup" role="region" aria-label="Abertura do Ranking Geral" aria-hidden="false">
     <div class="rg-startup-stage" aria-hidden="true">
       <canvas id="rg-startup-canvas" width="1056" height="660"></canvas>
@@ -51,7 +60,7 @@
     <button type="button" class="rg-startup-skip" id="rg-startup-skip" aria-label="Pular animação de abertura">Pular abertura</button>
     <p id="rg-startup-live" class="rg-startup-live" role="status" aria-live="polite" aria-atomic="true">Carregando Ranking Geral.</p>
   </div>
-  <script src="./js/core/startup-motion.js?v=20260916-v52-integrated-motion"></script>
+  <script src="./js/core/startup-motion-v57.js"></script>
 
   <!-- ============================================================================
        MENU DE ACESSIBILIDADE — botão flutuante + painel, e a camada do filtro
@@ -115,7 +124,7 @@
         </div>
 
         <div class="a11y-secao">
-          <label class="a11y-rotulo" for="a11y-daltonismo">Filtro de daltonismo</label>
+          <label class="a11y-rotulo" for="a11y-daltonismo">Modo de cores acessível</label>
           <select id="a11y-daltonismo">
             <option value="none">Nenhum</option>
             <option value="protanopia">Protanopia</option>
@@ -155,14 +164,12 @@
   </svg>
 
   <!-- ============================================================================
-       Cada <div id="slot-..."> abaixo começa vazio e é preenchido em tempo de
-       execução por inicializacao.js (função carregarModulosHtml), que busca
-       (fetch) o .html correspondente e injeta seu conteúdo aqui dentro via
-       innerHTML. O resultado final no navegador é idêntico ao HTML que antes
-       ficava tudo junto neste mesmo arquivo — só a ORIGEM do markup mudou.
+       v57 CONSOLIDADA — as telas essenciais ficam embutidas neste index.html.
+       A distribuição não depende mais de fetch() de fragmentos HTML; isso evita
+       telas ausentes por cache, Live Server, file:// ou publicação incompleta.
        ============================================================================ -->
 
-  <!-- Módulo 0 (login) — preenchido com modulo-0.html -->
+  <!-- Autenticação — embutida na distribuição consolidada -->
   <div id="slot-modulo-0">
 <!-- ============================================================================
      modulo-0.html — Tela de autenticação (Módulo 0)
@@ -170,7 +177,7 @@
      Contém os três sub-formulários (login / criar conta / esqueci a senha),
      alternados por mostrarAuthView() em modulo-0.js.
 
-     Injetado por inicializacao.js (carregarModulosHtml) dentro de
+     Consolidado diretamente no index.html dentro de
      <div id="slot-modulo-0"> em index.html.
      Comportamento: modulo-0.js (formulários) + identidade.js (sessão).
      Estilos: style.css, seção "Módulo 0: tela de login".
@@ -241,7 +248,7 @@
 
 </div>
 
-  <!-- Modal de troca de senha obrigatória — preenchido com troca-de-senha.html -->
+  <!-- Modal de troca de senha obrigatória — embutido na distribuição consolidada -->
   <div id="slot-troca-senha">
 <!-- ============================================================================
      troca-de-senha.html — Modal de troca de senha obrigatória
@@ -250,7 +257,7 @@
      (após login com senha temporária) — aberto/fechado por
      abrirModalNovaSenha()/fecharModalNovaSenha() em modulo-0.js.
 
-     Injetado por inicializacao.js (carregarModulosHtml) dentro de
+     Consolidado diretamente no index.html dentro de
      <div id="slot-troca-senha"> em index.html.
      Comportamento: modulo-0.js (handleDefinirNovaSenha).
      Estilos: style.css, seção "Modal (troca de senha obrigatória...)".
@@ -341,26 +348,466 @@
       </div>
     </header>
 
-    <!-- Módulo 1 (Faixa X / Faixa Y) — preenchido com modulo-1.html -->
-    <div id="slot-modulo-1"></div>
+    <!-- Visão Geral — embutida na distribuição consolidada -->
+    <div id="slot-modulo-1">
+<!-- ===================== MÓDULO 1: VISÃO GERAL ===================== -->
+<section class="view ui-page ui-overview-page" id="view-faixas">
+  <div class="overview-context panel">
+    <div class="overview-context-main">
+      <div>
+        <div class="panel-kicker">Situação atual</div>
+        <div class="overview-series-line">
+          <strong id="overview-series">Série —</strong>
+          <span class="overview-separator">·</span>
+          <span id="overview-launches">0/7 lançamentos</span>
+        </div>
+        <div class="panel-hint" id="overview-last-date">Nenhum lançamento registrado na série atual.</div>
+      </div>
+      <button type="button" class="overview-primary-action" data-papel="administrador" onclick="mostrarView('lancar')">Novo lançamento</button>
+    </div>
+    <div class="overview-kpis" aria-label="Resumo operacional">
+      <div class="overview-kpi"><span class="overview-kpi-value" id="overview-participants">0</span><span class="overview-kpi-label">Participantes</span></div>
+      <div class="overview-kpi"><span class="overview-kpi-value" id="overview-faixas">0</span><span class="overview-kpi-label">Faixas</span></div>
+      <div class="overview-kpi"><span class="overview-kpi-value" id="overview-days">0/7</span><span class="overview-kpi-label">Lançamentos</span></div>
+      <div class="overview-kpi"><span class="overview-kpi-value" id="overview-series-number">1</span><span class="overview-kpi-label">Série atual</span></div>
+    </div>
+  </div>
 
-    <!-- Módulo 2 (Análises Gerais) — preenchido com modulo-2.html -->
-    <div id="slot-modulo-2"></div>
+  <div class="board" id="board-container"></div>
+</section>
+</div>
+
+    <!-- Análises — embutida na distribuição consolidada -->
+    <div id="slot-modulo-2">
+<!-- ============================================================================
+     modulo-2.html — Análises Gerais (Módulo 2)
+     ----------------------------------------------------------------------------
+     Estatísticas gerais (cartões), filtro por período/dias específicos, o
+     ranking filtrado resultante, os dashboards mais profundos (destaques,
+     evolução acumulada, mapa de desempenho) e o resumo do último dia salvo.
+
+     FAIXAS DINÂMICAS: as três seções que antes tinham dois cards fixos
+     (Faixa X / Faixa Y) — mini-ranking filtrado, evolução acumulada e mapa
+     de desempenho — agora têm um container vazio cada, preenchido em tempo
+     de execução com um card por faixa: #analises-rank-board (ver
+     renderAnalisesRankBoard, filtros.js), #evolucao-chart-board (ver
+     renderEvolucaoBoard, analises-dashboard.js) e #heatmap-board (ver
+     renderHeatmapBoard, analises-dashboard.js).
+
+     Consolidado diretamente no index.html dentro de
+     <div id="slot-modulo-2"> em index.html.
+     Comportamento: analises-gerais.js (renderStatsGrid), filtros.js,
+     analises-dashboard.js (renderDestaques/renderEvolucaoChart/renderHeatmap
+     — chamados de dentro de aplicarFiltroAnalises, em filtros.js, para
+     respeitar sempre o mesmo filtro), resumos-salvos.js (renderUltimoResumo).
+     Estilos: style.css, seções "Painel Estatísticas Gerais", "Filtros
+     (Análises Gerais)", "Dashboard de Análises", "Painel Resumos Salvos".
+     ============================================================================ -->
+
+<!-- ===================== MÓDULO 2: Análises Gerais ===================== -->
+<section class="view hidden ui-page ui-analytics-page" id="view-analises">
+  <div class="panel">
+    <div class="panel-title">Estatísticas gerais</div>
+    <div class="stats-grid" id="stats-grid"></div>
+
+    <div class="panel-hint" style="margin-top:2px;">Filtre o desempenho por período ou por dias específicos.</div>
+    <div class="filtro-bar">
+      <button type="button" class="filtro-modo-btn active" id="filtro-modo-periodo" onclick="setFiltroModo('periodo')"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M7 3v4M17 3v4M3 9h18"></path><path d="M7 13h3M14 13h3M7 17h3"></path></svg></span>Por período</button>
+      <button type="button" class="filtro-modo-btn" id="filtro-modo-dias" onclick="setFiltroModo('dias')">Por dias específicos</button>
+      <button type="button" class="filtro-modo-btn" onclick="limparFiltroAnalises()"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M6 6l12 12M18 6L6 18"></path></svg></span>Limpar filtro</button>
+    </div>
+    <div class="filtro-campos" id="filtro-campos-periodo">
+      <label class="campo"><span>De</span><input type="date" id="filtro-data-de" onchange="aplicarFiltroAnalises()"></label>
+      <label class="campo"><span>Até</span><input type="date" id="filtro-data-ate" onchange="aplicarFiltroAnalises()"></label>
+    </div>
+    <div class="filtro-campos hidden" id="filtro-campos-dias">
+      <div class="filtro-dias-lista" id="filtro-dias-lista"></div>
+    </div>
+
+    <div class="board" style="margin-top:6px;" id="analises-rank-board"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Destaques do período</div>
+    <div class="panel-hint">Recordes, quedas e consistência dentro do filtro aplicado acima — atualiza sozinho quando você troca o filtro.</div>
+    <div class="destaques-grid" id="destaques-grid"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Evolução acumulada <span class="panel-sub">top 5 de cada faixa</span></div>
+    <div class="panel-hint">Como a pontuação acumulada dos melhores colocados andou dia a dia, dentro do período filtrado.</div>
+    <div class="board" style="margin-top:6px;" id="evolucao-chart-board"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Mapa de desempenho</div>
+    <div class="panel-hint">Cada célula é a pontuação de um participante num dia — verde para ganho, vermelho para perda; quanto mais forte a cor, maior o valor. Arraste para o lado pra ver mais dias.</div>
+    <div id="heatmap-board"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Resumo do último dia <button type="button" class="refresh-btn" onclick="carregarResumosSeNecessario(true)" title="Atualizar"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 11a8 8 0 0 0-14.8-3L3 11"></path><path d="M3 5v6h6"></path><path d="M4 13a8 8 0 0 0 14.8 3L21 13"></path><path d="M21 19v-6h-6"></path></svg></span>Atualizar</button></div>
+    <div class="panel-hint">Último resumo salvo no histórico — dados do dia mais recente lançado e do acumulado geral.</div>
+    <div id="ultimo-resumo-wrap"><div class="empty-hint">Carregando...</div></div>
+  </div>
+</section>
+</div>
 
     <!-- Módulo 5 (Acumulado Geral / séries anteriores) -->
-    <div id="slot-modulo-5"></div>
+    <div id="slot-modulo-5">
+<!-- ===================== MÓDULO 5: ACUMULADO GERAL ===================== -->
+<section class="view hidden ui-page ui-analytics-page" id="view-acumulado">
+  <div class="panel">
+    <div class="panel-title">Acumulado Geral</div>
+    <div class="panel-hint">Consulte o crescimento ao longo do tempo. O histórico arquivado é a base permanente; a série atual aparece como prévia e fica claramente separada até ser encerrada.</div>
+    <div class="acumulado-source-note"><span>Histórico arquivado</span><span class="current">Série atual = prévia</span></div>
+    <div id="acumulado-status" class="series-status">Carregando séries anteriores...</div>
+    <div class="stats-grid" id="acumulado-stats"></div>
 
-    <!-- Módulo 3 (Lançar Pontuação) — preenchido com modulo-3.html -->
-    <div id="slot-modulo-3"></div>
+    <div class="filtro-bar acumulado-filtros">
+      <label class="campo"><span>De</span><input type="date" id="acum-data-de" onchange="renderAcumuladoGeral()"></label>
+      <label class="campo"><span>Até</span><input type="date" id="acum-data-ate" onchange="renderAcumuladoGeral()"></label>
+      <label class="campo"><span>Série</span><select id="acum-serie" onchange="renderAcumuladoGeral()"><option value="all">Todas as séries</option></select></label>
+      <button type="button" onclick="limparFiltrosAcumulado()">Limpar filtro</button>
+      <button type="button" onclick="carregarHistoricoSeries(true)">Atualizar histórico</button>
+    </div>
 
-    <!-- Módulo 4 (Configurações Gerais) — preenchido com modulo-4.html -->
-    <div id="slot-modulo-4"></div>
+    <div id="acumulado-ranking"><div class="empty-hint">Carregando...</div></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Séries anteriores</div>
+    <div class="panel-hint">Cada série arquivada corresponde a um bloco fechado de até 7 lançamentos. Séries descartadas não entram neste histórico.</div>
+    <div id="acumulado-series-lista"><div class="empty-hint">Carregando...</div></div>
+  </div>
+</section>
+</div>
+
+    <!-- Lançamentos — embutida na distribuição consolidada -->
+    <div id="slot-modulo-3">
+<!-- ===================== MÓDULO 3: LANÇAMENTOS ===================== -->
+<section class="view hidden ui-page ui-launch-page" id="view-lancar">
+  <div class="panel launch-series-context">
+    <div class="launch-series-head">
+      <div>
+        <div class="panel-kicker">Ciclo operacional</div>
+        <div class="panel-title" id="launch-series-title">Série —</div>
+        <div class="panel-hint" id="launch-series-last">Nenhum lançamento registrado nesta série.</div>
+      </div>
+      <div class="launch-series-tools">
+        <div class="launch-series-count" id="launch-series-count">0/7</div>
+        <button type="button" class="series-reset-trigger" id="series-reset-btn" onclick="mostrarModalReinicioSerie()" title="Reiniciar ou encerrar manualmente a série atual">
+          <span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 11a8 8 0 1 0-2.34 5.66"></path><path d="M20 5v6h-6"></path></svg></span>
+          Reiniciar série
+        </button>
+      </div>
+    </div>
+    <div class="series-progress-dots" id="launch-series-dots" aria-label="Progresso da série"></div>
+  </div>
+
+  <div class="panel accent-x launch-card" id="launch-card">
+    <div class="panel-title">Novo lançamento <span class="day-tag" id="launch-day-label">Dia —</span></div>
+    <div class="panel-hint">Defina primeiro a data real da contagem; depois preencha a pontuação ou cole os dados prontos.</div>
+
+    <div class="launch-date-bar">
+      <label class="campo launch-date-field"><span>Data da contagem</span>
+        <input type="date" id="launch-reference-date" aria-label="Data de referência da contagem">
+      </label>
+      <div class="panel-hint">A data pode ser retroativa. Ela é usada nos filtros, no histórico e no Acumulado Geral.</div>
+    </div>
+
+    <div class="launch-tabs" role="tablist" aria-label="Modo de lançamento">
+      <button type="button" class="launch-tab active" id="tab-form" role="tab" aria-selected="true" aria-controls="launch-view-form" onclick="switchLaunchTab('form')"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="M13.5 6.5l4 4"></path></svg></span>Preencher</button>
+      <button type="button" class="launch-tab" id="tab-paste" role="tab" aria-selected="false" aria-controls="launch-view-paste" onclick="switchLaunchTab('paste')"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="4" width="14" height="17" rx="2"></rect><path d="M9 4V2h6v2M8 9h8M8 13h8M8 17h5"></path></svg></span>Colar</button>
+    </div>
+
+    <div id="launch-view-form" role="tabpanel" aria-labelledby="tab-form" aria-hidden="false">
+      <div class="launch-columns" id="launch-columns-container"></div>
+      <div class="launch-footer">
+        <span class="launch-progress" id="launch-progress"></span>
+        <button type="button" class="launch-submit" id="launch-submit-btn" onclick="launchDayForm()">Lançar dia</button>
+      </div>
+    </div>
+
+    <div id="launch-view-paste" role="tabpanel" aria-labelledby="tab-paste" aria-hidden="true" style="display:none;">
+      <div class="panel-hint" style="margin-top:0;">Um participante por vez, separado por <strong>ponto e vírgula</strong> ou por <strong>linha</strong>, no formato <strong>Nome, Pontuação</strong>. Depois de ler, escolha se é um dia novo ou se vai substituir um dia já lançado e revise a faixa de cada participante.</div>
+
+      <div class="gemini-leitura-box">
+        <button type="button" id="gemini-copiar-btn" onclick="handleCopiarRegrasGemini()"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="4" width="14" height="17" rx="2"></rect><path d="M9 4V2h6v2M8 9h8M8 13h8M8 17h5"></path></svg></span><span class="gemini-copy-label" data-copy-label>Copiar regras de leitura</span></button>
+        <button type="button" onclick="handleAbrirGemini()"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 13a5 5 0 0 0 7.07.07l2-2A5 5 0 0 0 12 4l-1.2 1.2"></path><path d="M14 11a5 5 0 0 0-7.07-.07l-2 2A5 5 0 0 0 12 20l1.2-1.2"></path></svg></span>Abrir Gemini</button>
+        <span class="gemini-status-text">Copie as regras, use o Gemini para organizar a leitura e cole aqui somente o resultado revisado.</span>
+      </div>
+
+      <textarea id="paste-area" placeholder="João, 8;&#10;Maria, -1;&#10;Grupo Alfa, 8,5;"></textarea>
+      <div id="paste-sanitize-status" class="paste-sanitize-status" role="status" aria-live="polite" hidden></div>
+      <div class="paste-actions"><button type="button" id="paste-read-btn" onclick="processPaste()">Ler colagem</button></div>
+      <div class="pending-panel" id="pending-panel" style="display:none;">
+        <div class="pending-title">Confirmar lançamento dos dados colados</div>
+        <div class="pending-controls">
+          <label>Aplicar em: <select id="pending-day-select"></select></label>
+          <label>Faixa para todos: <select id="pending-bulk-div" onchange="applyBulkDiv(this.value)"><option value="">— escolher —</option></select></label>
+        </div>
+        <div id="pending-list"></div>
+        <div class="pending-actions"><button type="button" id="paste-confirm-btn" onclick="confirmImport()">Lançar</button><button type="button" id="paste-cancel-btn" class="danger" onclick="cancelImport()">Cancelar</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel launch-history-panel">
+    <div class="panel-title-row">
+      <div>
+        <div class="panel-title">Lançamentos desta série</div>
+        <div class="panel-hint">Corrija ou remova dias no mesmo local em que os lançamentos são realizados.</div>
+      </div>
+      <button type="button" id="day-add-blank-btn" onclick="addDay()">+ Dia em branco</button>
+    </div>
+    <div class="day-list" id="day-list"></div>
+  </div>
+
+  <div class="panel accent-y">
+    <div class="panel-title">Resumo do lançamento</div>
+    <div class="panel-hint">Gera o texto do dia e do acumulado para copiar ou guardar no histórico.</div>
+    <div class="summary-row">
+      <label>Dia: <select id="summary-day" onchange="generateSummary()"></select></label>
+      <button type="button" id="summary-generate-btn" onclick="generateSummary()">Gerar resumo</button>
+      <button type="button" onclick="copySummary()" id="copy-btn">Copiar</button>
+      <button onclick="handleSalvarResumoAtual()" id="save-resumo-btn" class="hidden"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3h12l3 3v15H5z"></path><path d="M8 3v6h8V3M8 21v-6h8v6"></path></svg></span>Salvar no histórico</button>
+    </div>
+    <textarea id="summary-output" readonly placeholder="O texto aparece aqui assim que houver ao menos um dia lançado..."></textarea>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Histórico de resumos <button type="button" class="refresh-btn" onclick="carregarResumosSeNecessario(true)" title="Atualizar"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 11a8 8 0 0 0-14.8-3L3 11"></path><path d="M3 5v6h6"></path><path d="M4 13a8 8 0 0 0 14.8 3L21 13"></path><path d="M21 19v-6h-6"></path></svg></span>Atualizar</button></div>
+    <div class="panel-hint">Resumos protegidos dos lançamentos anteriores. Eles permanecem registrados mesmo quando a série ativa é reiniciada.</div>
+    <div id="resumos-salvos-lista"><div class="empty-hint">Carregando...</div></div>
+  </div>
+</section>
+
+<div class="series-modal hidden" id="series-close-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="series-close-title">
+  <div class="series-modal-card">
+    <div class="panel-title" id="series-close-title">Série de 7 dias concluída</div>
+    <div class="panel-hint" id="series-close-description">A série atual completou 7 lançamentos.</div>
+    <div class="series-close-options">
+      <button type="button" class="launch-submit" onclick="encerrarSerieAtual('arquivar')">Salvar série e começar nova</button>
+      <button type="button" class="danger" onclick="encerrarSerieAtual('descartar')">Apagar série e começar nova</button>
+    </div>
+    <div class="series-warning">Salvar mantém os 7 dias no histórico e no Acumulado Geral. Apagar remove esses 7 dias do acumulado histórico. Em ambos os casos, participantes e faixas permanecem cadastrados.</div>
+  </div>
+</div>
+
+
+<div class="series-modal hidden" id="series-reset-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="series-reset-title">
+  <div class="series-modal-card series-reset-card">
+    <div class="panel-kicker">Controle administrativo</div>
+    <div class="panel-title" id="series-reset-title">Reiniciar série</div>
+    <div class="panel-hint" id="series-reset-description">Escolha como tratar a série ativa.</div>
+    <div class="series-reset-current" id="series-reset-current">0 lançamentos</div>
+
+    <div class="series-reset-options">
+      <button type="button" class="series-reset-option series-reset-option-neutral" onclick="reiniciarSerieAtualManual('reiniciar')">
+        <strong>Reiniciar esta série</strong>
+        <span>Apaga os lançamentos ativos e mantém o mesmo número da série.</span>
+      </button>
+      <button type="button" class="series-reset-option series-reset-option-archive" id="series-reset-archive-btn" onclick="reiniciarSerieAtualManual('arquivar')">
+        <strong>Arquivar e iniciar próxima</strong>
+        <span>Preserva os lançamentos no Acumulado Geral e avança a numeração.</span>
+      </button>
+      <button type="button" class="series-reset-option series-reset-option-danger" onclick="reiniciarSerieAtualManual('descartar')">
+        <strong>Descartar e iniciar próxima</strong>
+        <span>Apaga os lançamentos ativos sem adicioná-los ao histórico.</span>
+      </button>
+    </div>
+
+    <div class="series-warning">Participantes e faixas nunca são removidos por este reiniciador. Apenas os lançamentos da série ativa são afetados.</div>
+    <div class="series-reset-footer">
+      <button type="button" class="rg-dialog-btn rg-dialog-btn-secondary" onclick="esconderModalReinicioSerie()">Cancelar</button>
+    </div>
+  </div>
+</div>
+</div>
+
+    <!-- Administração — embutida na distribuição consolidada -->
+    <div id="slot-modulo-4">
+<!-- ===================== MÓDULO 4: ADMINISTRAÇÃO ===================== -->
+<section class="view hidden ui-page ui-settings-page" id="view-config">
+  <div class="panel admin-hero">
+    <div>
+      <div class="panel-kicker">Gestão do sistema</div>
+      <div class="panel-title">Administração</div>
+      <div class="panel-hint">Configure estrutura, acesso e manutenção. Lançamentos e dias ficam concentrados na área Lançamentos.</div>
+    </div>
+  </div>
+
+  <div class="admin-section-tabs" role="tablist" aria-label="Seções administrativas">
+    <button type="button" class="admin-tab active" data-admin-tab="participantes" onclick="switchAdminSection('participantes')">Participantes</button>
+    <button type="button" class="admin-tab" data-admin-tab="faixas" onclick="switchAdminSection('faixas')">Faixas</button>
+    <button type="button" class="admin-tab" data-admin-tab="usuarios" onclick="switchAdminSection('usuarios')">Usuários</button>
+    <button type="button" class="admin-tab" data-admin-tab="atividade" onclick="switchAdminSection('atividade')">Atividade</button>
+    <button type="button" class="admin-tab" data-admin-tab="sistema" onclick="switchAdminSection('sistema')">Sistema</button>
+  </div>
+
+  <div class="admin-section" data-admin-panel="participantes">
+    <div class="panel">
+      <div class="panel-title">Participantes</div>
+      <div class="panel-hint">Gerencie participantes em um único lugar. Renomear ou mover entre faixas preserva o mesmo ID e o histórico de pontuações.</div>
+      <div id="admin-participantes-lista"><div class="empty-hint">Carregando...</div></div>
+    </div>
+  </div>
+
+  <div class="admin-section hidden" data-admin-panel="faixas">
+    <div class="panel">
+      <div class="panel-title">Gerenciar faixas</div>
+      <div class="panel-hint">Crie, renomeie ou remova faixas. Uma faixa com participantes precisa ser esvaziada antes de ser excluída.</div>
+      <div class="faixas-lista" id="faixas-lista"></div>
+      <div class="faixas-adicionar">
+        <div class="panel-title" style="font-size:calc(13px * var(--font-scale, 1)); text-transform:none; letter-spacing:0; margin-bottom:10px;">Criar nova faixa</div>
+        <div style="display:grid;grid-template-columns:1fr;gap:10px;">
+          <label class="campo" style="margin:0;"><span>ID da faixa</span><input type="text" id="nova-faixa-id" placeholder="faixa_premium" style="margin:0;"></label>
+          <label class="campo" style="margin:0;"><span>Título</span><input type="text" id="nova-faixa-titulo" placeholder="Nome da faixa" style="margin:0;"></label>
+          <label class="campo" style="margin:0;"><span>Intervalo (opcional)</span><input type="text" id="nova-faixa-intervalo" placeholder="Descrição do intervalo" style="margin:0;"></label>
+          <button type="button" onclick="handleCriarFaixa()" style="margin-top:4px;">+ Criar faixa</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-section hidden" data-admin-panel="usuarios">
+    <div class="panel">
+      <div class="panel-title">Usuários <button type="button" class="refresh-btn" onclick="carregarUsuariosSeNecessario(true)" title="Atualizar"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 11a8 8 0 0 0-14.8-3L3 11"></path><path d="M3 5v6h6"></path><path d="M4 13a8 8 0 0 0 14.8 3L21 13"></path><path d="M21 19v-6h-6"></path></svg></span>Atualizar</button></div>
+      <div class="panel-hint">Administradores têm acesso completo; membros possuem acesso de consulta conforme as permissões do sistema.</div>
+      <div class="user-list" id="user-list"><div class="empty-hint">Carregando...</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Minha conta</div>
+      <div class="panel-hint">Dados pessoais, senha e sessão ficam em <button type="button" class="link-btn" onclick="mostrarView('conta')" style="display:inline;font-size:11.5px;">Minha conta →</button></div>
+    </div>
+  </div>
+
+  <div class="admin-section hidden" data-admin-panel="atividade">
+    <div class="panel">
+      <div class="panel-title">Atividade recente</div>
+      <div class="panel-hint">Últimas alterações salvas, com identificação de quem realizou cada ação.</div>
+      <div class="log-list" id="log-list"><div class="empty-hint">Carregando...</div></div>
+    </div>
+  </div>
+
+  <div class="admin-section hidden" data-admin-panel="sistema">
+    <div class="panel">
+      <div class="panel-title-row">
+        <div>
+          <div class="panel-title">Sistema</div>
+          <div class="panel-hint">Diagnóstico rápido do frontend, sessão, API e estado carregado.</div>
+        </div>
+        <button type="button" onclick="testarSistemaBasico()">Testar conexão</button>
+      </div>
+      <div class="system-grid">
+        <div class="system-item"><span>Frontend</span><strong id="admin-system-build">v58</strong></div>
+        <div class="system-item"><span>Estado</span><strong id="admin-system-state">—</strong></div>
+        <div class="system-item"><span>Revisão</span><strong id="admin-system-revision">—</strong></div>
+        <div class="system-item"><span>Série atual</span><strong id="admin-system-series">—</strong></div>
+        <div class="system-item system-item-wide"><span>API</span><strong id="admin-system-api">—</strong></div>
+      </div>
+      <div class="system-diagnostic" id="admin-system-diagnostic">Use “Testar conexão” para validar a sessão e a API.</div>
+    </div>
+  </div>
+</section>
+</div>
 
     <!-- Conteúdo — histórico de resumos e materiais -->
-    <div id="slot-conteudo"></div>
+    <div id="slot-conteudo">
+<!-- ===================== REGRAS E AJUDA ===================== -->
+<section class="view hidden ui-page ui-content-page" id="view-conteudo">
+  <div class="panel content-hero help-hero">
+    <div>
+      <div class="panel-kicker">Referência do sistema</div>
+      <div class="panel-title">Regras e Ajuda</div>
+      <div class="panel-hint">Consulte como a pontuação funciona e como executar os principais fluxos sem ocupar espaço na Visão Geral.</div>
+    </div>
+  </div>
 
-    <!-- "Minha conta" — preenchido com configuracoes-de-conta.html -->
-    <div id="slot-configuracoes-conta"></div>
+  <div class="help-grid">
+    <article class="panel help-card">
+      <div class="help-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="m7 15 3-4 3 2 4-6"></path></svg></div>
+      <div class="panel-title">Pontuação por colocação</div>
+      <div class="rules-note">A pontuação é calculada pela posição no crescimento % do dia, e não pelo valor da empresa. Do 1º ao 10º colocado: +10 a +1. O 11º recebe 0. A partir do 12º a pontuação é negativa: em faixas com até 14 participantes, cai de 1 em 1; com 15 ou mais, cai em pares (12º–13º −1, 14º–15º −2, 16º–17º −3...).</div>
+    </article>
+
+    <article class="panel help-card">
+      <div class="help-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 4h10v5a5 5 0 0 1-10 0V4Z"></path><path d="M12 14v6M8 20h8"></path></svg></div>
+      <div class="panel-title">Regras de desempate</div>
+      <div class="rules-note">O primeiro critério é a maior pontuação acumulada. Persistindo empate, o sistema compara o resultado do dia mais recente e volta um dia por vez até encontrar diferença. No mesmo dia comparado, 0 fica acima de −1, −1 acima de −2 e assim por diante.</div>
+    </article>
+
+    <article class="panel help-card">
+      <div class="help-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M7 3v4M17 3v4M3 9h18"></path></svg></div>
+      <div class="panel-title">Lançamentos retroativos</div>
+      <div class="rules-note">Em Lançamentos, escolha primeiro a data real da contagem. A data pode ser anterior ao dia em que você está digitando. Ela é usada nos filtros, nos cabeçalhos, nos resumos e no Acumulado Geral.</div>
+      <button type="button" class="help-action" data-papel="administrador" onclick="mostrarView('lancar')">Ir para Lançamentos</button>
+    </article>
+
+    <article class="panel help-card">
+      <div class="help-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h10"></path><path d="M18 15v6M15 18h6"></path></svg></div>
+      <div class="panel-title">Séries de 7 lançamentos</div>
+      <div class="rules-note">Cada série ativa comporta até 7 lançamentos. Ao completar o sétimo, o administrador decide entre arquivar a série para o histórico ou descartá-la. Participantes e faixas permanecem cadastrados nos dois casos.</div>
+    </article>
+
+    <article class="panel help-card">
+      <div class="help-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h14v16H5z"></path><path d="M8 8h8M8 12h8M8 16h5"></path></svg></div>
+      <div class="panel-title">Fluxo recomendado</div>
+      <ol class="help-steps">
+        <li>Confirme a série ativa e a data da contagem.</li>
+        <li>Preencha ou cole os resultados.</li>
+        <li>Revise participantes, faixas e pontuações antes de confirmar.</li>
+        <li>Consulte a Visão Geral para o ranking atual e Análises para desempenho.</li>
+        <li>Ao fechar 7 lançamentos, revise e arquive ou descarte a série.</li>
+      </ol>
+    </article>
+
+    <article class="panel help-card">
+      <div class="help-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20h16"></path><path d="M6 16l4-5 3 2 5-7"></path></svg></div>
+      <div class="panel-title">Onde consultar cada informação</div>
+      <div class="help-location-list">
+        <span><strong>Visão Geral</strong> ranking atual e posição por faixa.</span>
+        <span><strong>Análises</strong> desempenho da série ativa e filtros.</span>
+        <span><strong>Acumulado Geral</strong> evolução entre séries e períodos.</span>
+        <span><strong>Lançamentos</strong> registrar, corrigir e gerenciar dias.</span>
+        <span><strong>Administração</strong> participantes, faixas, usuários, atividade e sistema.</span>
+      </div>
+    </article>
+  </div>
+</section>
+</div>
+
+    <!-- Minha conta — embutida na distribuição consolidada -->
+    <div id="slot-configuracoes-conta">
+<!-- ============================================================================
+     configuracoes-de-conta.html — "Minha conta" (aberta pelo topbar)
+     ----------------------------------------------------------------------------
+     Dados da sessão atual (nome/e-mail/papel) e o botão de solicitar troca
+     de senha — disponível para qualquer papel, não só administrador.
+
+     Consolidado diretamente no index.html dentro de
+     <div id="slot-configuracoes-conta"> em index.html.
+     Comportamento: configuracoes-de-conta.js.
+     Estilos: style.css, seção "Configurações de conta".
+     ============================================================================ -->
+
+<!-- ===================== Configurações de conta (aberta pelo topbar, qualquer papel) ===================== -->
+<section class="view hidden ui-page ui-account-page" id="view-conta">
+  <div class="panel">
+    <div class="panel-title">Configurações de conta</div>
+    <div class="conta-card" id="conta-info"></div>
+    <div id="conta-membro-area" class="hidden">
+      <div class="panel-hint">Esqueceu sua senha ou quer trocá-la? Solicite abaixo — um administrador vai liberar um código temporário de acesso por e-mail.</div>
+      <button type="button" id="solicitar-reset-btn" onclick="handleSolicitarReset()">Solicitar nova senha</button>
+      <div class="panel-hint" id="conta-reset-status" style="margin-top:10px; margin-bottom:0;"></div>
+    </div>
+    <div id="conta-admin-area" class="hidden">
+      <div class="panel-hint" style="margin-bottom:0;">Esqueceu sua própria senha? Saia da conta e use "Esqueceu sua senha?" na tela de login.</div>
+    </div>
+  </div>
+</section>
+</div>
   </main><!-- /.main -->
 </div><!-- /.app-shell -->
 
@@ -371,32 +818,32 @@
        import/export foi introduzido, para não alterar como os onclick="..." e
        demais funções se enxergam entre si.
        ============================================================================ -->
-  <script src="./js/core/dialogos.js?v=20260916-v52-integrated-motion"></script><!-- Sistema visual unificado para alertas, confirmações e entradas. -->
-  <script src="./js/core/config-api.js?v=20260916-v52-integrated-motion"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
-  <script src="./js/core/estado-global.js?v=20260916-v52-integrated-motion"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
-  <script src="./js/features/faixas-dinamicas.js?v=20260916-v52-integrated-motion"></script><!-- Gerenciamento de faixas dinâmicas. -->
-  <script src="./js/core/identidade.js?v=20260916-v52-integrated-motion"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
-  <script src="./js/core/navegacao.js?v=20260916-v52-integrated-motion"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
-  <script src="./js/core/sidebar.js?v=20260916-v52-integrated-motion"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->
-  <script src="./js/a11y/acessibilidade.js?v=20260916-v52-integrated-motion"></script><!-- Painel de acessibilidade (UI) — liga os controles a window.A11Y, de a11y.js. -->
-  <script src="./js/features/configuracoes-de-conta.js?v=20260916-v52-integrated-motion"></script><!-- Tela "Minha conta". -->
-  <script src="./js/features/modulo-0.js?v=20260916-v52-integrated-motion"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
-  <script src="./js/features/texto-do-resumo.js?v=20260916-v52-integrated-motion"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
-  <script src="./js/features/colagem.js?v=20260916-v52-integrated-motion"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
-  <script src="./js/features/colagem-gemini.js?v=20260916-v52-integrated-motion"></script><!-- Regras de leitura e integração com Gemini — restaura o mecanismo de 22/08. -->
-  <script src="./js/features/planilha-mestra.js?v=20260916-v52-integrated-motion"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
-  <script src="./js/features/series-semanais.js?v=20260916-v52-integrated-motion"></script><!-- Séries de 7 dias, datas retroativas e Acumulado Geral. -->
-  <script src="./js/features/participantes.js?v=20260916-v52-integrated-motion"></script><!-- CRUD de participante + cálculo de ranking (total/tiebreak/sort). -->
-  <script src="./js/features/dias.js?v=20260916-v52-integrated-motion"></script><!-- Adicionar/remover um dia. -->
-  <script src="./js/features/formulario-lancamento-dia.js?v=20260916-v52-integrated-motion"></script><!-- Aba "Preencher" do Lançar Pontuação. -->
-  <script src="./js/features/analises-gerais.js?v=20260916-v52-integrated-motion"></script><!-- Cartões de estatística do Módulo 2. -->
-  <script src="./js/features/filtros.js?v=20260916-v52-integrated-motion"></script><!-- Filtro por período/dias do Módulo 2. -->
-  <script src="./js/features/analises-dashboard.js?v=20260916-v52-integrated-motion"></script><!-- Destaques + gráfico de evolução + mapa de desempenho (chamados de dentro de filtros.js). -->
-  <script src="./js/features/gerenciar-dias-lancados.js?v=20260916-v52-integrated-motion"></script>
-  <script src="./js/features/organizacao-ui.js?v=20260916-v52-integrated-motion"></script><!-- Contexto operacional, gestão central e organização de informação. --><!-- Lista de dias lançados (Módulos 3 e 4). -->
-  <script src="./js/features/resumos-salvos.js?v=20260916-v52-integrated-motion"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
-  <script src="./js/features/usuarios.js?v=20260916-v52-integrated-motion"></script><!-- Painel de administração de usuários (Módulo 4). -->
-  <script src="./js/core/renderizacao.js?v=20260916-v52-integrated-motion"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
-  <script src="./js/core/inicializacao.js?v=20260916-v52-integrated-motion"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
+  <script src="./js/core/dialogos.js"></script><!-- Sistema visual unificado para alertas, confirmações e entradas. -->
+  <script src="./js/core/config-api-v57.js"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
+  <script src="./js/core/estado-global.js"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
+  <script src="./js/features/faixas-dinamicas.js"></script><!-- Gerenciamento de faixas dinâmicas. -->
+  <script src="./js/core/identidade.js"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
+  <script src="./js/core/navegacao.js"></script><!-- Troca de view/aba. Usa souAdmin (estado-global) e funções carregadas abaixo. -->
+  <script src="./js/core/sidebar.js"></script><!-- Abrir/recolher a sidebar. Independente do resto. -->
+  <script src="./js/a11y/acessibilidade.js"></script><!-- Painel de acessibilidade (UI) — liga os controles a window.A11Y, de a11y.js. -->
+  <script src="./js/features/configuracoes-de-conta.js"></script><!-- Tela "Minha conta". -->
+  <script src="./js/features/modulo-0.js"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
+  <script src="./js/features/texto-do-resumo.js"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
+  <script src="./js/features/colagem-v57.js"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
+  <script src="./js/features/colagem-gemini.js"></script><!-- Regras de leitura e integração com Gemini — restaura o mecanismo de 22/08. -->
+  <script src="./js/features/planilha-mestra.js"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
+  <script src="./js/features/series-semanais.js"></script><!-- Séries de 7 dias, datas retroativas e Acumulado Geral. -->
+  <script src="./js/features/participantes.js"></script><!-- CRUD de participante + cálculo de ranking (total/tiebreak/sort). -->
+  <script src="./js/features/dias.js"></script><!-- Adicionar/remover um dia. -->
+  <script src="./js/features/formulario-lancamento-dia.js"></script><!-- Aba "Preencher" do Lançar Pontuação. -->
+  <script src="./js/features/analises-gerais.js"></script><!-- Cartões de estatística do Módulo 2. -->
+  <script src="./js/features/filtros.js"></script><!-- Filtro por período/dias do Módulo 2. -->
+  <script src="./js/features/analises-dashboard.js"></script><!-- Destaques + gráfico de evolução + mapa de desempenho (chamados de dentro de filtros.js). -->
+  <script src="./js/features/gerenciar-dias-lancados.js"></script>
+  <script src="./js/features/organizacao-ui.js"></script><!-- Contexto operacional, gestão central e organização de informação. --><!-- Lista de dias lançados (Módulos 3 e 4). -->
+  <script src="./js/features/resumos-salvos.js"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
+  <script src="./js/features/usuarios.js"></script><!-- Painel de administração de usuários (Módulo 4). -->
+  <script src="./js/core/renderizacao.js"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
+  <script src="./js/core/inicializacao-v57.js"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
 </body>
 </html>

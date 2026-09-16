@@ -77,6 +77,9 @@ const DASHBOARD_ICONS = {
 function renderDestaques(dias){
   const grid = document.getElementById('destaques-grid');
   if(!grid) return;
+  // v57: mesmo critério de amostra usado por calcularDestaques(), mas no escopo
+  // desta função para que a mensagem de estado vazio nunca lance ReferenceError.
+  const minAmostraConsistencia = Math.min(5, Math.max(3, dias.length));
 
   if(!dias.length){
     grid.innerHTML = '<div class="empty-hint">Nenhum dia no período selecionado.</div>';

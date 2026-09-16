@@ -71,11 +71,18 @@ function handleCopiarRegrasGemini(){
   const area = document.getElementById('paste-area');
   if(area) area.dataset.leituraOrigem = 'gemini';
   const btn = document.getElementById('gemini-copiar-btn');
-  const textoOriginal = btn.textContent;
+  if(!btn) return;
+  const label = btn.querySelector('[data-copy-label]');
+  const textoOriginal = label ? label.textContent : 'Copiar regras de leitura';
   const finalizar = () => {
-    btn.textContent = 'Copiado';
+    if(label) label.textContent = 'Copiado';
+    else btn.setAttribute('aria-label', 'Copiado');
     btn.classList.add('copy-flash');
-    setTimeout(()=>{ btn.textContent = textoOriginal; btn.classList.remove('copy-flash'); }, 1800);
+    setTimeout(()=>{
+      if(label) label.textContent = textoOriginal;
+      else btn.setAttribute('aria-label', textoOriginal);
+      btn.classList.remove('copy-flash');
+    }, 1800);
   };
   if(navigator.clipboard && navigator.clipboard.writeText){
     navigator.clipboard.writeText(REGRAS_LEITURA_GEMINI).then(finalizar).catch(()=> copiarTextoViaFallback(REGRAS_LEITURA_GEMINI, finalizar));

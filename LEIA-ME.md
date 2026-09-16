@@ -58,3 +58,11 @@ A abertura usa a animação oficial em canvas com brilho intenso, enquanto módu
 ## v51 — animação de abertura fiel ao arquivo aprovado
 
 A integração da abertura foi corrigida para preservar o motor `RGMotion`, a imagem, a duração de 6,4 s, a velocidade 1x, o brilho intenso e o enquadramento responsivo do HTML fornecido pelo usuário. A aplicação continua carregando em paralelo, mas não acelera nem retemporiza a animação. Em acessibilidade com movimento reduzido, o quadro final estático é usado. Consulte `ALTERACOES_V51_ANIMACAO_EXATA.md`.
+
+## v53 — correção do boot da animação no Edge/Chrome/PWA
+
+A v53 corrige o caso em que a abertura podia aparecer diretamente no quadro final. `motion=false` explícito agora reproduz a animação mesmo quando o sistema operacional pede redução de movimento; `motion=true` continua usando a alternativa acessível. Quando não há escolha explícita, a preferência do sistema é respeitada. Os arquivos críticos da abertura e da API receberam nomes físicos v53 para impedir que um Service Worker antigo entregue JavaScript de outra versão. O primeiro quadro é pintado antes de o relógio começar. A sequência foi validada no Chromium 144 em seis checkpoints reais. Consulte `ALTERACOES_V53_BOOT_ANIMACAO.md` e `RELATORIO_TESTE_CHROMIUM_V53.md`.
+
+
+## v54 — abertura animada
+A imagem de fallback foi corrigida para não cobrir o canvas. O pacote inclui uma gravação real de Chromium em `tests/browser-prova-v54/`.

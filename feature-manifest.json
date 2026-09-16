@@ -1,0 +1,12 @@
+{
+  "build":"20260916-v57-teste-consolidado",
+  "requiredIds":[
+    "auth-gate","app-shell","main-content","paste-area","paste-read-btn",
+    "paste-confirm-btn","paste-cancel-btn","launch-reference-date","series-reset-btn",
+    "a11y-toggle-btn","destaques-grid","view-lancar","view-config","view-acumulado"
+  ],
+  "requiredFunctions":[
+    "processPaste","confirmImport","cancelImport","render","mostrarView","loadState","saveState",
+    "mostrarModalReinicioSerie","reiniciarSerieAtualManual","corCssFaixa"
+  ]
+}

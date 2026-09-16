@@ -231,6 +231,11 @@
     // Ajuda o navegador a pintar barras de rolagem e campos de
     // formulário na cor certa — detalhe de acessibilidade real.
     html.style.colorScheme = estado.theme === 'light' ? 'light' : 'dark';
+
+    // Mantém a barra do navegador/PWA coerente com o tema real da aplicação.
+    // O meta inicial continua servindo como fallback antes deste script rodar.
+    var metaTema = document.querySelector('meta[name="theme-color"]');
+    if (metaTema) metaTema.setAttribute('content', estado.theme === 'light' ? '#edf2f7' : '#0b1118');
   }
 
   function aplicarNoBody() {
