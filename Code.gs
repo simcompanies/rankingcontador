@@ -122,6 +122,13 @@ function doGet(e) {
     if (action === 'verificarSessao') {
       return verificarSessao(e.parameter.token);
     }
+    if (action === 'bootstrap') {
+      // v47: sessão + ranking em uma única viagem HTTP. Isso elimina a espera
+      // sequencial verificarSessao -> listarRanking na abertura do PWA.
+      const sessao = obterSessao(e.parameter.token);
+      if (!sessao) return respostaSessaoExpirada();
+      return criarResposta({ sucesso:true, dados:{ sessao:sessao, ranking:carregarRanking() } });
+    }
     if (action === 'listarRanking') {
       const sessao = obterSessao(e.parameter.token);
       if (!sessao) return respostaSessaoExpirada();
@@ -184,6 +191,8 @@ function doPost(e) {
         return salvarResumo(corpo.token, corpo.dia, corpo.dayId, corpo.dayDate, corpo.revision, corpo.texto);
       case 'encerrarSerie':
         return encerrarSerie(corpo.token, corpo.modo, corpo.estado);
+      case 'reiniciarSerie':
+        return reiniciarSerie(corpo.token, corpo.modo, corpo.estado);
       default:
         return criarResposta({ sucesso: false, erro: 'Ação POST não reconhecida: ' + corpo.action });
     }
@@ -499,11 +508,14 @@ function login(email, senha) {
       }
       limparTentativasLogin(emailNormalizado);
       const token = criarSessao(usuario);
+      let rankingInicial = null;
+      try { rankingInicial = carregarRanking(); } catch (erroRanking) { console.warn('Login concluído, mas o ranking será carregado pelo frontend: ' + erroRanking.message); }
       return criarResposta({
         sucesso: true,
         dados: {
           token: token, idUsuario: usuario.idUsuario, nome: usuario.nome,
           email: usuario.email, papel: usuario.papel, precisaTrocarSenha: false,
+          ranking: rankingInicial,
           tempoServidorMs: Date.now() - inicio
         }
       });
@@ -515,11 +527,14 @@ function login(email, senha) {
         limparTentativasLogin(emailNormalizado);
         abaUsuarios.getRange(linha, 8, 1, 3).setValues([['', '', false]]);
         const token = criarSessao(usuario);
+        let rankingInicial = null;
+        try { rankingInicial = carregarRanking(); } catch (erroRanking) { console.warn('Login temporário concluído, mas o ranking será carregado pelo frontend: ' + erroRanking.message); }
         return criarResposta({
           sucesso: true,
           dados: {
             token: token, idUsuario: usuario.idUsuario, nome: usuario.nome,
             email: usuario.email, papel: usuario.papel, precisaTrocarSenha: true,
+            ranking: rankingInicial,
             tempoServidorMs: Date.now() - inicio
           }
         });
@@ -1307,6 +1322,138 @@ function estadoDepoisDeEncerrarSerie(estado, quantidadeDias, novaRevisao) {
   };
   novo.revision = novaRevisao;
   return novo;
+}
+
+
+function estadoDepoisDeReiniciarSerie(estado, novaRevisao, avancarNumero) {
+  const novo = JSON.parse(JSON.stringify(estado));
+  novo.days = 0;
+  novo.dayDates = [];
+  novo.dayIds = [];
+  (novo.divisoes || []).forEach(function(div){
+    (div.participantes || []).forEach(function(p){
+      p.scores = [];
+    });
+  });
+  const meta = novo.seriesMeta || {};
+  const numeroAtual = Math.max(1, Math.trunc(Number(meta.currentNumber) || 1));
+  novo.seriesMeta = {
+    currentId:'s_' + Utilities.getUuid(),
+    currentNumber: numeroAtual + (avancarNumero ? 1 : 0),
+    maxDays:7
+  };
+  novo.revision = novaRevisao;
+  return novo;
+}
+
+/*
+ * Reinício administrativo manual da série ativa.
+ * modos:
+ * - reiniciar: limpa os lançamentos e mantém o número da série (gera novo ID interno);
+ * - arquivar: arquiva a série parcial/cheia e inicia a próxima;
+ * - descartar: descarta a série parcial/cheia e inicia a próxima.
+ *
+ * Diferente de encerrarSerie(), esta operação pode ser usada antes do 7º dia.
+ */
+function reiniciarSerie(token, modo, estado) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    const sessao = obterSessao(token);
+    if (!sessao) return respostaSessaoExpirada();
+    if (sessao.papel !== PAPEL_ADMIN) return respostaPermissaoNegada();
+    if (modo !== 'reiniciar' && modo !== 'arquivar' && modo !== 'descartar') {
+      return criarResposta({ sucesso:false, erro:'Modo de reinício de série inválido.' });
+    }
+
+    const snapshotAtual = validarSnapshotRankingBackend(estado);
+    if (snapshotAtual.diasTotal > 7) {
+      return criarResposta({ sucesso:false, codigo:'SERIES_LEGACY_OVERFLOW', erro:'A série ativa possui mais de 7 dias. Encerre primeiro os blocos completos de 7 dias antes de usar o reiniciador manual.' });
+    }
+    if (modo === 'arquivar' && snapshotAtual.diasTotal === 0) {
+      return criarResposta({ sucesso:false, erro:'A série está vazia; não há lançamentos para arquivar.' });
+    }
+
+    const planilha = SpreadsheetApp.openById(PLANILHA_MESTRA_ID);
+    const abas = garantirEsquemaRanking(planilha);
+    const revisaoAtual = Number(lerConfig(abas.abaConfig, 'Ranking_Revision', 0)) || 0;
+    const revisaoEsperada = Number(estado.revision) || 0;
+    if (revisaoEsperada !== revisaoAtual) {
+      return criarResposta({ sucesso:false, codigo:'REVISION_CONFLICT', erro:'O ranking foi alterado por outra sessão.', revision:revisaoAtual });
+    }
+
+    const serieServidorId = String(lerConfig(abas.abaConfig, 'Serie_Atual_ID', '') || '');
+    const serieServidorNumero = Math.max(1, Number(lerConfig(abas.abaConfig, 'Serie_Atual_Numero', 1)) || 1);
+    if (snapshotAtual.seriesMeta.currentId !== serieServidorId || snapshotAtual.seriesMeta.currentNumber !== serieServidorNumero) {
+      return criarResposta({ sucesso:false, codigo:'SERIES_META_CONFLICT', erro:'A série ativa mudou no servidor. Recarregue o ranking.' });
+    }
+
+    const novaRevisao = revisaoAtual + 1;
+    const avancarNumero = modo === 'arquivar' || modo === 'descartar';
+    const novoEstado = estadoDepoisDeReiniciarSerie(estado, novaRevisao, avancarNumero);
+    const snapshotNovo = validarSnapshotRankingBackend(novoEstado);
+    const linhasHistorico = modo === 'arquivar'
+      ? linhasHistoricoSerie(estado, sessao, snapshotAtual.diasTotal)
+      : [];
+
+    const backups = {
+      participantes:capturarAba(abas.abaParticipantes),
+      pontuacoes:capturarAba(abas.abaPontuacoes),
+      dias:capturarAba(abas.abaDias),
+      faixas:capturarAba(abas.abaFaixas),
+      config:capturarAba(abas.abaConfig),
+      historicoUltimaLinha:abas.abaHistoricoSeries.getLastRow()
+    };
+
+    try {
+      if (linhasHistorico.length) {
+        const inicio = abas.abaHistoricoSeries.getLastRow() + 1;
+        abas.abaHistoricoSeries.getRange(inicio,1,linhasHistorico.length,CABECALHO_HISTORICO_SERIES.length).setValues(linhasHistorico);
+      }
+      reescreverAbaCompleta(abas.abaParticipantes, CABECALHO_PARTICIPANTES, snapshotNovo.linhasParticipantes);
+      reescreverAbaCompleta(abas.abaPontuacoes, CABECALHO_PONTUACOES, snapshotNovo.linhasPontuacoes);
+      reescreverAbaCompleta(abas.abaDias, CABECALHO_DIAS, snapshotNovo.linhasDias);
+      reescreverAbaCompleta(abas.abaFaixas, CABECALHO_FAIXAS, snapshotNovo.linhasFaixas);
+      escreverConfig(abas.abaConfig, 'Dias_Total', snapshotNovo.diasTotal);
+      escreverConfig(abas.abaConfig, 'Serie_Atual_ID', snapshotNovo.seriesMeta.currentId);
+      escreverConfig(abas.abaConfig, 'Serie_Atual_Numero', snapshotNovo.seriesMeta.currentNumber);
+      escreverConfig(abas.abaConfig, 'Serie_Limite_Dias', 7);
+      escreverConfig(abas.abaConfig, 'Ranking_Revision', novaRevisao);
+      SpreadsheetApp.flush();
+    } catch (erroEscrita) {
+      try { restaurarAba(abas.abaParticipantes, backups.participantes); } catch(e) {}
+      try { restaurarAba(abas.abaPontuacoes, backups.pontuacoes); } catch(e) {}
+      try { restaurarAba(abas.abaDias, backups.dias); } catch(e) {}
+      try { restaurarAba(abas.abaFaixas, backups.faixas); } catch(e) {}
+      try { restaurarAba(abas.abaConfig, backups.config); } catch(e) {}
+      try {
+        const atual = abas.abaHistoricoSeries.getLastRow();
+        if (atual > backups.historicoUltimaLinha) abas.abaHistoricoSeries.deleteRows(backups.historicoUltimaLinha + 1, atual - backups.historicoUltimaLinha);
+      } catch(e) {}
+      try { SpreadsheetApp.flush(); } catch(e) {}
+      throw new Error('Falha no reinício; o estado anterior foi restaurado. ' + erroEscrita.message);
+    }
+
+    let descricao;
+    if (modo === 'reiniciar') {
+      descricao = 'Reiniciou a Série ' + snapshotAtual.seriesMeta.currentNumber + ' do zero (' + snapshotAtual.diasTotal + ' dias descartados; numeração mantida)';
+    } else if (modo === 'arquivar') {
+      descricao = 'Arquivou manualmente a Série ' + snapshotAtual.seriesMeta.currentNumber + ' (' + snapshotAtual.diasTotal + ' dias) e iniciou a Série ' + snapshotNovo.seriesMeta.currentNumber;
+    } else {
+      descricao = 'Descartou manualmente a Série ' + snapshotAtual.seriesMeta.currentNumber + ' (' + snapshotAtual.diasTotal + ' dias) e iniciou a Série ' + snapshotNovo.seriesMeta.currentNumber;
+    }
+    registrarLog(sessao.nome, descricao + ' · rev. ' + novaRevisao);
+
+    return criarResposta({
+      sucesso:true,
+      revision:novaRevisao,
+      dados:{ estado:novoEstado, modo:modo, diasRemovidos:snapshotAtual.diasTotal }
+    });
+  } catch (erro) {
+    return criarResposta({ sucesso:false, erro:'Erro ao reiniciar série: ' + erro.message });
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 function encerrarSerie(token, modo, estado) {

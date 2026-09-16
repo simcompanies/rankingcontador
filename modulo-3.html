@@ -7,7 +7,13 @@
         <div class="panel-title" id="launch-series-title">Série —</div>
         <div class="panel-hint" id="launch-series-last">Nenhum lançamento registrado nesta série.</div>
       </div>
-      <div class="launch-series-count" id="launch-series-count">0/7</div>
+      <div class="launch-series-tools">
+        <div class="launch-series-count" id="launch-series-count">0/7</div>
+        <button type="button" class="series-reset-trigger" id="series-reset-btn" onclick="mostrarModalReinicioSerie()" title="Reiniciar ou encerrar manualmente a série atual">
+          <span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 11a8 8 0 1 0-2.34 5.66"></path><path d="M20 5v6h-6"></path></svg></span>
+          Reiniciar série
+        </button>
+      </div>
     </div>
     <div class="series-progress-dots" id="launch-series-dots" aria-label="Progresso da série"></div>
   </div>
@@ -98,5 +104,35 @@
       <button type="button" class="danger" onclick="encerrarSerieAtual('descartar')">Apagar série e começar nova</button>
     </div>
     <div class="series-warning">Salvar mantém os 7 dias no histórico e no Acumulado Geral. Apagar remove esses 7 dias do acumulado histórico. Em ambos os casos, participantes e faixas permanecem cadastrados.</div>
+  </div>
+</div>
+
+
+<div class="series-modal hidden" id="series-reset-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="series-reset-title">
+  <div class="series-modal-card series-reset-card">
+    <div class="panel-kicker">Controle administrativo</div>
+    <div class="panel-title" id="series-reset-title">Reiniciar série</div>
+    <div class="panel-hint" id="series-reset-description">Escolha como tratar a série ativa.</div>
+    <div class="series-reset-current" id="series-reset-current">0 lançamentos</div>
+
+    <div class="series-reset-options">
+      <button type="button" class="series-reset-option series-reset-option-neutral" onclick="reiniciarSerieAtualManual('reiniciar')">
+        <strong>Reiniciar esta série</strong>
+        <span>Apaga os lançamentos ativos e mantém o mesmo número da série.</span>
+      </button>
+      <button type="button" class="series-reset-option series-reset-option-archive" id="series-reset-archive-btn" onclick="reiniciarSerieAtualManual('arquivar')">
+        <strong>Arquivar e iniciar próxima</strong>
+        <span>Preserva os lançamentos no Acumulado Geral e avança a numeração.</span>
+      </button>
+      <button type="button" class="series-reset-option series-reset-option-danger" onclick="reiniciarSerieAtualManual('descartar')">
+        <strong>Descartar e iniciar próxima</strong>
+        <span>Apaga os lançamentos ativos sem adicioná-los ao histórico.</span>
+      </button>
+    </div>
+
+    <div class="series-warning">Participantes e faixas nunca são removidos por este reiniciador. Apenas os lançamentos da série ativa são afetados.</div>
+    <div class="series-reset-footer">
+      <button type="button" class="rg-dialog-btn rg-dialog-btn-secondary" onclick="esconderModalReinicioSerie()">Cancelar</button>
+    </div>
   </div>
 </div>

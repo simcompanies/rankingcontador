@@ -45,6 +45,13 @@ eq('pontuações restantes são deslocadas para a nova série',novo.divisoes[0].
 eq('datas restantes também são deslocadas',novo.dayIds,['d8','d9']);
 eq('número da série avança',novo.seriesMeta.currentNumber,4);
 ok('nova série recebe novo ID',novo.seriesMeta.currentId!=='s1');
+const reinicio=back.estadoDepoisDeReiniciarSerie({revision:9,days:3,dayDates:['2026-09-01T12:00:00.000','2026-09-02T12:00:00.000','2026-09-03T12:00:00.000'],dayIds:['a','b','c'],seriesMeta:{currentId:'s9',currentNumber:5,maxDays:7},divisoes:[{id:'x',titulo:'Faixa X',intervalo:'',cor:'--x',participantes:[{id:'p1',name:'Ana',createdAt:'2026-01-01',scores:[4,3,2]}]}]},10,false);
+eq('reiniciar série limpa todos os dias ativos',reinicio.days,0);
+eq('reiniciar série limpa as pontuações ativas',reinicio.divisoes[0].participantes[0].scores,[]);
+eq('reiniciar série mantém a numeração',reinicio.seriesMeta.currentNumber,5);
+ok('reiniciar série troca o ID interno',reinicio.seriesMeta.currentId!=='s9');
+const proxima=back.estadoDepoisDeReiniciarSerie({revision:10,days:2,dayDates:['2026-09-01T12:00:00.000','2026-09-02T12:00:00.000'],dayIds:['a','b'],seriesMeta:{currentId:'s10',currentNumber:5,maxDays:7},divisoes:[]},11,true);
+eq('arquivar/descartar manualmente avança a série',proxima.seriesMeta.currentNumber,6);
 const linhas=back.linhasHistoricoSerie(estado,{nome:'Admin'},7);
 eq('um participante gera sete linhas históricas',linhas.length,7);
 eq('linha histórica guarda Participant_ID e dia', [linhas[0][4],linhas[0][8],linhas[0][11]], ['p1',1,10]);
@@ -59,6 +66,9 @@ ok('backend possui ações de arquivar/listar séries',code.includes("case 'ence
 ok('interface possui aba Acumulado Geral',index.includes('data-view="acumulado"')&&index.includes('slot-modulo-5'));
 ok('lançamento possui seletor de data de referência',mod3.includes('id="launch-reference-date"'));
 ok('modal oferece arquivar ou descartar',mod3.includes("encerrarSerieAtual('arquivar')")&&mod3.includes("encerrarSerieAtual('descartar')"));
+ok('reiniciador manual está disponível em Lançamentos',mod3.includes('id="series-reset-btn"')&&mod3.includes('id="series-reset-modal"'));
+ok('reiniciador oferece manter número, arquivar ou descartar',mod3.includes("reiniciarSerieAtualManual('reiniciar')")&&mod3.includes("reiniciarSerieAtualManual('arquivar')")&&mod3.includes("reiniciarSerieAtualManual('descartar')"));
+ok('backend expõe ação reiniciarSerie',code.includes("case 'reiniciarSerie'")&&code.includes('function reiniciarSerie(token, modo, estado)'));
 
 console.log('\n'+'='.repeat(72));
 console.log(`RESULTADO SÉRIES: ${total-falhas}/${total} passaram; ${falhas} falha(s).`);

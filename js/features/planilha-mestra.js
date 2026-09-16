@@ -38,22 +38,10 @@ function atualizarBloqueioDados(){
   });
 }
 
-async function loadState(){
-  if(!sessaoUsuario) return false;
-  rankingBloqueado = true;
-  loaded = false;
-  ultimoErroCarga = null;
-  atualizarBloqueioDados();
-  setStatus('carregando dados...', 'busy');
-
+function aplicarRankingRecebido(dados, opcoes){
+  const opts = opcoes || {};
   try{
-    const resposta = await chamarAPIGet({ action:'listarRanking', token: sessaoUsuario.token });
-    if(!resposta.sucesso){
-      if(tratarErroSessaoOuPermissao(resposta)) return false;
-      throw new Error(resposta.erro || 'Falha ao carregar');
-    }
-
-    let carregado = migrarEstadoAntigo(resposta.dados);
+    let carregado = migrarEstadoAntigo(dados);
     const validacao = validarInvariantesRanking(carregado);
     if(!validacao.ok) throw new Error('O servidor devolveu um ranking inconsistente: ' + validacao.erro);
 
@@ -65,12 +53,37 @@ async function loadState(){
     stateDirty = false;
     setStatus(rankingBloqueado ? 'interface incompleta — edição bloqueada' : ('sincronizado · rev. ' + (state.revision || 0)), rankingBloqueado ? false : true);
     atualizarBloqueioDados();
-    render();
+    if(!opts.deferRender) render();
     return true;
   }catch(e){
+    console.error('Erro ao aplicar dados do ranking', e);
+    ultimoErroCarga = e && e.message ? e.message : String(e);
+    loaded = false;
+    rankingBloqueado = true;
+    setStatus('dados não carregados — edição bloqueada', false);
+    atualizarBloqueioDados();
+    return false;
+  }
+}
+
+async function loadState(){
+  if(!sessaoUsuario) return false;
+  rankingBloqueado = true;
+  loaded = false;
+  ultimoErroCarga = null;
+  atualizarBloqueioDados();
+  setStatus('carregando dados...', 'busy');
+  if(window.RGStartup) window.RGStartup.status('Carregando ranking…', 68);
+
+  try{
+    const resposta = await chamarAPIGet({ action:'listarRanking', token: sessaoUsuario.token });
+    if(!resposta.sucesso){
+      if(tratarErroSessaoOuPermissao(resposta)) return false;
+      throw new Error(resposta.erro || 'Falha ao carregar');
+    }
+    return aplicarRankingRecebido(resposta.dados);
+  }catch(e){
     console.error('Erro ao carregar dados', e);
-    // IMPORTANTE: não substitui `state` por vazio. Mantém em memória o último
-    // snapshot conhecido e bloqueia toda mutação até uma carga válida.
     ultimoErroCarga = e && e.message ? e.message : String(e);
     loaded = false;
     rankingBloqueado = true;

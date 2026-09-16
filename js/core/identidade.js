@@ -34,15 +34,27 @@ function registrarEventoSessaoEmSegundoPlano(tipo, token){
 }
 
 async function aplicarSessao(dados){
+  if(window.RGStartup) window.RGStartup.show('Abrindo seu painel…', 30);
   sessaoUsuario = { token: dados.token, idUsuario: dados.idUsuario, nome: dados.nome, email: dados.email, papel: dados.papel };
   sessionStorage.setItem('rankingGeral_token', dados.token);
-  document.getElementById('auth-gate').classList.add('hidden');
-  document.getElementById('app-shell').classList.remove('hidden');
+
+  // Os módulos começaram a carregar ainda na abertura/login. Esperamos apenas
+  // o que eventualmente ainda estiver pendente, sem bloquear a requisição de auth.
+  if(window.RGStartup) window.RGStartup.status('Preparando interface…', 54);
+  try{ if(window.rgModulosPromise) await window.rgModulosPromise; }catch(e){}
+
+  document.getElementById('auth-gate')?.classList.add('hidden');
+  document.getElementById('app-shell')?.classList.remove('hidden');
   definirTelaAplicacao('app');
   aplicarPermissoesPapel();
   atualizarBarraIdentidade();
   mostrarView('faixas');
-  await loadState();
+
+  if(window.RGStartup) window.RGStartup.status('Carregando ranking…', 76);
+  const ok = dados.ranking ? aplicarRankingRecebido(dados.ranking) : await loadState();
+  if(ok && window.RGStartup) window.RGStartup.done('Painel pronto');
+  else if(window.RGStartup) window.RGStartup.done('Verifique a conexão');
+  return ok;
 }
 
 // Clique em "Sair" no topbar: confirma, avisa o backend (best-effort) e

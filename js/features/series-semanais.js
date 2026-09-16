@@ -125,6 +125,142 @@ async function encerrarSerieAtual(modo){
   }
 }
 
+
+function mostrarModalReinicioSerie(){
+  if(!exigirAdministrador()) return;
+  if(!loaded || encerramentoSerieEmAndamento) return;
+  const modal = document.getElementById('series-reset-modal');
+  if(!modal) return;
+  const numero = state.seriesMeta && state.seriesMeta.currentNumber ? Number(state.seriesMeta.currentNumber) : 1;
+  const dias = Math.max(0, Number(state.days)||0);
+  const descricao = document.getElementById('series-reset-description');
+  const info = document.getElementById('series-reset-current');
+  const btnArquivar = document.getElementById('series-reset-archive-btn');
+  if(descricao){
+    descricao.textContent = dias
+      ? `A Série ${numero} possui ${dias} de 7 lançamentos. Escolha como reiniciar o ciclo.`
+      : `A Série ${numero} ainda não possui lançamentos. Você pode reiniciá-la ou avançar para a próxima série.`;
+  }
+  if(info){
+    const datas = (state.dayDates||[]).slice(0,dias).filter(Boolean).map(formatarDataCurta);
+    const periodo = datas.length ? `${datas[0]}${datas.length>1 ? ' a ' + datas[datas.length-1] : ''}` : 'sem período registrado';
+    info.textContent = `${dias} lançamento${dias===1?'':'s'} · ${periodo}`;
+  }
+  if(btnArquivar){
+    btnArquivar.disabled = dias === 0;
+    btnArquivar.title = dias === 0 ? 'Não há lançamentos para arquivar.' : '';
+  }
+  modal.classList.remove('hidden');
+  modal.setAttribute('aria-hidden','false');
+}
+
+function esconderModalReinicioSerie(){
+  const modal = document.getElementById('series-reset-modal');
+  if(!modal) return;
+  modal.classList.add('hidden');
+  modal.setAttribute('aria-hidden','true');
+}
+
+async function reiniciarSerieAtualManual(modo){
+  if(!exigirAdministrador()) return;
+  if(encerramentoSerieEmAndamento) return;
+  if(!['reiniciar','arquivar','descartar'].includes(modo)) return;
+
+  const numero = state.seriesMeta && state.seriesMeta.currentNumber ? Number(state.seriesMeta.currentNumber) : 1;
+  const dias = Math.max(0, Number(state.days)||0);
+  if(dias > 7){
+    await uiAlert('A série ativa possui mais de 7 dias legados. Encerre primeiro os blocos completos de 7 dias antes de usar o reiniciador manual.', {title:'Série antiga precisa ser normalizada', variant:'warning'});
+    return;
+  }
+  if(modo === 'arquivar' && dias === 0){
+    await uiAlert('A série está vazia. Não há lançamentos para arquivar.', {title:'Nada para arquivar', variant:'info'});
+    return;
+  }
+
+  let titulo, mensagem, confirmar, variante;
+  if(modo === 'reiniciar'){
+    titulo = `Reiniciar Série ${numero}`;
+    mensagem = dias
+      ? `Apagar os ${dias} lançamentos ativos e recomeçar a Série ${numero} do zero? A numeração será mantida e estes dados não entrarão no Acumulado Geral.`
+      : `Reiniciar a Série ${numero} do zero? A numeração será mantida.`;
+    confirmar = 'Reiniciar esta série';
+    variante = 'danger';
+  }else if(modo === 'arquivar'){
+    titulo = `Arquivar Série ${numero}`;
+    mensagem = `Arquivar os ${dias} lançamentos atuais no Acumulado Geral e iniciar a Série ${numero+1}?`;
+    confirmar = 'Arquivar e iniciar próxima';
+    variante = 'warning';
+  }else{
+    titulo = `Descartar Série ${numero}`;
+    mensagem = dias
+      ? `Descartar os ${dias} lançamentos atuais e iniciar a Série ${numero+1}? Estes dados não entrarão no Acumulado Geral.`
+      : `Avançar da Série ${numero} para a Série ${numero+1}? A série atual está vazia.`;
+    confirmar = 'Descartar e iniciar próxima';
+    variante = 'danger';
+  }
+
+  if(!await uiConfirm(mensagem, {title, variant:variante, confirmText:confirmar})) return;
+
+  encerramentoSerieEmAndamento = true;
+  const botoes = document.querySelectorAll('#series-reset-modal button, #series-close-modal button, #series-reset-btn');
+  botoes.forEach(b=>b.disabled=true);
+  try{
+    const sincronizado = await flushPendingSave();
+    if(!sincronizado) throw new Error('Não foi possível sincronizar a série antes do reinício.');
+
+    const resposta = await chamarAPI({
+      action:'reiniciarSerie',
+      token:sessaoUsuario.token,
+      modo,
+      estado:clonarSnapshotRanking()
+    });
+    if(!resposta.sucesso){
+      if(tratarErroSessaoOuPermissao(resposta)) return;
+      if(resposta.codigo === 'REVISION_CONFLICT' || resposta.codigo === 'SERIES_META_CONFLICT'){
+        syncConflict = true;
+        rankingBloqueado = true;
+        atualizarBloqueioDados();
+      }
+      throw new Error(resposta.erro || 'Não foi possível reiniciar a série.');
+    }
+
+    const validacao = validarInvariantesRanking(resposta.dados && resposta.dados.estado);
+    if(!validacao.ok) throw new Error('O servidor devolveu a série reiniciada em estado inválido: ' + validacao.erro);
+    state = validacao.state;
+    stateDirty = false;
+    syncConflict = false;
+    rankingBloqueado = false;
+    pendingImport = null;
+    pendingDayMode = 'new';
+    draft = {};
+    draftNew = {};
+    if(typeof filtroDiasSelecionados !== 'undefined' && filtroDiasSelecionados.clear) filtroDiasSelecionados.clear();
+    historicoSeriesCarregado = false;
+    historicoSeries = [];
+    esconderModalReinicioSerie();
+    esconderModalEncerramentoSerie();
+    setStatus('sincronizado · rev. ' + (state.revision || 0), true);
+    render();
+    garantirDataReferenciaLancamento();
+    await carregarHistoricoSeries(true).catch(()=>{});
+
+    const novoNumero = state.seriesMeta && state.seriesMeta.currentNumber ? Number(state.seriesMeta.currentNumber) : numero;
+    if(modo === 'reiniciar'){
+      await uiAlert(`Série ${novoNumero} reiniciada. Participantes e faixas foram preservados.`, {title:'Série reiniciada', variant:'success'});
+    }else if(modo === 'arquivar'){
+      await uiAlert(`Série ${numero} arquivada e Série ${novoNumero} iniciada.`, {title:'Nova série iniciada', variant:'success'});
+    }else{
+      await uiAlert(`Série ${numero} descartada e Série ${novoNumero} iniciada.`, {title:'Nova série iniciada', variant:'success'});
+    }
+  }catch(erro){
+    console.error('Erro ao reiniciar série', erro);
+    await uiAlert(erro.message || 'Erro ao reiniciar a série.', {title:'Não foi possível reiniciar', variant:'danger'});
+  }finally{
+    encerramentoSerieEmAndamento = false;
+    botoes.forEach(b=>b.disabled=false);
+  }
+}
+
 async function carregarHistoricoSeries(forcar){
   if(!sessaoUsuario) return;
   if(historicoSeriesCarregado && !forcar){

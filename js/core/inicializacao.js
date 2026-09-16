@@ -33,6 +33,8 @@
 // de index.html onde seu conteúdo deve ser injetado. Os ids de slot aqui
 // precisam bater exatamente com os ids usados em index.html.
 let modulosHtmlComFalha = [];
+let modulosHtmlPromise = null;
+window.rgModulosPromise = null;
 
 const MODULOS_HTML = [
   { arquivo: 'modules/modulo-0.html',               fallback: 'modulo-0.html',               slot: 'slot-modulo-0' },
@@ -63,9 +65,9 @@ async function carregarModulosHtml(){
        (modulo.slot === 'slot-troca-senha' && document.getElementById('modal-nova-senha'))) return;
 
     try{
-      let resposta = await fetch('./' + modulo.arquivo, { cache: 'no-store', credentials: 'same-origin' });
+      let resposta = await fetch('./' + modulo.arquivo, { cache: 'default', credentials: 'same-origin' });
       if(!resposta.ok && modulo.fallback){
-        resposta = await fetch('./' + modulo.fallback, { cache: 'no-store', credentials: 'same-origin' });
+        resposta = await fetch('./' + modulo.fallback, { cache: 'default', credentials: 'same-origin' });
       }
       if(!resposta.ok) throw new Error('HTTP ' + resposta.status);
       el.innerHTML = await resposta.text();
@@ -80,37 +82,70 @@ async function carregarModulosHtml(){
   return modulosHtmlComFalha.slice();
 }
 
-async function iniciarApp(){
-  document.body.setAttribute('data-app-screen', 'auth');
-  if(localStorage.getItem('rankingGeral_sidebarCollapsed') === '1'){
-    toggleSidebarCollapse();
+async function obterBootstrapSessao(token){
+  // v47: tenta a rota combinada (1 viagem ao Apps Script). Se o backend ainda
+  // não foi republicado, usa sessão + ranking em paralelo em vez de sequencial.
+  try{
+    const combinado = await chamarAPIGet({ action:'bootstrap', token:token });
+    if(combinado && combinado.sucesso && combinado.dados && combinado.dados.sessao && combinado.dados.ranking){
+      return combinado.dados;
+    }
+    if(combinado && combinado.codigo === 'SESSAO_EXPIRADA') throw new Error('Sessão expirada');
+  }catch(erro){
+    console.warn('Bootstrap combinado indisponível; usando compatibilidade paralela.', erro && erro.message ? erro.message : erro);
   }
+
+  const resultados = await Promise.all([
+    chamarAPIGet({ action:'verificarSessao', token:token }),
+    chamarAPIGet({ action:'listarRanking', token:token })
+  ]);
+  const sessao = resultados[0], ranking = resultados[1];
+  if(!sessao || !sessao.sucesso) throw new Error((sessao && sessao.erro) || 'Sessão inválida');
+  if(!ranking || !ranking.sucesso) throw new Error((ranking && ranking.erro) || 'Não foi possível carregar o ranking');
+  return { sessao:sessao.dados, ranking:ranking.dados };
+}
+
+async function iniciarApp(promessaModulos){
+  document.body.setAttribute('data-app-screen', 'auth');
+  if(localStorage.getItem('rankingGeral_sidebarCollapsed') === '1') toggleSidebarCollapse();
 
   const tokenSalvo = sessionStorage.getItem('rankingGeral_token');
   if(!tokenSalvo){
     document.getElementById('auth-gate')?.classList.remove('hidden');
+    if(window.RGStartup){ window.RGStartup.status('Interface pronta', 100); window.RGStartup.done('Pronto para entrar'); }
     return;
   }
 
   try{
-    const resposta = await chamarAPIGet({ action:'verificarSessao', token: tokenSalvo });
-    if(!resposta.sucesso) throw new Error(resposta.erro || 'Sessão inválida');
+    if(window.RGStartup) window.RGStartup.status('Restaurando sua sessão…', 32);
+    // Rede e HTML dos módulos carregam ao mesmo tempo durante a animação.
+    const bootstrapPromise = obterBootstrapSessao(tokenSalvo);
+    const resultados = await Promise.all([bootstrapPromise, promessaModulos || Promise.resolve([])]);
+    const bootstrap = resultados[0];
+    if(window.RGStartup) window.RGStartup.status('Montando seu painel…', 86);
+
+    const perfil = bootstrap.sessao || {};
     sessaoUsuario = {
       token: tokenSalvo,
-      idUsuario: resposta.dados.idUsuario,
-      nome: resposta.dados.nome,
-      email: resposta.dados.email,
-      papel: resposta.dados.papel
+      idUsuario: perfil.idUsuario,
+      nome: perfil.nome,
+      email: perfil.email,
+      papel: perfil.papel
     };
     document.getElementById('auth-gate')?.classList.add('hidden');
     document.getElementById('app-shell')?.classList.remove('hidden');
     document.body.setAttribute('data-app-screen', 'app');
     aplicarPermissoesPapel();
     atualizarBarraIdentidade();
-    await Promise.resolve(loadState());
+    mostrarView('faixas');
+
+    const ok = aplicarRankingRecebido(bootstrap.ranking);
+    if(!ok) throw new Error(ultimoErroCarga || 'Não foi possível aplicar os dados do ranking.');
+    if(window.RGStartup) window.RGStartup.done('Painel pronto');
   }catch(erro){
     console.error('Sessão salva inválida ou expirada', erro);
     encerrarSessaoLocal();
+    if(window.RGStartup) window.RGStartup.done('Faça login para continuar');
   }
 }
 
@@ -136,14 +171,36 @@ function atualizarEstadoRede(){
   if(loaded && !rankingBloqueado && !syncConflict) setStatus('sincronizado · rev. ' + (state.revision || 0), true);
 }
 
-async function iniciarAplicacao(){
-  const falhas = await carregarModulosHtml();
-  if(falhas.length){
-    console.error('Interface incompleta; módulos não carregados:', falhas);
+function configurarViewportPWA(){
+  const aplicar = function(){
+    const vv = window.visualViewport;
+    const altura = vv ? vv.height : window.innerHeight;
+    document.documentElement.style.setProperty('--rg-viewport-height', Math.round(altura) + 'px');
+    const teclado = vv ? (window.innerHeight - vv.height > 140) : false;
+    document.body && document.body.toggleAttribute('data-keyboard-open', !!teclado);
+  };
+  aplicar();
+  window.addEventListener('resize', aplicar, {passive:true});
+  window.addEventListener('orientationchange', aplicar, {passive:true});
+  if(window.visualViewport){
+    window.visualViewport.addEventListener('resize', aplicar, {passive:true});
+    window.visualViewport.addEventListener('scroll', aplicar, {passive:true});
   }
-  await iniciarApp();
-  atualizarEstadoRede();
+}
+
+async function iniciarAplicacao(){
+  configurarViewportPWA();
+  // Não esperamos os fragmentos para começar a restaurar sessão/dados.
+  // A animação cobre a montagem enquanto rede e interface trabalham em paralelo.
+  modulosHtmlPromise = carregarModulosHtml();
+  window.rgModulosPromise = modulosHtmlPromise;
+  modulosHtmlPromise.then(function(falhas){
+    if(falhas.length) console.error('Interface incompleta; módulos não carregados:', falhas);
+  });
+
   registrarServiceWorker();
+  await iniciarApp(modulosHtmlPromise);
+  atualizarEstadoRede();
 }
 
 function flushAoOcultar(){
