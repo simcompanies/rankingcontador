@@ -179,7 +179,7 @@ function exigirAdministrador(){
 // conta, texto de resumo...) em qualquer template usado com innerHTML —
 // tanto em texto quanto dentro de atributos (value="", title=""), que são
 // os dois jeitos de um nome malicioso virar HTML/JS executável (XSS
-// armazenado — ver AUDITORIA_TESTES_E_MELHORIAS.md). Não mexe em quebras de
+// armazenado). Não mexe em quebras de
 // linha (\n), então continua preservando a formatação de textos multi-linha
 // (ex.: resumo dentro de <pre>). "&" precisa ser trocado primeiro, senão as
 // entidades geradas pelas trocas seguintes ("&lt;") seriam escapadas de novo.

@@ -1,68 +1,22 @@
-# Ranking Geral — versão de integridade v42
+# Ranking Geral — versão v58 limpa
 
-Esta versão mantém a identidade visual da versão estética atual e preserva a mecânica de pontuação validada contra o pacote de 22/08/2026, mas corrige as fragilidades encontradas na auditoria completa.
+Pacote de produção do Ranking Geral, com a correção consolidada dos temas e das cores acessíveis. A mecânica de pontuação, a integração com a API, a autenticação, os dados e a animação oficial permanecem preservados.
 
-Principais mudanças técnicas:
+## Publicação
 
-- IDs estáveis para participantes e dias;
-- revisão monotônica para impedir sobrescrita concorrente;
-- fila de salvamento e gravação imediata das ações do ranking;
-- carregamento seguro: falha de rede nunca vira ranking vazio editável;
-- validação integral de snapshot e migração conservadora;
-- rollback no backend e leitura/gravação protegidas por lock;
-- correções de colagem, filtros, heatmap, resumos e tela Conteúdo;
-- revogação efetiva de sessões e bootstrap sem senha no código;
-- leitura por colagem manual e fluxo assistido opcional pelo Gemini, sempre recalculando a regra de pontos localmente;
-- Service Worker corrigido como **app shell offline** — alterações do ranking exigem rede;
-- testes automatizados sem dependências npm.
+Antes de publicar, leia `GUIA_CONFIGURACAO.md`.
 
-Leia antes de publicar:
+Publique o front-end e o `Code.gs` desta versão em conjunto. O backend faz parte das garantias de integridade e compatibilidade do aplicativo.
 
-1. `GUIA_CONFIGURACAO.md`
-3. `AUDITORIA_TESTES_E_MELHORIAS.md`
-4. `PLANO_DE_ACAO_CORRECOES_2026-09-15.md`
+## Recursos preservados
 
-Teste principal:
-
-```bash
-node tests/test-regressao.js
-```
-
-**Importante:** publique o front-end e o `Code.gs` desta versão em conjunto. O backend novo é parte das correções de integridade.
-
-## Ajustes v42
-
-- OCR interno removido por confiabilidade; o fluxo de colagem manual permanece como entrada principal.
-- Faixas continuam dinâmicas; faixas com participantes não podem mais ser apagadas de forma destrutiva.
-- Login otimizado: hash v3 com salt + pepper secreto, migração automática de hashes antigos, sessão sem releitura da aba Usuarios em toda requisição e log de entrada em segundo plano.
-- Contas antigas com hash v2 podem ter um primeiro login mais lento; após o primeiro acesso bem-sucedido, o hash é migrado automaticamente para v3.
-
+- IDs estáveis para participantes e dias e controle de revisão para evitar sobrescritas concorrentes;
+- carregamento seguro, salvamento protegido e migração conservadora dos dados;
+- colagem manual e fluxo assistido opcional pelo Gemini, com recálculo local da pontuação;
+- temas claro, escuro e modos de daltonismo com cores semânticas consistentes;
+- abertura animada oficial com alternativa acessível para movimento reduzido;
+- Service Worker limitado ao app shell offline; login, ranking e gravações continuam exigindo rede.
 
 ## Endpoint ativo da API
 
 `https://script.google.com/macros/s/AKfycbypHFgogRlqWGo00tNOyDNRqnzces3kUT7c_MQ81w8GlbFqHATie2uIW34R0UDWWFdfLw/exec`
-
-## v46 — organização da interface
-A v46 reorganiza as informações por intenção de uso. Visão Geral foi simplificada, regras foram movidas para Regras e Ajuda, dias e resumos foram concentrados em Lançamentos e Administração passou a ser dividida entre Participantes, Faixas, Usuários, Atividade e Sistema. A mecânica de pontuação não foi alterada.
-
-
-## Reiniciador de séries (v48)
-
-Em **Lançamentos > Reiniciar série**, o administrador pode reiniciar a série atual mantendo a numeração, arquivar uma série parcial e iniciar a próxima ou descartar a série parcial e avançar. Participantes e faixas são preservados em todos os modos. Consulte `ALTERACOES_V48_REINICIADOR_SERIES.md`.
-
-
-## v50 — abertura animada e acessibilidade
-
-A abertura usa a animação oficial em canvas com brilho intenso, enquanto módulos, sessão e ranking carregam em paralelo. A animação respeita `prefers-reduced-motion` e a preferência interna "Reduzir movimento", possui botão para pular a animação e não impõe espera fixa após os dados estarem prontos. Consulte `ALTERACOES_V50_ANIMACAO_ACESSIBILIDADE.md`.
-
-## v51 — animação de abertura fiel ao arquivo aprovado
-
-A integração da abertura foi corrigida para preservar o motor `RGMotion`, a imagem, a duração de 6,4 s, a velocidade 1x, o brilho intenso e o enquadramento responsivo do HTML fornecido pelo usuário. A aplicação continua carregando em paralelo, mas não acelera nem retemporiza a animação. Em acessibilidade com movimento reduzido, o quadro final estático é usado. Consulte `ALTERACOES_V51_ANIMACAO_EXATA.md`.
-
-## v53 — correção do boot da animação no Edge/Chrome/PWA
-
-A v53 corrige o caso em que a abertura podia aparecer diretamente no quadro final. `motion=false` explícito agora reproduz a animação mesmo quando o sistema operacional pede redução de movimento; `motion=true` continua usando a alternativa acessível. Quando não há escolha explícita, a preferência do sistema é respeitada. Os arquivos críticos da abertura e da API receberam nomes físicos v53 para impedir que um Service Worker antigo entregue JavaScript de outra versão. O primeiro quadro é pintado antes de o relógio começar. A sequência foi validada no Chromium 144 em seis checkpoints reais. Consulte `ALTERACOES_V53_BOOT_ANIMACAO.md` e `RELATORIO_TESTE_CHROMIUM_V53.md`.
-
-
-## v54 — abertura animada
-A imagem de fallback foi corrigida para não cobrir o canvas. O pacote inclui uma gravação real de Chromium em `tests/browser-prova-v54/`.
