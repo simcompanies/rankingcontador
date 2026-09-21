@@ -1,5 +1,5 @@
 {
-  "build":"20260921-v58-dia7-corrigido",
+  "build":"20260921-v58-series-editaveis",
   "requiredIds":[
     "auth-gate","app-shell","main-content","paste-area","paste-read-btn",
     "paste-confirm-btn","paste-cancel-btn","launch-reference-date","series-reset-btn",
@@ -7,6 +7,6 @@
   ],
   "requiredFunctions":[
     "processPaste","confirmImport","cancelImport","render","mostrarView","loadState","saveState",
-    "mostrarModalReinicioSerie","reiniciarSerieAtualManual","corCssFaixa"
+    "mostrarModalReinicioSerie","reiniciarSerieAtualManual","abrirEditorSerieHistorica","salvarEdicaoSerieHistorica","corCssFaixa"
   ]
 }

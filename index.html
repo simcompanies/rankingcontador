@@ -477,7 +477,7 @@ body[data-startup-visible="true"]>.skip-link{visibility:hidden!important;pointer
 
   <div class="panel">
     <div class="panel-title">Séries anteriores</div>
-    <div class="panel-hint">Cada série arquivada corresponde a um bloco fechado de até 7 lançamentos. Séries descartadas não entram neste histórico.</div>
+    <div class="panel-hint">Cada série arquivada corresponde a um bloco fechado de até 7 lançamentos. Administradores podem editar ou completar pontuações que ficaram pendentes.</div>
     <div id="acumulado-series-lista"><div class="empty-hint">Carregando...</div></div>
   </div>
 </section>
@@ -582,6 +582,20 @@ body[data-startup-visible="true"]>.skip-link{visibility:hidden!important;pointer
     <div id="resumos-salvos-lista"><div class="empty-hint">Carregando...</div></div>
   </div>
 </section>
+
+<div class="series-modal hidden" id="series-history-edit-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="historico-series-editor-title">
+  <div class="series-modal-card series-history-editor-card">
+    <div class="panel-kicker">Correção administrativa</div>
+    <div class="panel-title" id="historico-series-editor-title">Editar série histórica</div>
+    <div class="panel-hint" id="historico-series-editor-description">Preencha ou corrija as pontuações da série arquivada.</div>
+    <div id="historico-series-editor-table" class="series-history-editor-table"></div>
+    <div class="series-warning">A alteração será registrada no histórico de atividade e refletida no Acumulado Geral. A série ativa não será alterada.</div>
+    <div class="series-reset-footer">
+      <button type="button" class="rg-dialog-btn rg-dialog-btn-secondary" onclick="fecharEditorSerieHistorica()">Cancelar</button>
+      <button type="button" class="rg-dialog-btn rg-dialog-btn-primary" id="historico-series-save-btn" onclick="salvarEdicaoSerieHistorica()">Salvar correções</button>
+    </div>
+  </div>
+</div>
 
 <div class="series-modal hidden" id="series-close-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="series-close-title">
   <div class="series-modal-card">

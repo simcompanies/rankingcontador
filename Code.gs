@@ -193,6 +193,8 @@ function doPost(e) {
         return encerrarSerie(corpo.token, corpo.modo, corpo.estado);
       case 'reiniciarSerie':
         return reiniciarSerie(corpo.token, corpo.modo, corpo.estado);
+      case 'editarSerieHistorica':
+        return editarSerieHistorica(corpo.token, corpo.serieId, corpo.alteracoes);
       default:
         return criarResposta({ sucesso: false, erro: 'Ação POST não reconhecida: ' + corpo.action });
     }
@@ -1608,6 +1610,91 @@ function listarHistoricoSeries() {
       });
       return { id:s.id, numero:s.numero, arquivadaEm:s.arquivadaEm, arquivadaPor:s.arquivadaPor, days:days, participantes:participantes };
     }).sort(function(a,b){ return a.numero-b.numero; });
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+// Permite ao administrador corrigir ou completar pontuações de uma série já
+// arquivada, sem reabrir a série ativa e sem reescrever o ranking corrente.
+// A edição atua somente nas células existentes da aba HistoricoSeries.
+function editarSerieHistorica(token, serieId, alteracoes) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    const sessao = obterSessao(token);
+    if (!sessao) return respostaSessaoExpirada();
+    if (sessao.papel !== PAPEL_ADMIN) return respostaPermissaoNegada();
+
+    const idSerie = String(serieId || '').trim();
+    if (!idSerie) return criarResposta({ sucesso:false, erro:'Série histórica não informada.' });
+    if (!Array.isArray(alteracoes) || !alteracoes.length) {
+      return criarResposta({ sucesso:false, erro:'Nenhuma alteração foi informada.' });
+    }
+    if (alteracoes.length > 2000) {
+      return criarResposta({ sucesso:false, erro:'Quantidade de alterações acima do limite permitido.' });
+    }
+
+    const planilha = SpreadsheetApp.openById(PLANILHA_MESTRA_ID);
+    const abas = garantirEsquemaRanking(planilha);
+    const aba = abas.abaHistoricoSeries;
+    if (aba.getLastRow() <= 1) {
+      return criarResposta({ sucesso:false, codigo:'SERIE_HISTORICA_NAO_ENCONTRADA', erro:'Não há séries arquivadas para editar.' });
+    }
+
+    const quantidadeLinhas = aba.getLastRow() - 1;
+    const linhas = aba.getRange(2, 1, quantidadeLinhas, CABECALHO_HISTORICO_SERIES.length).getValues();
+    const indicePorChave = {};
+    let serieEncontrada = false;
+    linhas.forEach(function(linha, indice) {
+      if (String(linha[0] || '').trim() !== idSerie) return;
+      serieEncontrada = true;
+      const participantId = String(linha[4] || '').trim();
+      const dia = Number(linha[8]) || 0;
+      if (participantId && dia > 0) indicePorChave[participantId + '::' + dia] = indice + 2;
+    });
+    if (!serieEncontrada) {
+      return criarResposta({ sucesso:false, codigo:'SERIE_HISTORICA_NAO_ENCONTRADA', erro:'A série selecionada não foi encontrada no histórico.' });
+    }
+
+    const vistos = {};
+    const atualizacoes = [];
+    alteracoes.forEach(function(item) {
+      const participantId = String(item && (item.participantId || item.id) || '').trim();
+      const dia = Number(item && (item.dia != null ? item.dia : item.dayNumber));
+      if (!participantId || !Number.isInteger(dia) || dia < 1 || dia > 7) {
+        throw new Error('Participante ou dia inválido na edição da série histórica.');
+      }
+      const chave = participantId + '::' + dia;
+      if (vistos[chave]) throw new Error('A mesma pontuação foi enviada mais de uma vez.');
+      vistos[chave] = true;
+      const linhaPlanilha = indicePorChave[chave];
+      if (!linhaPlanilha) throw new Error('Participante ou dia não pertence à série selecionada.');
+
+      const bruto = item && (item.pontuacao != null ? item.pontuacao : item.score);
+      let valor = '';
+      if (bruto !== null && bruto !== undefined && String(bruto).trim() !== '') {
+        const numero = Number(String(bruto).trim().replace(',', '.'));
+        if (!Number.isFinite(numero) || numero > 10) throw new Error('Pontuação histórica inválida. Use um número até 10.');
+        valor = numero;
+      }
+      atualizacoes.push({ linha:linhaPlanilha, valor:valor });
+    });
+
+    const backup = capturarAba(aba);
+    try {
+      atualizacoes.forEach(function(item){ aba.getRange(item.linha, 12).setValue(item.valor); });
+      SpreadsheetApp.flush();
+    } catch (erroEscrita) {
+      try { restaurarAba(aba, backup); } catch(e) {}
+      try { SpreadsheetApp.flush(); } catch(e) {}
+      throw new Error('Falha ao salvar a edição histórica; os dados anteriores foram restaurados. ' + erroEscrita.message);
+    }
+
+    registrarLog(sessao.nome, 'Corrigiu ' + atualizacoes.length + ' pontuação(ões) da Série histórica ' + idSerie);
+    return criarResposta({ sucesso:true, serieId:idSerie, alteracoes:atualizacoes.length });
+  } catch (erro) {
+    return criarResposta({ sucesso:false, erro:'Erro ao editar série histórica: ' + erro.message });
   } finally {
     lock.releaseLock();
   }

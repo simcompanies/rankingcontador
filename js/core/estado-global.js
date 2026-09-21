@@ -110,6 +110,9 @@ let resumosCarregado = false;
 let historicoSeries = [];
 let historicoSeriesCarregado = false;
 let encerramentoSerieEmAndamento = false;
+// Série arquivada atualmente aberta no editor administrativo do Acumulado.
+let serieHistoricaEmEdicao = null;
+let serieHistoricaEdicaoBase = {};
 
 function limiteDiasSerie(){
   return 7;

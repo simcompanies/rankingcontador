@@ -407,9 +407,109 @@ function renderHistoricoSeries(series){
     const pessoas = (s.participantes || []).length;
     return `<div class="series-history-row">
       <div><strong>Série ${Number(s.numero)||'?'}</strong><span>${escapeHtml(periodo)}</span></div>
-      <div><span>${dias.length} dia(s)</span><span>${pessoas} participante(s)</span></div>
+      <div><span>${dias.length} dia(s)</span><span>${pessoas} participante(s)</span>${souAdmin() ? `<button type="button" class="series-edit-trigger" data-edit-historical="1" data-serie-id="${escapeHtml(s.id)}">Editar dados</button>` : ''}</div>
     </div>`;
   }).join('');
+  wrap.querySelectorAll('[data-edit-historical="1"]').forEach(function(btn){
+    btn.addEventListener('click', function(){ abrirEditorSerieHistorica(btn.dataset.serieId); });
+  });
+}
+
+function abrirEditorSerieHistorica(serieId){
+  if(!exigirAdministrador()) return;
+  const serie = (historicoSeries || []).find(function(item){ return String(item.id) === String(serieId); });
+  if(!serie){ alert('A série histórica não foi encontrada. Atualize o histórico e tente novamente.'); return; }
+  serieHistoricaEmEdicao = serie;
+  serieHistoricaEdicaoBase = {};
+  (serie.participantes || []).forEach(function(p){
+    (serie.days || []).forEach(function(d, indice){
+      const valor = p.scores && p.scores[indice] != null && p.scores[indice] !== '' ? Number(p.scores[indice]) : null;
+      serieHistoricaEdicaoBase[String(p.id) + '::' + (Number(d.numero) || indice + 1)] = valor;
+    });
+  });
+  renderEditorSerieHistorica();
+  const modal = document.getElementById('series-history-edit-modal');
+  if(modal){ modal.classList.remove('hidden'); modal.setAttribute('aria-hidden','false'); }
+}
+
+function fecharEditorSerieHistorica(){
+  serieHistoricaEmEdicao = null;
+  serieHistoricaEdicaoBase = {};
+  const modal = document.getElementById('series-history-edit-modal');
+  if(modal){ modal.classList.add('hidden'); modal.setAttribute('aria-hidden','true'); }
+}
+
+function renderEditorSerieHistorica(){
+  const serie = serieHistoricaEmEdicao;
+  const tabela = document.getElementById('historico-series-editor-table');
+  const titulo = document.getElementById('historico-series-editor-title');
+  const descricao = document.getElementById('historico-series-editor-description');
+  if(!serie || !tabela) return;
+  if(titulo) titulo.textContent = `Editar Série ${Number(serie.numero) || '?'}`;
+  if(descricao) descricao.textContent = 'Preencha ou corrija as pontuações. Os campos vazios permanecem sem lançamento e a alteração afeta apenas esta série arquivada.';
+  const dias = Array.isArray(serie.days) ? serie.days : [];
+  const cabecalhoDias = dias.map(function(d, i){
+    const data = d && d.date ? formatarDataCurta(d.date) : '';
+    return `<th>D${Number(d.numero) || i + 1}${data ? `<small>${escapeHtml(data.slice(0,5))}</small>` : ''}</th>`;
+  }).join('');
+  const linhas = (serie.participantes || []).map(function(p){
+    const inputs = dias.map(function(d, i){
+      const valor = p.scores && p.scores[i] != null && p.scores[i] !== '' ? p.scores[i] : '';
+      return `<td><input type="text" inputmode="decimal" data-serie-score="1" data-participant-id="${escapeHtml(p.id)}" data-day-number="${Number(d.numero) || i + 1}" value="${escapeHtml(valor)}" aria-label="${escapeHtml(p.name)} Dia ${Number(d.numero) || i + 1}"></td>`;
+    }).join('');
+    return `<tr><td class="name">${escapeHtml(p.name)}</td><td>${escapeHtml(p.divTitle || p.divId || '')}</td>${inputs}</tr>`;
+  }).join('');
+  tabela.innerHTML = linhas
+    ? `<div class="table-wrap"><table class="series-edit-table"><thead><tr><th>Participante</th><th>Faixa</th>${cabecalhoDias}</tr></thead><tbody>${linhas}</tbody></table></div>`
+    : '<div class="empty-hint">Esta série não possui participantes registrados.</div>';
+}
+
+async function salvarEdicaoSerieHistorica(){
+  if(!exigirAdministrador() || !serieHistoricaEmEdicao) return;
+  const inputs = Array.from(document.querySelectorAll('#historico-series-editor-table [data-serie-score="1"]'));
+  const alteracoes = [];
+  for(const input of inputs){
+    const raw = String(input.value || '').trim();
+    const valor = raw === '' ? null : parsePontuacao(raw);
+    if(Number.isNaN(valor)){
+      alert('Há uma pontuação histórica inválida. Use números, por exemplo 8 ou -1.');
+      input.focus();
+      return;
+    }
+    const chave = String(input.dataset.participantId) + '::' + String(Number(input.dataset.dayNumber));
+    const original = Object.prototype.hasOwnProperty.call(serieHistoricaEdicaoBase, chave) ? serieHistoricaEdicaoBase[chave] : null;
+    const iguais = original === null ? valor === null : valor !== null && Number(original) === Number(valor);
+    if(!iguais){
+      alteracoes.push({participantId:String(input.dataset.participantId), dia:Number(input.dataset.dayNumber), pontuacao:valor});
+    }
+  }
+  if(!alteracoes.length){
+    await uiAlert('Nenhuma alteração foi feita.', {title:'Histórico sem alterações', variant:'info'});
+    return;
+  }
+  const btn = document.getElementById('historico-series-save-btn');
+  if(btn) btn.disabled = true;
+  try{
+    const resposta = await chamarAPI({
+      action:'editarSerieHistorica',
+      token:sessaoUsuario.token,
+      serieId:String(serieHistoricaEmEdicao.id),
+      alteracoes:alteracoes
+    });
+    if(!resposta.sucesso){
+      if(tratarErroSessaoOuPermissao(resposta)) return;
+      throw new Error(resposta.erro || 'Não foi possível salvar a série histórica.');
+    }
+    fecharEditorSerieHistorica();
+    historicoSeriesCarregado = false;
+    await carregarHistoricoSeries(true);
+    await uiAlert('As pontuações da série histórica foram atualizadas.', {title:'Série atualizada', variant:'success'});
+  }catch(erro){
+    console.error('Erro ao editar série histórica', erro);
+    await uiAlert(erro.message || 'Não foi possível salvar a série histórica.', {title:'Edição não concluída', variant:'danger'});
+  }finally{
+    if(btn) btn.disabled = false;
+  }
 }
 
 function renderAcumuladoGeral(){
