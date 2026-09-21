@@ -115,8 +115,38 @@ function limiteDiasSerie(){
   return 7;
 }
 
+// Um dia pode ter sido criado com apenas parte das faixas preenchida. Isso é
+// válido durante a edição, mas não pode disparar o encerramento automático da
+// série. O último dia permanece editável até que todos os participantes de
+// todas as faixas tenham uma pontuação registrada.
+function indiceUltimoDiaIncompleto(){
+  const dias = Number(state && state.days || 0);
+  if(dias < limiteDiasSerie()) return -1;
+  const indice = dias - 1;
+  let incompleto = false;
+  obterTodasDivisoes().forEach(function(div){
+    (div.participantes || []).forEach(function(p){
+      const valor = p && Array.isArray(p.scores) ? p.scores[indice] : null;
+      if(valor === null || valor === undefined || valor === '' || !Number.isFinite(Number(valor))) incompleto = true;
+    });
+  });
+  return incompleto ? indice : -1;
+}
+
+function ultimoDiaIncompleto(){
+  return indiceUltimoDiaIncompleto() >= 0;
+}
+
+// Retorna o índice que o formulário de lançamento deve editar. No caso
+// especial do sétimo dia parcial, a operação complementa a coluna existente;
+// nos demais casos, o índice aponta para o novo dia a ser criado.
+function indiceDiaEmEdicaoOuNovo(){
+  const parcial = indiceUltimoDiaIncompleto();
+  return parcial >= 0 ? parcial : Number(state && state.days || 0);
+}
+
 function serieAtualCompleta(){
-  return Number(state && state.days || 0) >= limiteDiasSerie();
+  return Number(state && state.days || 0) >= limiteDiasSerie() && !ultimoDiaIncompleto();
 }
 
 function dataReferenciaISO(valor){

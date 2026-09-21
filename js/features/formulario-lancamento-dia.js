@@ -29,7 +29,10 @@ function updateLaunchDayLabel(){
   const el = document.getElementById('launch-day-label');
   if(el){
     const serie = state.seriesMeta && state.seriesMeta.currentNumber ? state.seriesMeta.currentNumber : 1;
-    el.textContent = `Série ${serie} · Dia ${state.days + 1}`;
+    const indice = typeof indiceUltimoDiaIncompleto === 'function' ? indiceUltimoDiaIncompleto() : -1;
+    el.textContent = indice >= 0
+      ? `Série ${serie} · Completar Dia ${indice + 1}`
+      : `Série ${serie} · Dia ${state.days + 1}`;
   }
 }
 
@@ -143,6 +146,14 @@ function renderLaunchForm(){
     if(!draftNew[div.id]) draftNew[div.id] = [];
     const idsAtuais = new Set((div.participantes || []).map(p=>String(p.id)));
     Object.keys(draft[div.id]).forEach(k=>{ if(!idsAtuais.has(String(k))) delete draft[div.id][k]; });
+    const diaParcial = typeof indiceUltimoDiaIncompleto === 'function' ? indiceUltimoDiaIncompleto() : -1;
+    if(diaParcial >= 0){
+      (div.participantes || []).forEach(p=>{
+        if(Object.prototype.hasOwnProperty.call(draft[div.id], p.id)) return;
+        const valor = Array.isArray(p.scores) ? p.scores[diaParcial] : null;
+        draft[div.id][p.id] = valor === null || valor === undefined ? '' : String(valor);
+      });
+    }
   });
 
   renderLaunchColumns();
@@ -175,7 +186,9 @@ function renderLaunchForm(){
 // (saveState), dispara o auto-save do resumo do dia e limpa o rascunho.
 async function launchDayForm(){
   if(!exigirAdministrador()) return;
-  if(typeof podeCriarNovoDia === 'function' && !podeCriarNovoDia()) return;
+  const diaParcial = typeof indiceUltimoDiaIncompleto === 'function' ? indiceUltimoDiaIncompleto() : -1;
+  const completandoDiaParcial = diaParcial >= 0;
+  if(!completandoDiaParcial && typeof podeCriarNovoDia === 'function' && !podeCriarNovoDia()) return;
   const dataReferencia = typeof obterDataReferenciaLancamento === 'function' ? obterDataReferenciaLancamento() : dataLocalISO();
   if(!dataReferencia){ alert('Escolha uma data válida para a contagem.'); return; }
 
@@ -211,12 +224,16 @@ async function launchDayForm(){
   if(erro){ alert(erro); return; }
   if(!operacoes.length){ alert('Preencha ao menos uma pontuação válida antes de lançar o dia.'); return; }
 
-  const newIdx = state.days;
-  state.days += 1;
-  obterTodasDivisoes().forEach(div=>{ (div.participantes || []).forEach(p=>p.scores.push(null)); });
-  state.dayDates.push(dataReferencia);
-  if(!Array.isArray(state.dayIds)) state.dayIds = [];
-  state.dayIds.push('d_' + gerarParticipantId().replace(/^p_/, ''));
+  const newIdx = completandoDiaParcial ? diaParcial : state.days;
+  if(!completandoDiaParcial){
+    state.days += 1;
+    obterTodasDivisoes().forEach(div=>{ (div.participantes || []).forEach(p=>p.scores.push(null)); });
+    state.dayDates.push(dataReferencia);
+    if(!Array.isArray(state.dayIds)) state.dayIds = [];
+    state.dayIds.push('d_' + gerarParticipantId().replace(/^p_/, ''));
+  }else{
+    state.dayDates[newIdx] = dataReferencia;
+  }
 
   operacoes.forEach(op=>{
     if(op.tipo === 'existente') op.p.scores[newIdx] = op.num;

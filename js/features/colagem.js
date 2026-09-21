@@ -192,7 +192,8 @@ async function processPaste(){
     pendingImport = null;
     return;
   }
-  pendingDayMode = 'new';
+  const diaParcial = typeof indiceUltimoDiaIncompleto === 'function' ? indiceUltimoDiaIncompleto() : -1;
+  pendingDayMode = diaParcial >= 0 ? diaParcial : 'new';
   renderPending();
   if(skipped.length) console.warn('Linhas não reconhecidas/observações ignoradas na colagem:', skipped);
 }
@@ -201,7 +202,11 @@ async function processPaste(){
 function populatePendingDaySelect(){
   const sel = document.getElementById('pending-day-select');
   if(!sel) return;
-  let opts = `<option value="new">Novo dia (Dia ${state.days + 1})</option>`;
+  const diaParcial = typeof indiceUltimoDiaIncompleto === 'function' ? indiceUltimoDiaIncompleto() : -1;
+  let opts = diaParcial >= 0
+    ? `<option value="${diaParcial}">Completar Dia ${diaParcial + 1} (lançamento parcial)</option>`
+    : '';
+  opts += `<option value="new">Novo dia (Dia ${state.days + 1})</option>`;
   for(let d = state.days - 1; d >= 0; d--){
     opts += `<option value="${d}">Dia ${d+1} (substituir)</option>`;
   }

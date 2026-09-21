@@ -9,12 +9,12 @@
    - motion=false explícito na URL significa "não reduzir movimento" e prevalece sobre
      prefers-reduced-motion do SO; motion=true reduz imediatamente;
    - quando não há escolha explícita do app, prefers-reduced-motion continua respeitado;
-   - o arquivo tem nome físico versionado para não ser substituído por SW antigo.
+   - o arquivo é mantido como o ponto único da animação para o cache offline.
    ============================================================================ */
 (function(){
   'use strict';
 
-  const BUILD='20260916-v57-consolidacao-teste';
+  const BUILD='20260921-v58-dia7-corrigido';
   const splash=document.getElementById('rg-startup');
   const canvas=document.getElementById('rg-startup-canvas');
   const fallback=document.getElementById('rg-startup-fallback');
@@ -170,7 +170,7 @@
     done:function(text){appReady=true;announce(text||'Painel pronto.');maybeFinish();},
     isVisible:function(){return visible;},
     reduceMotion:function(){explicitMotion=true;skipped=true;time=DURATION;finished=true;stop();paint();maybeFinish();},
-    // Diagnóstico sem interferir no app; útil para testes automatizados no Chromium.
+    // Diagnóstico sem interferir no app.
     diagnostic:function(){return {build:BUILD,time,appReady,finished,skipped,visible,animationStarted,reduced:shouldReduce(),renderer:!!renderer,phase:splash.dataset.motionPhase||''};}
   };
 

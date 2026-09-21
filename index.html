@@ -14,8 +14,8 @@
 <link rel="icon" href="./assets/icons/icon-192.png">
 <link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
 <script src="./js/a11y/a11y.js"></script>
-<script src="./js/core/rg-motion-v57.js"></script>
-<link rel="stylesheet" href="./assets/css/app-v57.css">
+<script src="./js/core/rg-motion.js"></script>
+<link rel="stylesheet" href="./assets/css/app.css">
   <meta name="app-build" content="20260916-v58-cores">
 <style id="screen-guard">
   #app-shell.hidden, body:not([data-app-screen="app"]) #app-shell { display:none !important; }
@@ -60,7 +60,7 @@ body[data-startup-visible="true"]>.skip-link{visibility:hidden!important;pointer
     <button type="button" class="rg-startup-skip" id="rg-startup-skip" aria-label="Pular animação de abertura">Pular abertura</button>
     <p id="rg-startup-live" class="rg-startup-live" role="status" aria-live="polite" aria-atomic="true">Carregando Ranking Geral.</p>
   </div>
-  <script src="./js/core/startup-motion-v57.js"></script>
+  <script src="./js/core/startup-motion.js"></script>
 
   <!-- ============================================================================
        MENU DE ACESSIBILIDADE — botão flutuante + painel, e a camada do filtro
@@ -180,7 +180,7 @@ body[data-startup-visible="true"]>.skip-link{visibility:hidden!important;pointer
      Consolidado diretamente no index.html dentro de
      <div id="slot-modulo-0"> em index.html.
      Comportamento: modulo-0.js (formulários) + identidade.js (sessão).
-     Estilos: style.css, seção "Módulo 0: tela de login".
+     Estilos: assets/css/app.css, seção "Módulo 0: tela de login".
      ============================================================================ -->
 
 <!-- ===================== MÓDULO 0: LOGIN ===================== -->
@@ -260,7 +260,7 @@ body[data-startup-visible="true"]>.skip-link{visibility:hidden!important;pointer
      Consolidado diretamente no index.html dentro de
      <div id="slot-troca-senha"> em index.html.
      Comportamento: modulo-0.js (handleDefinirNovaSenha).
-     Estilos: style.css, seção "Modal (troca de senha obrigatória...)".
+     Estilos: assets/css/app.css, seção "Modal (troca de senha obrigatória...)".
      ============================================================================ -->
 
 <!-- ===================== TROCA DE SENHA OBRIGATÓRIA (após código temporário) ===================== -->
@@ -400,7 +400,7 @@ body[data-startup-visible="true"]>.skip-link{visibility:hidden!important;pointer
      analises-dashboard.js (renderDestaques/renderEvolucaoChart/renderHeatmap
      — chamados de dentro de aplicarFiltroAnalises, em filtros.js, para
      respeitar sempre o mesmo filtro), resumos-salvos.js (renderUltimoResumo).
-     Estilos: style.css, seções "Painel Estatísticas Gerais", "Filtros
+     Estilos: assets/css/app.css, seções "Painel Estatísticas Gerais", "Filtros
      (Análises Gerais)", "Dashboard de Análises", "Painel Resumos Salvos".
      ============================================================================ -->
 
@@ -789,7 +789,7 @@ body[data-startup-visible="true"]>.skip-link{visibility:hidden!important;pointer
      Consolidado diretamente no index.html dentro de
      <div id="slot-configuracoes-conta"> em index.html.
      Comportamento: configuracoes-de-conta.js.
-     Estilos: style.css, seção "Configurações de conta".
+     Estilos: assets/css/app.css, seção "Configurações de conta".
      ============================================================================ -->
 
 <!-- ===================== Configurações de conta (aberta pelo topbar, qualquer papel) ===================== -->
@@ -819,7 +819,7 @@ body[data-startup-visible="true"]>.skip-link{visibility:hidden!important;pointer
        demais funções se enxergam entre si.
        ============================================================================ -->
   <script src="./js/core/dialogos.js"></script><!-- Sistema visual unificado para alertas, confirmações e entradas. -->
-  <script src="./js/core/config-api-v57.js"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
+  <script src="./js/core/config-api.js"></script><!-- Base: URL da API + chamarAPI/chamarAPIGet + helpers de UI genéricos. -->
   <script src="./js/core/estado-global.js"></script><!-- Estado compartilhado (sessão, ranking, caches). Depende de nada. -->
   <script src="./js/features/faixas-dinamicas.js"></script><!-- Gerenciamento de faixas dinâmicas. -->
   <script src="./js/core/identidade.js"></script><!-- Serviço de sessão (aplicar/encerrar, permissões, barra de identidade). -->
@@ -829,7 +829,7 @@ body[data-startup-visible="true"]>.skip-link{visibility:hidden!important;pointer
   <script src="./js/features/configuracoes-de-conta.js"></script><!-- Tela "Minha conta". -->
   <script src="./js/features/modulo-0.js"></script><!-- Formulários de login/cadastro/esqueci-senha/nova-senha. -->
   <script src="./js/features/texto-do-resumo.js"></script><!-- Geração do texto de resumo (usa participantes.js: total/sortDivision). -->
-  <script src="./js/features/colagem-v57.js"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
+  <script src="./js/features/colagem.js"></script><!-- Fluxo da aba "Colar" (parse, conferência, confirmação). -->
   <script src="./js/features/colagem-gemini.js"></script><!-- Regras de leitura e integração com Gemini — restaura o mecanismo de 22/08. -->
   <script src="./js/features/planilha-mestra.js"></script><!-- loadState/saveState/syncToServer — ponte com a Planilha Google. -->
   <script src="./js/features/series-semanais.js"></script><!-- Séries de 7 dias, datas retroativas e Acumulado Geral. -->
@@ -844,6 +844,6 @@ body[data-startup-visible="true"]>.skip-link{visibility:hidden!important;pointer
   <script src="./js/features/resumos-salvos.js"></script><!-- Histórico de resumos salvos (Módulos 2 e 4). -->
   <script src="./js/features/usuarios.js"></script><!-- Painel de administração de usuários (Módulo 4). -->
   <script src="./js/core/renderizacao.js"></script><!-- renderDivision + render() geral — chama praticamente tudo acima. -->
-  <script src="./js/core/inicializacao-v57.js"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
+  <script src="./js/core/inicializacao.js"></script><!-- ÚLTIMO: carrega os módulos HTML e então inicia o app. -->
 </body>
 </html>

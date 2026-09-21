@@ -22,6 +22,10 @@ function garantirDataReferenciaLancamento(){
 }
 
 function podeCriarNovoDia(){
+  if(Number(state && state.days || 0) >= limiteDiasSerie() && ultimoDiaIncompleto()){
+    alert('Complete o último dia lançado em todas as faixas antes de criar outro dia.');
+    return false;
+  }
   if(!serieAtualCompleta()) return true;
   mostrarModalEncerramentoSerie();
   alert('A série atual já atingiu 7 lançamentos. Encerre a série antes de criar um novo dia.');

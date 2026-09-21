@@ -1324,6 +1324,19 @@ function estadoDepoisDeEncerrarSerie(estado, quantidadeDias, novaRevisao) {
   return novo;
 }
 
+function snapshotTemDiaIncompleto(estado, indiceDia) {
+  const indice = Number(indiceDia);
+  if (!Number.isInteger(indice) || indice < 0) return false;
+  for (let i = 0; i < (estado.divisoes || []).length; i++) {
+    const participantes = estado.divisoes[i].participantes || [];
+    for (let j = 0; j < participantes.length; j++) {
+      const valor = participantes[j].scores && participantes[j].scores[indice];
+      if (valor === null || valor === undefined || valor === '' || !isFinite(Number(valor))) return true;
+    }
+  }
+    return false;
+}
+
 
 function estadoDepoisDeReiniciarSerie(estado, novaRevisao, avancarNumero) {
   const novo = JSON.parse(JSON.stringify(estado));
@@ -1467,6 +1480,9 @@ function encerrarSerie(token, modo, estado) {
 
     const snapshotAtual = validarSnapshotRankingBackend(estado);
     if (snapshotAtual.diasTotal < 7) return criarResposta({ sucesso:false, erro:'A série ainda não completou 7 lançamentos.' });
+    if (snapshotAtual.diasTotal === 7 && snapshotTemDiaIncompleto(estado, 6)) {
+      return criarResposta({ sucesso:false, codigo:'SERIE_DIA_INCOMPLETO', erro:'Complete o Dia 7 em todas as faixas antes de encerrar a série.' });
+    }
 
     const planilha = SpreadsheetApp.openById(PLANILHA_MESTRA_ID);
     const abas = garantirEsquemaRanking(planilha);
@@ -1867,4 +1883,3 @@ function configurarPlanilhaMestra() {
   Logger.log('Planilha Mestra configurada/migrada com sucesso.');
   return 'Planilha Mestra configurada/migrada com sucesso. A senha de bootstrap foi removida das Propriedades do script após a criação do primeiro administrador.';
 }
-

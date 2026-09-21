@@ -1,12 +1,12 @@
 const CACHE_PREFIX='ranking-contador-';
 const CACHE_NAME=CACHE_PREFIX+'v58-cores-consolidado';
 const APP_SHELL=[
-  './','./index.html','./manifest.webmanifest','./feature-manifest.json','./assets/css/app-v57.css',
-  './js/a11y/a11y.js','./js/a11y/acessibilidade.js','./js/core/rg-motion-v57.js','./js/core/startup-motion-v57.js',
-  './js/core/config-api-v57.js','./js/core/dialogos.js','./js/core/estado-global.js','./js/core/identidade.js',
-  './js/core/navegacao.js','./js/core/sidebar.js','./js/core/renderizacao.js','./js/core/inicializacao-v57.js',
+  './','./index.html','./manifest.webmanifest','./feature-manifest.json','./assets/css/app.css',
+  './js/a11y/a11y.js','./js/a11y/acessibilidade.js','./js/core/rg-motion.js','./js/core/startup-motion.js',
+  './js/core/config-api.js','./js/core/dialogos.js','./js/core/estado-global.js','./js/core/identidade.js',
+  './js/core/navegacao.js','./js/core/sidebar.js','./js/core/renderizacao.js','./js/core/inicializacao.js',
   './js/features/configuracoes-de-conta.js','./js/features/modulo-0.js','./js/features/texto-do-resumo.js',
-  './js/features/colagem-v57.js','./js/features/colagem-gemini.js','./js/features/planilha-mestra.js',
+  './js/features/colagem.js','./js/features/colagem-gemini.js','./js/features/planilha-mestra.js',
   './js/features/series-semanais.js','./js/features/participantes.js','./js/features/dias.js',
   './js/features/formulario-lancamento-dia.js','./js/features/analises-gerais.js','./js/features/filtros.js',
   './js/features/analises-dashboard.js','./js/features/gerenciar-dias-lancados.js','./js/features/organizacao-ui.js',
