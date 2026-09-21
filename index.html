@@ -592,7 +592,21 @@ body[data-startup-visible="true"]>.skip-link{visibility:hidden!important;pointer
     <div class="series-warning">A alteração será registrada no histórico de atividade e refletida no Acumulado Geral. A série ativa não será alterada.</div>
     <div class="series-reset-footer">
       <button type="button" class="rg-dialog-btn rg-dialog-btn-secondary" onclick="fecharEditorSerieHistorica()">Cancelar</button>
-      <button type="button" class="rg-dialog-btn rg-dialog-btn-primary" id="historico-series-save-btn" onclick="salvarEdicaoSerieHistorica()">Salvar correções</button>
+      <button type="button" class="rg-dialog-btn rg-dialog-btn-primary" id="historico-series-save-btn" onclick="salvarEdicaoSerieHistorica()">Revisar alterações</button>
+    </div>
+  </div>
+</div>
+
+<div class="series-modal hidden" id="series-history-review-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="historico-series-review-title" tabindex="-1">
+  <div class="series-modal-card series-history-review-card">
+    <div class="panel-kicker">Conferência antes de gravar</div>
+    <div class="panel-title" id="historico-series-review-title">Confirmar alterações</div>
+    <div class="panel-hint" id="historico-series-review-description">Confira os dados que serão alterados antes de confirmar.</div>
+    <div id="historico-series-review-table" class="series-history-review-table"></div>
+    <div class="series-warning">Nada será alterado enquanto você não clicar em “Confirmar alterações”. Para corrigir ou completar algum item, escolha “Voltar para edição”.</div>
+    <div class="series-reset-footer">
+      <button type="button" class="rg-dialog-btn rg-dialog-btn-secondary" onclick="voltarParaEdicaoSerieHistorica()">Voltar para edição</button>
+      <button type="button" class="rg-dialog-btn rg-dialog-btn-primary" id="historico-series-review-confirm-btn" onclick="confirmarEdicaoSerieHistorica()">Confirmar alterações</button>
     </div>
   </div>
 </div>

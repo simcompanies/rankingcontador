@@ -113,6 +113,7 @@ let encerramentoSerieEmAndamento = false;
 // Série arquivada atualmente aberta no editor administrativo do Acumulado.
 let serieHistoricaEmEdicao = null;
 let serieHistoricaEdicaoBase = {};
+let serieHistoricaAlteracoesPendentes = [];
 
 function limiteDiasSerie(){
   return 7;

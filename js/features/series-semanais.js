@@ -454,6 +454,7 @@ function configurarModalEditorSerieHistorica(modal){
 function fecharEditorSerieHistorica(){
   serieHistoricaEmEdicao = null;
   serieHistoricaEdicaoBase = {};
+  serieHistoricaAlteracoesPendentes = [];
   const modal = document.getElementById('series-history-edit-modal');
   if(modal){ modal.classList.add('hidden'); modal.setAttribute('aria-hidden','true'); }
 }
@@ -483,43 +484,120 @@ function renderEditorSerieHistorica(){
     : '<div class="empty-hint">Esta série não possui participantes registrados.</div>';
 }
 
-async function salvarEdicaoSerieHistorica(){
-  if(!exigirAdministrador() || !serieHistoricaEmEdicao) return;
+function coletarAlteracoesSerieHistorica(){
   const inputs = Array.from(document.querySelectorAll('#historico-series-editor-table [data-serie-score="1"]'));
   const alteracoes = [];
   for(const input of inputs){
     const raw = String(input.value || '').trim();
     const valor = raw === '' ? null : parsePontuacao(raw);
-    if(Number.isNaN(valor)){
-      alert('Há uma pontuação histórica inválida. Use números, por exemplo 8 ou -1.');
-      input.focus();
-      return;
-    }
-    const chave = String(input.dataset.participantId) + '::' + String(Number(input.dataset.dayNumber));
+    if(Number.isNaN(valor)) return { erro:input };
+    const participantId = String(input.dataset.participantId);
+    const dia = Number(input.dataset.dayNumber);
+    const chave = participantId + '::' + String(dia);
     const original = Object.prototype.hasOwnProperty.call(serieHistoricaEdicaoBase, chave) ? serieHistoricaEdicaoBase[chave] : null;
     const iguais = original === null ? valor === null : valor !== null && Number(original) === Number(valor);
-    if(!iguais){
-      alteracoes.push({participantId:String(input.dataset.participantId), dia:Number(input.dataset.dayNumber), pontuacao:valor});
-    }
+    if(iguais) continue;
+    const participante = (serieHistoricaEmEdicao.participantes || []).find(function(p){ return String(p.id) === participantId; }) || {};
+    const diaInfo = (serieHistoricaEmEdicao.days || []).find(function(d){ return Number(d.numero) === dia; }) || {};
+    alteracoes.push({
+      participantId:participantId,
+      dia:dia,
+      pontuacao:valor,
+      nome:participante.name || '',
+      divTitle:participante.divTitle || participante.divId || '',
+      data:diaInfo.date || '',
+      valorAnterior:original,
+      valorNovo:valor
+    });
   }
-  if(!alteracoes.length){
+  return {alteracoes:alteracoes};
+}
+
+function textoPontuacaoHistorica(valor){
+  return valor === null || valor === undefined || valor === '' ? '—' : String(valor).replace('.', ',');
+}
+
+async function salvarEdicaoSerieHistorica(){
+  if(!exigirAdministrador() || !serieHistoricaEmEdicao) return;
+  const coleta = coletarAlteracoesSerieHistorica();
+  if(coleta.erro){
+    alert('Há uma pontuação histórica inválida. Use números, por exemplo 8 ou -1.');
+    coleta.erro.focus();
+    return;
+  }
+  if(!coleta.alteracoes.length){
     await uiAlert('Nenhuma alteração foi feita.', {title:'Histórico sem alterações', variant:'info'});
     return;
   }
-  const btn = document.getElementById('historico-series-save-btn');
+  serieHistoricaAlteracoesPendentes = coleta.alteracoes;
+  renderRevisaoEdicaoSerieHistorica();
+  const editor = document.getElementById('series-history-edit-modal');
+  const revisao = document.getElementById('series-history-review-modal');
+  if(editor){ editor.classList.add('hidden'); editor.setAttribute('aria-hidden','true'); }
+  if(revisao){
+    configurarModalRevisaoSerieHistorica(revisao);
+    revisao.classList.remove('hidden');
+    revisao.setAttribute('aria-hidden','false');
+    revisao.focus({preventScroll:true});
+  }
+}
+
+function configurarModalRevisaoSerieHistorica(modal){
+  if(!modal || modal.dataset.reviewBound === '1') return;
+  modal.dataset.reviewBound = '1';
+  modal.addEventListener('mousedown', function(event){
+    if(event.target === modal) voltarParaEdicaoSerieHistorica();
+  });
+  modal.addEventListener('keydown', function(event){
+    if(event.key === 'Escape'){
+      event.preventDefault();
+      voltarParaEdicaoSerieHistorica();
+    }
+  });
+}
+
+function renderRevisaoEdicaoSerieHistorica(){
+  const wrap = document.getElementById('historico-series-review-table');
+  const titulo = document.getElementById('historico-series-review-title');
+  const descricao = document.getElementById('historico-series-review-description');
+  if(!wrap || !serieHistoricaEmEdicao) return;
+  if(titulo) titulo.textContent = `Confirmar alterações · Série ${Number(serieHistoricaEmEdicao.numero) || '?'}`;
+  if(descricao) descricao.textContent = 'Confira os dados abaixo antes de gravar. Se faltar alguma pontuação, volte para edição e complete o formulário.';
+  const linhas = serieHistoricaAlteracoesPendentes.map(function(item){
+    return `<tr><td>Dia ${item.dia}</td><td>${escapeHtml(item.data ? formatarDataCurta(item.data) : 'sem data')}</td><td class="name">${escapeHtml(item.nome)}</td><td>${escapeHtml(item.divTitle)}</td><td>${escapeHtml(textoPontuacaoHistorica(item.valorAnterior))}</td><td class="series-review-new-value">${escapeHtml(textoPontuacaoHistorica(item.valorNovo))}</td></tr>`;
+  }).join('');
+  wrap.innerHTML = `<div class="table-wrap"><table class="series-review-table"><thead><tr><th>Dia</th><th>Data</th><th>Participante</th><th>Faixa</th><th>Valor atual</th><th>Novo valor</th></tr></thead><tbody>${linhas}</tbody></table></div>`;
+}
+
+function voltarParaEdicaoSerieHistorica(){
+  const revisao = document.getElementById('series-history-review-modal');
+  const editor = document.getElementById('series-history-edit-modal');
+  if(revisao){ revisao.classList.add('hidden'); revisao.setAttribute('aria-hidden','true'); }
+  if(editor){
+    editor.classList.remove('hidden');
+    editor.setAttribute('aria-hidden','false');
+    editor.focus({preventScroll:true});
+  }
+}
+
+async function confirmarEdicaoSerieHistorica(){
+  if(!exigirAdministrador() || !serieHistoricaEmEdicao || !serieHistoricaAlteracoesPendentes.length) return;
+  const btn = document.getElementById('historico-series-review-confirm-btn');
   if(btn) btn.disabled = true;
   try{
     const resposta = await chamarAPI({
       action:'editarSerieHistorica',
       token:sessaoUsuario.token,
       serieId:String(serieHistoricaEmEdicao.id),
-      alteracoes:alteracoes
+      alteracoes:serieHistoricaAlteracoesPendentes
     });
     if(!resposta.sucesso){
       if(tratarErroSessaoOuPermissao(resposta)) return;
       throw new Error(resposta.erro || 'Não foi possível salvar a série histórica.');
     }
     fecharEditorSerieHistorica();
+    const revisao = document.getElementById('series-history-review-modal');
+    if(revisao){ revisao.classList.add('hidden'); revisao.setAttribute('aria-hidden','true'); }
     historicoSeriesCarregado = false;
     await carregarHistoricoSeries(true);
     await uiAlert('As pontuações da série histórica foram atualizadas.', {title:'Série atualizada', variant:'success'});
