@@ -1,5 +1,5 @@
 const CACHE_PREFIX='ranking-contador-';
-const CACHE_NAME=CACHE_PREFIX+'v58-series-editaveis';
+const CACHE_NAME=CACHE_PREFIX+'v58-modal-edicao-series';
 const APP_SHELL=[
   './','./index.html','./manifest.webmanifest','./feature-manifest.json','./assets/css/app.css',
   './js/a11y/a11y.js','./js/a11y/acessibilidade.js','./js/core/rg-motion.js','./js/core/startup-motion.js',

@@ -407,7 +407,7 @@ function renderHistoricoSeries(series){
     const pessoas = (s.participantes || []).length;
     return `<div class="series-history-row">
       <div><strong>Série ${Number(s.numero)||'?'}</strong><span>${escapeHtml(periodo)}</span></div>
-      <div><span>${dias.length} dia(s)</span><span>${pessoas} participante(s)</span>${souAdmin() ? `<button type="button" class="series-edit-trigger" data-edit-historical="1" data-serie-id="${escapeHtml(s.id)}">Editar dados</button>` : ''}</div>
+      <div><span>${dias.length} dia(s)</span><span>${pessoas} participante(s)</span>${souAdmin() ? `<button type="button" class="series-edit-trigger" data-papel="administrador" data-edit-historical="1" data-serie-id="${escapeHtml(s.id)}" aria-label="Editar dados da Série ${Number(s.numero)||'?'}">Editar dados</button>` : ''}</div>
     </div>`;
   }).join('');
   wrap.querySelectorAll('[data-edit-historical="1"]').forEach(function(btn){
@@ -429,7 +429,26 @@ function abrirEditorSerieHistorica(serieId){
   });
   renderEditorSerieHistorica();
   const modal = document.getElementById('series-history-edit-modal');
-  if(modal){ modal.classList.remove('hidden'); modal.setAttribute('aria-hidden','false'); }
+  if(modal){
+    configurarModalEditorSerieHistorica(modal);
+    modal.classList.remove('hidden');
+    modal.setAttribute('aria-hidden','false');
+    modal.focus({preventScroll:true});
+  }
+}
+
+function configurarModalEditorSerieHistorica(modal){
+  if(!modal || modal.dataset.editorBound === '1') return;
+  modal.dataset.editorBound = '1';
+  modal.addEventListener('mousedown', function(event){
+    if(event.target === modal) fecharEditorSerieHistorica();
+  });
+  modal.addEventListener('keydown', function(event){
+    if(event.key === 'Escape'){
+      event.preventDefault();
+      fecharEditorSerieHistorica();
+    }
+  });
 }
 
 function fecharEditorSerieHistorica(){

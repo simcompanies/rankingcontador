@@ -1,5 +1,5 @@
 {
-  "build":"20260921-v58-series-editaveis",
+  "build":"20260921-v58-modal-edicao-series",
   "requiredIds":[
     "auth-gate","app-shell","main-content","paste-area","paste-read-btn",
     "paste-confirm-btn","paste-cancel-btn","launch-reference-date","series-reset-btn",
