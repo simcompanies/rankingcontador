@@ -295,34 +295,34 @@ body[data-startup-visible="true"]>.skip-link{visibility:hidden!important;pointer
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-head">
       <span class="sidebar-brand"><span class="brand-mark brand-mark-image" aria-hidden="true"><img src="./assets/logo-ranking-geral.png" alt=""></span><span>Ranking Geral</span></span>
-      <button type="button" class="sidebar-collapse-btn" id="sidebar-collapse-btn" onclick="toggleSidebarCollapse()" title="Recolher menu" aria-label="Recolher menu"><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"></path></svg></span></button>
+      <button type="button" class="sidebar-collapse-btn" id="sidebar-collapse-btn" onclick="toggleSidebarCollapse()" title="Recolher menu" aria-label="Recolher menu" aria-expanded="true"><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"></path></svg></span></button>
     </div>
     <div class="sidebar-section-label">Principal</div>
     <nav class="sidebar-nav">
-      <button type="button" class="side-link active" data-view="faixas" onclick="mostrarView('faixas')">
-        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="m7 15 3-4 3 2 4-6"></path></svg></span><span class="side-label">Visão Geral</span>
+      <button type="button" class="side-link active" data-view="faixas" data-nav-label="Visão Geral" onclick="mostrarView('faixas')">
+        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="6" height="6" rx="1"></rect><rect x="14" y="4" width="6" height="6" rx="1"></rect><rect x="4" y="14" width="6" height="6" rx="1"></rect><rect x="14" y="14" width="6" height="6" rx="1"></rect></svg></span><span class="side-label">Visão Geral</span>
       </button>
-      <button type="button" class="side-link" data-view="analises" onclick="mostrarView('analises')">
+      <button type="button" class="side-link" data-view="analises" data-nav-label="Análises" onclick="mostrarView('analises')">
         <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="m7 15 3-4 3 2 4-6"></path></svg></span><span class="side-label">Análises</span>
       </button>
-      <button type="button" class="side-link" data-view="acumulado" onclick="mostrarView('acumulado')">
+      <button type="button" class="side-link" data-view="acumulado" data-nav-label="Acumulado Geral" onclick="mostrarView('acumulado')">
         <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h16"></path><path d="M6 16l4-5 3 2 5-7"></path><path d="M18 6h-4M18 6v4"></path></svg></span><span class="side-label">Acumulado Geral</span>
       </button>
-      <button type="button" class="side-link" data-view="conteudo" onclick="mostrarView('conteudo')">
+      <button type="button" class="side-link" data-view="conteudo" data-nav-label="Regras e Ajuda" onclick="mostrarView('conteudo')">
         <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h9l3 3v15H6z"></path><path d="M15 3v4h4"></path><path d="M9 12h6M9 16h6"></path></svg></span><span class="side-label">Regras e Ajuda</span>
       </button>
     </nav>
 
     <div class="sidebar-section-label sidebar-admin-label" data-papel="administrador">Operação</div>
     <nav class="sidebar-nav">
-      <button type="button" class="side-link" data-view="lancar" data-papel="administrador" onclick="mostrarView('lancar')">
-        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h14v16H5z"></path><path d="M8 8h8M8 12h8M8 16h5"></path></svg></span><span class="side-label">Lançamentos</span>
+      <button type="button" class="side-link" data-view="lancar" data-papel="administrador" data-nav-label="Lançamentos" onclick="mostrarView('lancar')">
+        <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="4" width="14" height="16" rx="2"></rect><path d="M9 4V3h6v1M8 9h8M8 13h8M8 17h5"></path></svg></span><span class="side-label">Lançamentos</span>
       </button>
     </nav>
 
     <div class="sidebar-section-label sidebar-admin-label" data-papel="administrador">Gestão</div>
     <nav class="sidebar-nav">
-      <button type="button" class="side-link" data-view="config" data-papel="administrador" onclick="mostrarView('config')">
+      <button type="button" class="side-link" data-view="config" data-papel="administrador" data-nav-label="Administração" onclick="mostrarView('config')">
         <span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .3 1.82l.06.06-1.5 1.5-.06-.06a1.65 1.65 0 0 0-1.82-.3 1.65 1.65 0 0 0-1 1.5V21h-2v-.08a1.65 1.65 0 0 0-1-1.5 1.65 1.65 0 0 0-1.82.3l-.06.06-1.5-1.5.06-.06a1.65 1.65 0 0 0 .3-1.82 1.65 1.65 0 0 0-1.5-1H3v-2h.08a1.65 1.65 0 0 0 1.5-1 1.65 1.65 0 0 0-.3-1.82l-.06-.06 1.5-1.5.06.06a1.65 1.65 0 0 0 1.82.3 1.65 1.65 0 0 0 1-1.5V3h2v.08a1.65 1.65 0 0 0 1 1.5 1.65 1.65 0 0 0 1.82-.3l.06-.06 1.5 1.5-.06.06a1.65 1.65 0 0 0 1.5 1H21v2h-.08a1.65 1.65 0 0 0-1.5 1z"></path></svg></span><span class="side-label">Administração</span>
       </button>
     </nav>

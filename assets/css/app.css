@@ -4119,3 +4119,92 @@ body.high-contrast .resumos-serie-group{border-color:#687789!important;}
 @media(max-width:560px){.resumos-serie-header{align-items:stretch;flex-direction:column;gap:4px;padding:8px 10px;}.resumos-serie-header>b{padding-left:2px;}.resumo-card-toggle{align-items:flex-start;flex-direction:column;gap:7px;}.resumo-toggle-label{white-space:normal;}.resumo-card-actions{display:grid;grid-template-columns:1fr 1fr;}.resumo-card-actions button{width:100%;}.resumo-card-actions .resumo-copy-btn{order:2;}.resumo-card-actions button:first-child{order:1;}}
 :root[data-contrast="on"] .resumo-status,
 body.high-contrast .resumo-status{border:1px solid currentColor;}
+
+/* ========================================================================== 
+   V58.1 — trilho de navegação: ícones, tipografia e sidebar recolhida
+   --------------------------------------------------------------------------
+   Camada exclusivamente visual. Rotas, handlers, permissões e estado da
+   navegação continuam nos mesmos elementos e funções existentes.
+   ========================================================================== */
+:root{
+  --rg-nav-rail:76px;
+  --rg-nav-icon:24px;
+  --rg-nav-icon-stroke:1.9;
+  --rg-nav-tip-bg:var(--ux-surface,#121c26);
+  --rg-nav-tip-border:var(--ux-line,#2a3b4a);
+}
+
+body,
+button,input,select,textarea,
+.sidebar,.side-link,.sidebar-section-label,
+.topbar-title,.panel-title,.division-title,
+.auth-brand,.a11y-panel,.identity-bar{
+  font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif!important;
+}
+.resumo-body,.resumo-full-text,.summary-output,
+input.score,.faixa-id,.day-id,.chart-axis-label{
+  font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Consolas,monospace!important;
+}
+
+.sidebar{
+  width:264px!important;
+  min-width:264px!important;
+  background:linear-gradient(180deg,var(--ux-surface,#111821),color-mix(in srgb,var(--ux-surface,#111821) 82%,transparent))!important;
+  border-right:1px solid var(--ux-line)!important;
+}
+.sidebar-head{position:relative;min-height:82px!important;}
+.sidebar-collapse-btn{position:relative;z-index:2;}
+.sidebar-collapse-btn .ui-icon{display:grid;place-items:center;}
+.sidebar-collapse-btn .ui-icon svg{width:20px!important;height:20px!important;stroke-width:var(--rg-nav-icon-stroke)!important;stroke-linecap:round;stroke-linejoin:round;}
+.sidebar-nav{gap:7px!important;}
+.side-link{
+  position:relative;
+  min-height:52px!important;
+  border-radius:14px!important;
+  border-left-width:2px!important;
+  letter-spacing:-.01em;
+}
+.side-link .side-icon{width:var(--rg-nav-icon)!important;height:var(--rg-nav-icon)!important;flex-basis:var(--rg-nav-icon)!important;}
+.side-link .side-icon svg{width:var(--rg-nav-icon)!important;height:var(--rg-nav-icon)!important;stroke-width:var(--rg-nav-icon-stroke)!important;stroke-linecap:round;stroke-linejoin:round;}
+.side-link:hover{transform:translateX(2px)!important;}
+.side-link.active{box-shadow:inset 3px 0 0 var(--ux-primary),0 8px 20px color-mix(in srgb,var(--ux-primary) 8%,transparent)!important;}
+
+/* O modo recolhido vira o trilho de comandos. Os nomes continuam presentes
+   no DOM e aparecem no foco/hover para não depender só do desenho do ícone. */
+.sidebar.collapsed{width:var(--rg-nav-rail)!important;min-width:var(--rg-nav-rail)!important;}
+.sidebar.collapsed .sidebar-head{justify-content:center!important;padding-inline:10px!important;}
+.sidebar.collapsed .sidebar-brand{display:flex!important;justify-content:center!important;}
+.sidebar.collapsed .sidebar-brand span:not(.brand-mark){display:none!important;}
+.sidebar.collapsed .sidebar-collapse-btn{position:absolute;right:10px;bottom:9px;width:30px!important;height:30px!important;}
+.sidebar.collapsed .sidebar-nav{padding:10px 8px!important;gap:8px!important;}
+.sidebar.collapsed .sidebar-section-label{display:block!important;height:8px;padding:0!important;overflow:hidden;font-size:0!important;letter-spacing:0;}
+.sidebar.collapsed .sidebar-section-label::before{content:"";display:block;width:22px;height:1px;margin:3px auto;background:var(--ux-line);}
+.sidebar.collapsed .side-link{justify-content:center!important;width:58px!important;min-height:56px!important;margin-inline:auto!important;padding:10px 0!important;border:1px solid transparent!important;border-radius:16px!important;transform:none!important;}
+.sidebar.collapsed .side-link:hover{background:var(--ux-primary-soft)!important;border-color:var(--ux-primary-border)!important;}
+.sidebar.collapsed .side-link.active{border-color:var(--ux-primary-border)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--ux-primary) 12%,transparent),inset 0 0 0 1px color-mix(in srgb,var(--ux-primary) 18%,transparent)!important;}
+.sidebar.collapsed .side-label{display:none!important;}
+.sidebar.collapsed .side-icon{width:var(--rg-nav-icon)!important;height:var(--rg-nav-icon)!important;}
+.sidebar.collapsed .side-link::after{content:attr(data-nav-label);position:absolute;left:calc(100% + 10px);top:50%;z-index:1000;max-width:190px;padding:8px 10px;border:1px solid var(--rg-nav-tip-border);border-radius:9px;background:var(--rg-nav-tip-bg);color:var(--ux-text);box-shadow:0 12px 28px rgba(0,0,0,.22);font:600 11px/1.25 Inter,ui-sans-serif,sans-serif;white-space:nowrap;opacity:0;pointer-events:none;transform:translate(-5px,-50%);transition:opacity .14s ease,transform .14s ease;}
+.sidebar.collapsed .side-link:hover::after,.sidebar.collapsed .side-link:focus-visible::after{opacity:1;transform:translate(0,-50%);}
+
+@media(max-width:880px){
+  .sidebar,.sidebar.collapsed{width:276px!important;min-width:276px!important;}
+  .sidebar.collapsed .sidebar-head{justify-content:space-between!important;padding-inline:16px!important;}
+  .sidebar.collapsed .sidebar-brand{justify-content:flex-start!important;}
+  .sidebar.collapsed .sidebar-brand span:not(.brand-mark),.sidebar.collapsed .side-label{display:inline!important;}
+  .sidebar.collapsed .sidebar-section-label{display:block!important;height:auto;padding:5px 13px 8px!important;overflow:visible;font-size:10px!important;letter-spacing:.12em;}
+  .sidebar.collapsed .sidebar-section-label::before{display:none;}
+  .sidebar.collapsed .sidebar-collapse-btn{position:relative;right:auto;bottom:auto;width:34px!important;height:34px!important;}
+  .sidebar.collapsed .sidebar-nav{padding:14px 10px!important;gap:7px!important;}
+  .sidebar.collapsed .side-link{justify-content:flex-start!important;width:100%!important;min-height:52px!important;margin:0!important;padding:10px 13px!important;border:1px solid transparent!important;border-left:2px solid transparent!important;border-radius:14px!important;}
+  .sidebar.collapsed .side-link.active{border-left-color:var(--ux-primary)!important;box-shadow:inset 3px 0 0 var(--ux-primary),0 8px 20px color-mix(in srgb,var(--ux-primary) 8%,transparent)!important;}
+  .sidebar.collapsed .side-link::after{display:none!important;}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .side-link,.sidebar-collapse-btn .ui-icon svg,.sidebar.collapsed .side-link::after{transition:none!important;}
+}
+
+@media(forced-colors:active){
+  .sidebar.collapsed .side-link::after{background:Canvas;color:CanvasText;border-color:CanvasText;box-shadow:none;}
+}

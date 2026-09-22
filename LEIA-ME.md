@@ -16,6 +16,7 @@ Se `configurarPlanilhaMestra()` mostrar apenas “Ocorreu um erro desconhecido�
 - carregamento seguro, salvamento protegido e migração conservadora dos dados;
 - colagem manual e fluxo assistido opcional pelo Gemini, com recálculo local da pontuação;
 - temas claro, escuro e modos de daltonismo com cores semânticas consistentes;
+- trilho de navegação visual com ícones SVG padronizados, rótulos completos no foco/hover e tipografia de interface unificada;
 - edição de pontuações em dias já lançados com regeneração dos resumos da série ativa;
 - histórico de resumos organizado por série e dia, com busca, filtros, texto integral e cópia direta;
 - abertura animada oficial com alternativa acessível para movimento reduzido;

@@ -25,5 +25,9 @@ function toggleSidebarCollapse(){
   const collapsed = sidebar.classList.toggle('collapsed');
   localStorage.setItem('rankingGeral_sidebarCollapsed', collapsed ? '1' : '0');
   const btn = document.getElementById('sidebar-collapse-btn');
-  if(btn) btn.textContent = collapsed ? '»' : '«';
+  if(btn){
+    btn.setAttribute('aria-label', collapsed ? 'Expandir menu' : 'Recolher menu');
+    btn.setAttribute('title', collapsed ? 'Expandir menu' : 'Recolher menu');
+    btn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+  }
 }
