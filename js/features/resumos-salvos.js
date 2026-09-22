@@ -99,22 +99,26 @@ function resumoSituacaoHtml(r){
 function resumoHistoricoHtml(r, i, opcoes){
   const opts = opcoes || {};
   const compacto = opts.compacto !== false;
+  const sufixo = compacto ? 'historico' : 'ultimo';
+  const detalhesId = `resumo-detalhes-${i}-${sufixo}`;
   const data = r.dataHora ? new Date(r.dataHora).toLocaleString('pt-BR') : '—';
   const texto = String(r.texto || '');
   const preview = texto.replace(/\s+/g, ' ').trim();
   const previewCortada = preview.length > 260 ? preview.slice(0,257) + '…' : preview;
-  const corpo = compacto
-    ? `<p class="resumo-preview">${escapeHtml(previewCortada || 'Resumo sem texto.')}</p>`
-    : `<pre class="resumo-body">${escapeHtml(texto)}</pre>`;
+  const corpo = `<div class="resumo-card-details" id="${detalhesId}" hidden><pre class="resumo-body">${escapeHtml(texto)}</pre></div>`;
   const classeEstado = r.situacao === 'dia_removido' ? ' resumo-card-removido' : '';
   return `<article class="resumo-card${classeEstado}">
     <div class="resumo-header">
-      <div class="resumo-identificacao">
+      <button type="button" class="resumo-card-toggle" aria-expanded="false" aria-controls="${detalhesId}" onclick="alternarResumoSalvo(${i}, this, '${sufixo}')">
+        <span class="resumo-identificacao">
         <span class="day-tag" title="${escapeHtml(r.dayId || '')}">${escapeHtml(resumoRotuloDia(r))}</span>
         ${resumoSituacaoHtml(r)}
-      </div>
+        </span>
+        <span class="resumo-toggle-label">Mostrar resumo</span>
+      </button>
       <span class="resumo-data">Atualizado em ${escapeHtml(data)}</span>
     </div>
+    <p class="resumo-preview">${escapeHtml(previewCortada || 'Resumo sem texto.')}</p>
     ${corpo}
     <div class="resumo-card-actions">
       <button type="button" onclick="abrirResumoSalvo(${i})">Abrir texto completo</button>
@@ -220,14 +224,21 @@ function renderResumosSalvos(){
   });
   grupos.sort((a,b)=>b.numero-a.numero);
   const serieAtualId = state && state.seriesMeta ? String(state.seriesMeta.currentId || '') : '';
-  wrap.innerHTML = grupos.map(function(grupo){
+  wrap.innerHTML = grupos.map(function(grupo, indiceGrupo){
     const atual = grupo.chave === serieAtualId;
     const titulo = grupo.numero ? 'Série ' + grupo.numero : 'Série histórica';
     const subtitulo = atual ? 'série atual' : 'histórico preservado';
-    return `<details class="resumos-serie-group" data-serie-group="${escapeHtml(grupo.chave)}"${atual ? ' open' : ''}>
-      <summary><span><strong>${escapeHtml(titulo)}</strong><small>${escapeHtml(subtitulo)}</small></span><b>${grupo.itens.length} ${grupo.itens.length === 1 ? 'resumo' : 'resumos'}</b></summary>
-      <div class="resumos-serie-items">${grupo.itens.map(item=>resumoHistoricoHtml(item.r,item.indice,{compacto:true})).join('')}</div>
-    </details>`;
+    const grupoId = 'resumos-grupo-' + indiceGrupo;
+    return `<section class="resumos-serie-group" data-serie-group="${grupoId}" data-open="${atual ? 'true' : 'false'}">
+      <div class="resumos-serie-header">
+        <button type="button" class="resumos-serie-toggle" aria-expanded="${atual ? 'true' : 'false'}" aria-controls="${grupoId}-items" onclick="alternarGrupoResumos('${grupoId}', this)">
+          <span><strong>${escapeHtml(titulo)}</strong><small>${escapeHtml(subtitulo)}</small></span>
+          <span class="resumos-serie-chevron" aria-hidden="true">${atual ? '−' : '+'}</span>
+        </button>
+        <b>${grupo.itens.length} ${grupo.itens.length === 1 ? 'resumo' : 'resumos'}</b>
+      </div>
+      <div class="resumos-serie-items" id="${grupoId}-items"${atual ? '' : ' hidden'}>${grupo.itens.map(item=>resumoHistoricoHtml(item.r,item.indice,{compacto:true})).join('')}</div>
+    </section>`;
   }).join('');
 }
 
@@ -252,8 +263,43 @@ function limparFiltrosResumos(){
   renderResumosSalvos();
 }
 
+function alternarGrupoResumos(grupoId, botao){
+  const grupo = document.querySelector(`#resumos-salvos-lista [data-serie-group="${grupoId}"]`);
+  const itens = document.getElementById(grupoId + '-items');
+  if(!grupo || !itens) return;
+  const abrir = itens.hidden;
+  itens.hidden = !abrir;
+  grupo.dataset.open = abrir ? 'true' : 'false';
+  if(botao){
+    botao.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+    const seta = botao.querySelector('.resumos-serie-chevron');
+    if(seta) seta.textContent = abrir ? '−' : '+';
+  }
+}
+
+function alternarResumoSalvo(i, botao, sufixo){
+  const detalhes = document.getElementById(`resumo-detalhes-${i}-${sufixo || 'historico'}`);
+  if(!detalhes || !botao) return;
+  const abrir = detalhes.hidden;
+  detalhes.hidden = !abrir;
+  botao.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+  const label = botao.querySelector('.resumo-toggle-label');
+  if(label) label.textContent = abrir ? 'Ocultar resumo' : 'Mostrar resumo';
+}
+
 function alternarGruposResumos(abrir){
-  document.querySelectorAll('#resumos-salvos-lista .resumos-serie-group').forEach(function(grupo){ grupo.open = !!abrir; });
+  document.querySelectorAll('#resumos-salvos-lista .resumos-serie-group').forEach(function(grupo){
+    const itens = grupo.querySelector('.resumos-serie-items');
+    const botao = grupo.querySelector('.resumos-serie-toggle');
+    if(!itens) return;
+    itens.hidden = !abrir;
+    grupo.dataset.open = abrir ? 'true' : 'false';
+    if(botao){
+      botao.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+      const seta = botao.querySelector('.resumos-serie-chevron');
+      if(seta) seta.textContent = abrir ? '−' : '+';
+    }
+  });
 }
 
 function configurarModalResumoSalvo(){

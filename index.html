@@ -589,9 +589,9 @@ body[data-startup-visible="true"]>.skip-link{visibility:hidden!important;pointer
       <label class="resumos-filter-field"><span>Status</span><select id="resumos-filtro-status" onchange="aplicarFiltrosResumos()"><option value="all">Todos os status</option></select></label>
       <label class="resumos-filter-field"><span>Ordenar</span><select id="resumos-ordenacao" onchange="aplicarFiltrosResumos()"><option value="recentes">Mais recentes</option><option value="antigos">Mais antigos</option><option value="serie">Por série e dia</option></select></label>
       <div class="resumos-toolbar-actions">
-        <button type="button" onclick="limparFiltrosResumos()">Limpar filtros</button>
-        <button type="button" onclick="alternarGruposResumos(true)">Expandir séries</button>
-        <button type="button" onclick="alternarGruposResumos(false)">Recolher séries</button>
+        <button type="button" class="resumos-clear-btn" onclick="limparFiltrosResumos()">Limpar filtros</button>
+        <button type="button" class="resumos-view-btn" onclick="alternarGruposResumos(true)">Expandir séries</button>
+        <button type="button" class="resumos-view-btn" onclick="alternarGruposResumos(false)">Recolher séries</button>
       </div>
     </div>
     <div class="resumos-results-status" id="resumos-contagem" role="status" aria-live="polite"></div>

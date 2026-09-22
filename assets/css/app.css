@@ -4055,6 +4055,9 @@ html[data-theme="light"] :where(select),body.light-mode :where(select){color-sch
 .resumos-filter-field span{font-size:10px;font-weight:750;letter-spacing:.04em;text-transform:uppercase;color:var(--ux-muted,var(--muted));}
 .resumos-toolbar-actions{grid-column:1/-1;display:flex;gap:7px;flex-wrap:wrap;}
 .resumos-toolbar-actions button{min-height:32px;font-size:11px;}
+.resumos-toolbar-actions .resumos-clear-btn{color:var(--ux-text,var(--text));border-color:var(--ux-line,var(--border));}
+.resumos-toolbar-actions .resumos-view-btn{color:var(--ux-muted,var(--muted));background:transparent;border-color:transparent;}
+.resumos-toolbar-actions .resumos-view-btn:hover{color:var(--ux-primary,var(--x-color));border-color:var(--ux-primary-border,var(--border));background:var(--ux-primary-soft,rgba(50,215,171,.08));}
 .resumos-results-status{min-height:18px;margin:7px 2px 10px;color:var(--ux-muted,var(--muted));font-size:11px;}
 .resumos-serie-group{margin:0 0 10px;border:1px solid var(--ux-line,var(--border));border-radius:15px;background:var(--ux-surface,var(--panel));overflow:hidden;}
 .resumos-serie-group>summary{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:52px;padding:11px 14px;cursor:pointer;list-style:none;color:var(--ux-text,var(--text));}
@@ -4088,5 +4091,31 @@ html[data-theme="light"] :where(select),body.light-mode :where(select){color-sch
 body.high-contrast .resumos-toolbar,
 :root[data-contrast="on"] .resumos-serie-group,
 body.high-contrast .resumos-serie-group{border-color:#687789!important;}
+
+/* Controles explícitos: o recolhimento não depende do marcador nativo de
+   <details>, que varia entre navegadores e temas. */
+.resumos-serie-header{display:flex;align-items:center;gap:10px;min-height:54px;padding:8px 12px;border-bottom:1px solid transparent;}
+.resumos-serie-group[data-open="true"] .resumos-serie-header{border-bottom-color:var(--ux-line-soft,var(--border));}
+.resumos-serie-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;flex:1;min-width:0;min-height:38px;padding:5px 2px;border:0;background:transparent;color:var(--ux-text,var(--text));text-align:left;cursor:pointer;}
+.resumos-serie-toggle>span:first-child{display:flex;flex-direction:column;gap:3px;min-width:0;}
+.resumos-serie-toggle strong{font-size:13px;}
+.resumos-serie-toggle small{font-size:10px;color:var(--ux-muted,var(--muted));}
+.resumos-serie-chevron{display:grid;place-items:center;width:28px;height:28px;border:1px solid var(--ux-line,var(--border));border-radius:8px;color:var(--ux-primary,var(--x-color));font-size:17px;font-weight:800;flex:none;}
+.resumos-serie-toggle:hover .resumos-serie-chevron{background:var(--ux-primary-soft,rgba(50,215,171,.1));border-color:var(--ux-primary,var(--x-color));}
+.resumos-serie-toggle:focus-visible{outline:3px solid var(--ux-primary,var(--x-color));outline-offset:2px;border-radius:7px;}
+.resumos-serie-header>b{font-size:10px;color:var(--ux-muted,var(--muted));white-space:nowrap;}
+.resumo-header{align-items:stretch!important;gap:8px!important;}
+.resumo-card-toggle{display:flex;align-items:center;justify-content:space-between;gap:10px;flex:1;min-width:0;padding:0;border:0;background:transparent;color:inherit;text-align:left;cursor:pointer;}
+.resumo-card-toggle:hover .resumo-toggle-label{color:var(--ux-primary,var(--x-color));}
+.resumo-card-toggle:focus-visible{outline:3px solid var(--ux-primary,var(--x-color));outline-offset:3px;border-radius:8px;}
+.resumo-toggle-label{font-size:10px;font-weight:750;color:var(--ux-muted,var(--muted));white-space:nowrap;}
+.resumo-card-details[hidden],.resumos-serie-items[hidden]{display:none!important;}
+.resumo-card-details{border-top:1px solid var(--ux-line-soft,var(--border));padding-top:9px;}
+.resumo-card-actions{justify-content:flex-end;align-items:center;}
+.resumo-card-actions button{border-radius:9px;font-weight:700;}
+.resumo-card-actions .resumo-copy-btn{order:2;background:var(--ux-primary-soft,rgba(50,215,171,.12));}
+.resumo-card-actions button:first-child{order:1;}
+.resumo-card-actions button:focus-visible,.resumos-toolbar-actions button:focus-visible{outline:3px solid var(--ux-primary,var(--x-color));outline-offset:2px;}
+@media(max-width:560px){.resumos-serie-header{align-items:stretch;flex-direction:column;gap:4px;padding:8px 10px;}.resumos-serie-header>b{padding-left:2px;}.resumo-card-toggle{align-items:flex-start;flex-direction:column;gap:7px;}.resumo-toggle-label{white-space:normal;}.resumo-card-actions{display:grid;grid-template-columns:1fr 1fr;}.resumo-card-actions button{width:100%;}.resumo-card-actions .resumo-copy-btn{order:2;}.resumo-card-actions button:first-child{order:1;}}
 :root[data-contrast="on"] .resumo-status,
 body.high-contrast .resumo-status{border:1px solid currentColor;}
