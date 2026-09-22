@@ -21,6 +21,8 @@ O endpoint do Apps Script está em `js/core/config-api.js`, constante `API_URL`.
 
 Se o editor do Apps Script mostrar somente “Ocorreu um erro desconhecido”, execute primeiro `diagnosticarConfiguracaoPlanilhaMestra()`. Essa função é somente leitura: ela informa a etapa que falhou, as abas encontradas e a situação das propriedades de bootstrap, sem criar, apagar ou alterar dados. Depois de corrigir a causa indicada, execute `configurarPlanilhaMestra()` novamente.
 
+A reorganização visual do Histórico de resumos é feita no frontend. Ela usa os campos que o backend já fornece (`Serie_ID`, `Day_ID`, data, revisão, texto e situação); não cria uma nova ação na API.
+
 ## 3. Migração de dados
 
 A migração adiciona identificadores estáveis de participante (`Participant_ID`) e de dia (`Day_ID`), preserva `Data_Adicionado`, ajusta `Dias_Total` ao maior dia efetivamente encontrado e amplia o histórico de resumos com `Day_ID`, data e revisão.

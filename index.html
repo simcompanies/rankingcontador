@@ -579,9 +579,39 @@ body[data-startup-visible="true"]>.skip-link{visibility:hidden!important;pointer
   <div class="panel">
     <div class="panel-title">Histórico de resumos <button type="button" class="refresh-btn" onclick="carregarResumosSeNecessario(true)" title="Atualizar"><span class="ui-inline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 11a8 8 0 0 0-14.8-3L3 11"></path><path d="M3 5v6h6"></path><path d="M4 13a8 8 0 0 0 14.8 3L21 13"></path><path d="M21 19v-6h-6"></path></svg></span>Atualizar</button></div>
     <div class="panel-hint">Resumos protegidos dos lançamentos anteriores. Eles permanecem registrados mesmo quando a série ativa é reiniciada.</div>
+    <div class="resumos-toolbar" aria-label="Filtros do histórico de resumos">
+      <label class="resumos-search-field">
+        <span class="sr-only">Pesquisar no histórico de resumos</span>
+        <input type="search" id="resumos-busca" placeholder="Pesquisar participante, série ou data" oninput="aplicarFiltrosResumos()">
+      </label>
+      <label class="resumos-filter-field"><span>Série</span><select id="resumos-filtro-serie" onchange="aplicarFiltrosResumos()"><option value="all">Todas as séries</option></select></label>
+      <label class="resumos-filter-field"><span>Dia</span><select id="resumos-filtro-dia" onchange="aplicarFiltrosResumos()"><option value="all">Todos os dias</option></select></label>
+      <label class="resumos-filter-field"><span>Status</span><select id="resumos-filtro-status" onchange="aplicarFiltrosResumos()"><option value="all">Todos os status</option></select></label>
+      <label class="resumos-filter-field"><span>Ordenar</span><select id="resumos-ordenacao" onchange="aplicarFiltrosResumos()"><option value="recentes">Mais recentes</option><option value="antigos">Mais antigos</option><option value="serie">Por série e dia</option></select></label>
+      <div class="resumos-toolbar-actions">
+        <button type="button" onclick="limparFiltrosResumos()">Limpar filtros</button>
+        <button type="button" onclick="alternarGruposResumos(true)">Expandir séries</button>
+        <button type="button" onclick="alternarGruposResumos(false)">Recolher séries</button>
+      </div>
+    </div>
+    <div class="resumos-results-status" id="resumos-contagem" role="status" aria-live="polite"></div>
     <div id="resumos-salvos-lista"><div class="empty-hint">Carregando...</div></div>
   </div>
 </section>
+
+<div class="series-modal hidden" id="resumo-text-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="resumo-text-modal-title" tabindex="-1">
+  <div class="series-modal-card resumo-text-modal-card">
+    <div class="panel-kicker">Texto integral</div>
+    <div class="panel-title" id="resumo-text-modal-title">Resumo salvo</div>
+    <div class="panel-hint" id="resumo-text-modal-meta">Confira ou copie o conteúdo completo.</div>
+    <textarea id="resumo-text-modal-output" class="resumo-full-text" readonly aria-label="Texto integral do resumo"></textarea>
+    <div class="resumo-modal-actions">
+      <button type="button" onclick="selecionarResumoSalvoTexto()">Selecionar texto</button>
+      <button type="button" id="resumo-modal-copy-btn" class="launch-submit" onclick="copiarResumoSalvoAtual()">Copiar resumo</button>
+      <button type="button" onclick="fecharResumoSalvo()">Fechar</button>
+    </div>
+  </div>
+</div>
 
 <div class="series-modal hidden" id="series-history-edit-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="historico-series-editor-title" tabindex="-1">
   <div class="series-modal-card series-history-editor-card">

@@ -4045,3 +4045,48 @@ html[data-theme="light"] :where(select),body.light-mode :where(select){color-sch
   *,*::before,*::after{forced-color-adjust:auto!important;}
   :where(button,input,select,textarea){border-color:ButtonText!important;background:Canvas!important;color:CanvasText!important;}
 }
+
+/* ========================================================================== 
+   Histórico de resumos — organização por série, busca, filtros e cópia
+   ========================================================================== */
+.resumos-toolbar{display:grid;grid-template-columns:minmax(220px,1.6fr) repeat(4,minmax(118px,1fr));gap:9px;align-items:end;margin:16px 0 10px;padding:12px;border:1px solid var(--ux-line,var(--border));border-radius:14px;background:var(--ux-surface-2,var(--panel-2));}
+.resumos-search-field,.resumos-filter-field{display:flex;flex-direction:column;gap:5px;margin:0!important;min-width:0;}
+.resumos-search-field input,.resumos-filter-field select{width:100%;margin:0!important;min-height:38px;}
+.resumos-filter-field span{font-size:10px;font-weight:750;letter-spacing:.04em;text-transform:uppercase;color:var(--ux-muted,var(--muted));}
+.resumos-toolbar-actions{grid-column:1/-1;display:flex;gap:7px;flex-wrap:wrap;}
+.resumos-toolbar-actions button{min-height:32px;font-size:11px;}
+.resumos-results-status{min-height:18px;margin:7px 2px 10px;color:var(--ux-muted,var(--muted));font-size:11px;}
+.resumos-serie-group{margin:0 0 10px;border:1px solid var(--ux-line,var(--border));border-radius:15px;background:var(--ux-surface,var(--panel));overflow:hidden;}
+.resumos-serie-group>summary{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:52px;padding:11px 14px;cursor:pointer;list-style:none;color:var(--ux-text,var(--text));}
+.resumos-serie-group>summary::-webkit-details-marker{display:none;}
+.resumos-serie-group>summary::after{content:'+';font-size:18px;line-height:1;color:var(--ux-muted,var(--muted));}
+.resumos-serie-group[open]>summary::after{content:'−';}
+.resumos-serie-group>summary:hover{background:var(--ux-surface-2,var(--panel-2));}
+.resumos-serie-group>summary:focus-visible{outline:3px solid var(--ux-primary,var(--x-color));outline-offset:-3px;}
+.resumos-serie-group>summary span{display:flex;flex-direction:column;gap:3px;min-width:0;}
+.resumos-serie-group>summary strong{font-size:13px;}
+.resumos-serie-group>summary small{font-size:10px;color:var(--ux-muted,var(--muted));}
+.resumos-serie-group>summary b{font-size:10px;color:var(--ux-muted,var(--muted));white-space:nowrap;}
+.resumos-serie-items{padding:0 10px 2px;border-top:1px solid var(--ux-line-soft,var(--border));}
+.resumos-serie-items .resumo-card{margin:10px 0;border-radius:12px;}
+.resumo-card{display:flex;flex-direction:column;gap:9px;}
+.resumo-card-removido{border-style:dashed!important;}
+.resumo-identificacao{display:flex;align-items:center;gap:7px;flex-wrap:wrap;min-width:0;}
+.resumo-identificacao .day-tag{max-width:100%;}
+.resumo-preview{margin:0;color:var(--ux-muted,var(--muted));font-size:12px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.resumo-card-actions{display:flex;gap:7px;flex-wrap:wrap;}
+.resumo-card-actions button{min-height:32px;font-size:11px;}
+.resumo-card-actions .resumo-copy-btn{border-color:var(--ux-primary-border,rgba(50,215,171,.45));color:var(--ux-primary,var(--x-color));}
+.resumo-status-historico{color:var(--ux-muted,var(--muted));background:var(--ux-surface-2,var(--panel-2));}
+.resumo-text-modal-card{width:min(820px,100%)!important;}
+.resumo-full-text{width:100%;min-height:min(58vh,560px);resize:vertical;margin-top:14px!important;padding:14px!important;border:1px solid var(--ux-line,var(--border))!important;border-radius:12px!important;background:var(--ux-surface-2,var(--panel-2))!important;color:var(--ux-text,var(--text))!important;font:12px/1.55 'IBM Plex Mono',monospace!important;white-space:pre!important;}
+.resumo-modal-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.resumo-modal-actions button{min-height:40px;}
+@media(max-width:900px){.resumos-toolbar{grid-template-columns:minmax(180px,1.5fr) repeat(2,minmax(130px,1fr));}.resumos-toolbar-actions{grid-column:1/-1;}}
+@media(max-width:560px){.resumos-toolbar{grid-template-columns:1fr 1fr;padding:10px;}.resumos-search-field{grid-column:1/-1;}.resumos-toolbar-actions button{flex:1 1 calc(50% - 7px);}.resumos-serie-group>summary{padding:11px 12px;}.resumos-serie-items{padding:0 7px 1px;}.resumo-header{align-items:flex-start;flex-direction:column;gap:6px;}.resumo-data{order:2;}.resumo-card-actions button{flex:1 1 100%;}.resumo-modal-actions{display:grid;grid-template-columns:1fr;}.resumo-modal-actions button{width:100%;}}
+:root[data-contrast="on"] .resumos-toolbar,
+body.high-contrast .resumos-toolbar,
+:root[data-contrast="on"] .resumos-serie-group,
+body.high-contrast .resumos-serie-group{border-color:#687789!important;}
+:root[data-contrast="on"] .resumo-status,
+body.high-contrast .resumo-status{border:1px solid currentColor;}
