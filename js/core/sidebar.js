@@ -13,21 +13,27 @@
 function toggleSidebarMobile(abrir){
   const sidebar = document.getElementById('sidebar');
   const overlay = document.getElementById('sidebar-overlay');
+  if(!sidebar) return false;
   const estado = typeof abrir === 'boolean' ? abrir : !sidebar.classList.contains('open');
   sidebar.classList.toggle('open', estado);
-  overlay.classList.toggle('show', estado);
+  if(overlay) overlay.classList.toggle('show', estado);
+  return estado;
 }
 
 // Desktop: recolhe a sidebar para uma faixa estreita (só ícones) ou expande
 // de volta, e lembra a preferência em localStorage para a próxima visita.
 function toggleSidebarCollapse(){
   const sidebar = document.getElementById('sidebar');
+  if(!sidebar) return false;
   const collapsed = sidebar.classList.toggle('collapsed');
-  localStorage.setItem('rankingGeral_sidebarCollapsed', collapsed ? '1' : '0');
+  try{ localStorage.setItem('rankingGeral_sidebarCollapsed', collapsed ? '1' : '0'); }catch(_){
+    // A interface continua utilizável mesmo quando o navegador bloqueia storage.
+  }
   const btn = document.getElementById('sidebar-collapse-btn');
   if(btn){
     btn.setAttribute('aria-label', collapsed ? 'Expandir menu' : 'Recolher menu');
     btn.setAttribute('title', collapsed ? 'Expandir menu' : 'Recolher menu');
     btn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
   }
+  return collapsed;
 }

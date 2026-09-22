@@ -81,7 +81,11 @@ async function obterBootstrapSessao(token){
 
 async function iniciarApp(promessaModulos){
   document.body.setAttribute('data-app-screen', 'auth');
-  if(localStorage.getItem('rankingGeral_sidebarCollapsed') === '1') toggleSidebarCollapse();
+  let sidebarRecolhida = false;
+  try{ sidebarRecolhida = localStorage.getItem('rankingGeral_sidebarCollapsed') === '1'; }catch(_){
+    // Storage bloqueado não pode impedir a abertura do login ou do painel.
+  }
+  if(sidebarRecolhida) toggleSidebarCollapse();
 
   const tokenSalvo = sessionStorage.getItem('rankingGeral_token');
   if(!tokenSalvo){
@@ -165,13 +169,20 @@ function configurarViewportPWA(){
 }
 
 async function iniciarAplicacao(){
-  configurarViewportPWA();
-  // v57: o HTML essencial já está no DOM; inicializamos sessão/dados imediatamente.
-  modulosHtmlPromise = carregarModulosHtml();
-  window.rgModulosPromise = modulosHtmlPromise;
-  registrarServiceWorker();
-  await iniciarApp(modulosHtmlPromise);
-  atualizarEstadoRede();
+  try{
+    configurarViewportPWA();
+    // v57: o HTML essencial já está no DOM; inicializamos sessão/dados imediatamente.
+    modulosHtmlPromise = carregarModulosHtml();
+    window.rgModulosPromise = modulosHtmlPromise;
+    registrarServiceWorker();
+    await iniciarApp(modulosHtmlPromise);
+    atualizarEstadoRede();
+  }catch(erro){
+    // Uma falha incidental de bootstrap não pode deixar o splash/inert ativo
+    // sobre toda a interface. O usuário deve conseguir voltar ao login.
+    console.error('Falha ao iniciar a interface do Ranking Geral.', erro);
+    if(window.RGStartup) window.RGStartup.done('Faça login para continuar');
+  }
 }
 
 function flushAoOcultar(){
