@@ -82,8 +82,21 @@ function updateScore(divId, idx, dayIdx, value){
     return;
   }
   div.participantes[idx].scores[dayIdx] = num;
-  saveState({ immediate:true });
   renderDivision(divId);
+
+  // A edição direta altera o texto do resumo diário e o acumulado de todos
+  // os dias. Primeiro confirma a gravação do ranking; só depois regenera os
+  // resumos, evitando registrar texto baseado em dados ainda não sincronizados.
+  const salvamento = saveState({ immediate:true });
+  if(salvamento && typeof salvamento.then === 'function'){
+    salvamento.then(function(salvo){
+      if(salvo !== false && typeof sincronizarResumosAposAlteracaoRanking === 'function') {
+        return sincronizarResumosAposAlteracaoRanking();
+      }
+    }).catch(function(erro){
+      console.error('Erro ao atualizar os resumos após editar pontuação', erro);
+    });
+  }
 }
 
 /* --------------------------------------------------------------------------

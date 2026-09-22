@@ -165,7 +165,7 @@ async function handleSalvarResumoAtual(){
 // mesma gravação de handleSalvarResumoAtual, mas sem depender de a caixa de
 // pré-visualização estar preenchida, e sem interromper o fluxo com alertas.
 async function autoSalvarResumoDoDia(dayIdx){
-  if(!souAdmin()) return;
+  if(!souAdmin()) return false;
   try{
     const sincronizado = await flushPendingSave();
     if(!sincronizado) throw new Error('Ranking não sincronizado; resumo automático adiado.');
@@ -178,11 +178,29 @@ async function autoSalvarResumoDoDia(dayIdx){
       texto: textoResumoParaDia(dayIdx)
     });
     if(!resposta.sucesso){
-      if(tratarErroSessaoOuPermissao(resposta)) return;
+      if(tratarErroSessaoOuPermissao(resposta)) return false;
       throw new Error(resposta.erro || 'Falha lógica ao salvar resumo.');
     }
     resumosCarregado = false;
+    return true;
   }catch(erro){
     console.error('Erro ao salvar resumo automático', erro);
+    return false;
   }
+}
+
+// Regenera todos os resumos da série ativa depois de uma alteração no
+// ranking. O bloco "RANKING ACUMULADO" de cada resumo depende de todos os
+// dias; por isso atualizar somente o dia editado deixaria resumos anteriores
+// com dados acumulados antigos. O backend mantém as versões anteriores na
+// aba ResumosSalvos e a leitura exibe somente a versão mais recente de cada
+// Day_ID.
+async function sincronizarResumosAposAlteracaoRanking(){
+  if(!souAdmin() || !state || !Number(state.days)) return false;
+  let tudoCerto = true;
+  for(let d = 0; d < Number(state.days); d++){
+    const ok = await autoSalvarResumoDoDia(d);
+    if(ok !== true) tudoCerto = false;
+  }
+  return tudoCerto;
 }

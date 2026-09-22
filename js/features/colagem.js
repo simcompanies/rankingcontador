@@ -353,7 +353,7 @@ async function confirmImport(){
   window.rankingPasteSource = '';
   switchLaunchTab('form');
   const salvo = await saveState({ immediate:true }); render();
-  if(salvo !== false) await autoSalvarResumoDoDia(dayIdx);
+  if(salvo !== false && typeof sincronizarResumosAposAlteracaoRanking === 'function') await sincronizarResumosAposAlteracaoRanking();
   if(typeof verificarEncerramentoSerie === 'function') verificarEncerramentoSerie();
 }
 

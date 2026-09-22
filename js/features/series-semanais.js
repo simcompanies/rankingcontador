@@ -593,6 +593,9 @@ async function confirmarEdicaoSerieHistorica(){
     });
     if(!resposta.sucesso){
       if(tratarErroSessaoOuPermissao(resposta)) return;
+      if(/Ação POST não reconhecida:\s*editarSerieHistorica/i.test(String(resposta.erro || ''))){
+        throw new Error('O backend publicado ainda não possui a função de edição de séries históricas. Atualize o Code.gs e publique uma nova versão na mesma implantação da API.');
+      }
       throw new Error(resposta.erro || 'Não foi possível salvar a série histórica.');
     }
     fecharEditorSerieHistorica();

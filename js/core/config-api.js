@@ -17,7 +17,7 @@
    salvar ranking, listar usuários etc.) passam por aqui, diferenciadas
    pelo campo "action" enviado no corpo/query da requisição.
    -------------------------------------------------------------------------- */
-const API_URL = 'https://script.google.com/macros/s/AKfycbwWCBliKrJ19l15ASWA0REL_fSdPGQrC0ZjgIUMBCfScjjnS3OashRrX0l6-0nE6u3CjA/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbyemMNSdoTmUUaY7mhLQW4P0oOr0JypIgNv-ZmCbhWHQWuCEBi7WRunLuvXe8-R3OH1yA/exec';
 
 /* Chamada autenticada/mutável (POST) — usada para toda ação que grava ou
    altera dado no backend (login, salvar ranking, criar usuário...).

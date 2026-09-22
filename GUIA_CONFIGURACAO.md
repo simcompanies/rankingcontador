@@ -19,6 +19,8 @@ O endpoint do Apps Script está em `js/core/config-api.js`, constante `API_URL`.
 6. A função cria/migra o esquema e apaga `ADMIN_BOOTSTRAP_SENHA` das propriedades assim que o primeiro administrador é criado.
 7. Publique uma **nova versão do deployment existente** do Web App para manter a mesma URL usada pelo front-end. Se criar um deployment novo, atualize `API_URL`.
 
+Se o editor do Apps Script mostrar somente “Ocorreu um erro desconhecido”, execute primeiro `diagnosticarConfiguracaoPlanilhaMestra()`. Essa função é somente leitura: ela informa a etapa que falhou, as abas encontradas e a situação das propriedades de bootstrap, sem criar, apagar ou alterar dados. Depois de corrigir a causa indicada, execute `configurarPlanilhaMestra()` novamente.
+
 ## 3. Migração de dados
 
 A migração adiciona identificadores estáveis de participante (`Participant_ID`) e de dia (`Day_ID`), preserva `Data_Adicionado`, ajusta `Dias_Total` ao maior dia efetivamente encontrado e amplia o histórico de resumos com `Day_ID`, data e revisão.
@@ -38,6 +40,8 @@ Se isso acontecer, corrija a ambiguidade diretamente na Planilha Mestra e execut
 `Ranking_Revision` é mantido na aba de configuração. Cada salvamento envia a revisão que o navegador carregou. Se outro administrador tiver salvo antes, o backend retorna `REVISION_CONFLICT` e a interface bloqueia novas edições até recarregar a versão atual.
 
 O backend usa `LockService`, valida todo o snapshot antes da escrita, mantém cópias das abas alteradas para rollback e as leituras do ranking usam o mesmo lock para não observar uma gravação pela metade.
+
+Quando um administrador edita uma pontuação de um dia já lançado, os resumos da série ativa são regenerados depois da confirmação da gravação. A aba `ResumosSalvos` continua preservando as versões anteriores; a leitura mostra a versão mais recente de cada `Serie_ID + Day_ID`. Se um dia for removido, o resumo antigo não é apagado e aparece identificado como `dia removido`; os dias restantes são renumerados e seus resumos são regenerados.
 
 ## 5. Sessões e senhas
 

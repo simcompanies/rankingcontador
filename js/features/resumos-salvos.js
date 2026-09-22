@@ -39,17 +39,26 @@ function resumoHistoricoHtml(r, i){
   const data = r.dataHora ? new Date(r.dataHora).toLocaleString('pt-BR') : '—';
   const dataDia = r.dayDate ? String(r.dayDate).slice(0,10).split('-').reverse().join('/') : '';
   const idxAtual = r.dayId && state && Array.isArray(state.dayIds) ? state.dayIds.indexOf(String(r.dayId)) : -1;
+  const diaOriginal = Number(r.dia) || 0;
+  const diaAtual = Number(r.diaAtual) || (idxAtual >= 0 ? idxAtual + 1 : diaOriginal);
   let rotuloDia;
-  if(idxAtual >= 0){
+  let situacao = '';
+  if(r.situacao === 'dia_removido'){
+    rotuloDia = `${r.seriesNumber ? 'Série ' + r.seriesNumber + ' · ' : ''}Dia removido${diaOriginal ? ' · era o Dia ' + diaOriginal : ''}${dataDia ? ' · ' + dataDia : ''}`;
+    situacao = '<span class="resumo-status resumo-status-removido">dia removido</span>';
+  }else if(idxAtual >= 0){
     const serieAtual = state.seriesMeta && state.seriesMeta.currentNumber ? state.seriesMeta.currentNumber : null;
-    rotuloDia = `${serieAtual ? 'Série ' + serieAtual + ' · ' : ''}Dia ${idxAtual + 1}${dataDia ? ' · ' + dataDia : ''}`;
-    if(Number(r.dia) && Number(r.dia) !== idxAtual + 1) rotuloDia += ` · histórico: Dia ${r.dia}`;
+    rotuloDia = `${serieAtual ? 'Série ' + serieAtual + ' · ' : ''}Dia ${diaAtual}${dataDia ? ' · ' + dataDia : ''}`;
+    if(diaOriginal && diaOriginal !== diaAtual) rotuloDia += ` · antes: Dia ${diaOriginal}`;
+    if(r.situacao === 'renumerado') situacao = '<span class="resumo-status resumo-status-renumerado">dia renumerado</span>';
+    else if(r.situacao === 'atualizado') situacao = '<span class="resumo-status resumo-status-atualizado">dados atualizados</span>';
   }else{
-    rotuloDia = `${r.seriesNumber ? 'Série ' + r.seriesNumber + ' · ' : ''}Dia histórico ${r.dia || '—'}${dataDia ? ' · ' + dataDia : ''}`;
+    rotuloDia = `${r.seriesNumber ? 'Série ' + r.seriesNumber + ' · ' : ''}Dia histórico ${diaOriginal || '—'}${dataDia ? ' · ' + dataDia : ''}`;
   }
   return `<div class="resumo-card">
     <div class="resumo-header">
       <span class="day-tag" title="${escapeHtml(r.dayId || '')}">${escapeHtml(rotuloDia)}</span>
+      ${situacao}
       <span class="resumo-data">${data}</span>
       <button type="button" onclick="copiarResumoSalvo(${i})">Copiar</button>
     </div>

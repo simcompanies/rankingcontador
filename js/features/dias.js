@@ -39,5 +39,14 @@ async function removeDay(dayIdx){
   if(Array.isArray(state.dayIds)) state.dayIds.splice(dayIdx,1);
   state.days -= 1;
   if(typeof ajustarFiltroAposRemoverDia === 'function') ajustarFiltroAposRemoverDia(dayIdx);
-  saveState({ immediate:true }); render();
+  const salvo = await saveState({ immediate:true });
+  render();
+
+  // A remoção renumera os dias seguintes. Regenera todos os resumos para que
+  // texto, data, colocação e acumulado acompanhem os novos índices. O
+  // resumo do Day_ID removido permanece preservado na aba, mas o backend o
+  // devolve com a situação "dia_removido".
+  if(salvo !== false && typeof sincronizarResumosAposAlteracaoRanking === 'function'){
+    await sincronizarResumosAposAlteracaoRanking();
+  }
 }

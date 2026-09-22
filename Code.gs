@@ -1753,14 +1753,68 @@ function listarResumosSalvos() {
   try {
     const planilha = SpreadsheetApp.openById(PLANILHA_MESTRA_ID);
     const abas = garantirEsquemaRanking(planilha);
-    const resumos = [];
-    if (abas.abaResumos.getLastRow() > 1) {
-      const linhas = abas.abaResumos.getRange(2,1,abas.abaResumos.getLastRow()-1,CABECALHO_RESUMOS.length).getValues();
-      linhas.forEach(function(linha){
-        resumos.push({ dataHora:linha[0], seriesId:linha[1], seriesNumber:linha[2], dia:linha[3], dayId:linha[4], dayDate:linha[5], revision:linha[6], texto:linha[7] });
-      });
-      resumos.reverse();
+    if (abas.abaResumos.getLastRow() <= 1) return [];
+
+    // A aba continua append-only para preservar o que já foi salvo. Quando
+    // um dia é editado, o frontend grava uma nova versão do resumo com o
+    // mesmo Serie_ID + Day_ID. A leitura devolve somente a versão mais
+    // recente de cada dia, evitando que o usuário veja simultaneamente um
+    // resumo antigo e outro corrigido.
+    const quantidade = abas.abaResumos.getLastRow() - 1;
+    const linhas = abas.abaResumos.getRange(2,1,quantidade,CABECALHO_RESUMOS.length).getValues();
+    const ultimaPorChave = {};
+    function timestampResumo(valor) {
+      const t = valor instanceof Date ? valor.getTime() : new Date(valor).getTime();
+      return Number.isFinite(t) ? t : 0;
     }
+    linhas.forEach(function(linha, indice){
+      const serieId = String(linha[1] || '').trim();
+      const dayId = String(linha[4] || '').trim();
+      const dia = Number(linha[3]) || 0;
+      const dataDia = String(linha[5] || '').trim();
+      const chaveDia = dayId || ('dia:' + dia + '|' + dataDia);
+      const chave = serieId ? serieId + '||' + chaveDia : 'linha:' + indice;
+      const anterior = ultimaPorChave[chave];
+      const candidato = { linha: linha, indice: indice };
+      if (!anterior || timestampResumo(linha[0]) > timestampResumo(anterior.linha[0]) ||
+          (timestampResumo(linha[0]) === timestampResumo(anterior.linha[0]) && indice > anterior.indice)) {
+        ultimaPorChave[chave] = candidato;
+      }
+    });
+
+    const serieAtualId = String(lerConfig(abas.abaConfig, 'Serie_Atual_ID', '') || '').trim();
+    const diasAtuais = {};
+    if (abas.abaDias.getLastRow() > 1) {
+      const linhasDias = abas.abaDias.getRange(2,1,abas.abaDias.getLastRow()-1,CABECALHO_DIAS.length).getValues();
+      linhasDias.forEach(function(linha){
+        const dayId = String(linha[1] || '').trim();
+        if (dayId) diasAtuais[dayId] = { numero:Number(linha[0]) || 0, data:linha[2] || '' };
+      });
+    }
+
+    const resumos = Object.keys(ultimaPorChave).map(function(chave){
+      const linha = ultimaPorChave[chave].linha;
+      const serieId = String(linha[1] || '').trim();
+      const diaOriginal = Number(linha[3]) || 0;
+      const dayId = String(linha[4] || '').trim();
+      let situacao = 'historico';
+      let diaAtual = diaOriginal;
+      if (serieId && serieId === serieAtualId && dayId) {
+        if (!diasAtuais[dayId]) {
+          situacao = 'dia_removido';
+          diaAtual = null;
+        } else {
+          diaAtual = diasAtuais[dayId].numero;
+          situacao = diaAtual !== diaOriginal ? 'renumerado' : 'atualizado';
+        }
+      }
+      return {
+        dataHora:linha[0], seriesId:serieId, seriesNumber:linha[2],
+        dia:diaOriginal, diaAtual:diaAtual, dayId:dayId, dayDate:linha[5],
+        revision:linha[6], texto:linha[7], situacao:situacao
+      };
+    });
+    resumos.sort(function(a,b){ return timestampResumo(b.dataHora) - timestampResumo(a.dataHora); });
     return resumos;
   } finally {
     lock.releaseLock();
@@ -1940,33 +1994,112 @@ function criarResposta(objeto) {
  * deve criar uma conta nova pela tela "Crie sua conta".
  */
 function configurarPlanilhaMestra() {
-  const planilha = SpreadsheetApp.openById(PLANILHA_MESTRA_ID);
-  const abaConfig = obterOuCriarAba(planilha, ABA_CONFIG, CABECALHO_CONFIG);
-  const abaUsuarios = obterOuCriarAba(planilha, ABA_USUARIOS, CABECALHO_USUARIOS);
-  obterOuCriarAba(planilha, ABA_LOG, CABECALHO_LOG);
-  const abas = garantirEsquemaRanking(planilha);
+  let etapa = 'inicialização';
+  try {
+    etapa = 'abrir a Planilha Mestra pelo PLANILHA_MESTRA_ID';
+    const planilha = SpreadsheetApp.openById(PLANILHA_MESTRA_ID);
 
-  if (abas.abaFaixas.getLastRow() < 2) {
-    abas.abaFaixas.appendRow(['x', 'Faixa X', '0 a 19.999M', '--x-color', 1]);
-    abas.abaFaixas.appendRow(['y', 'Faixa Y', '20M ou mais', '--y-color', 2]);
+    etapa = 'criar ou validar a aba Config';
+    const abaConfig = obterOuCriarAba(planilha, ABA_CONFIG, CABECALHO_CONFIG);
+
+    etapa = 'criar ou validar a aba Usuarios';
+    const abaUsuarios = obterOuCriarAba(planilha, ABA_USUARIOS, CABECALHO_USUARIOS);
+
+    etapa = 'criar ou validar a aba Log';
+    obterOuCriarAba(planilha, ABA_LOG, CABECALHO_LOG);
+
+    etapa = 'migrar e validar o esquema do ranking';
+    const abas = garantirEsquemaRanking(planilha);
+
+    etapa = 'configurar as faixas padrão';
+    if (abas.abaFaixas.getLastRow() < 2) {
+      abas.abaFaixas.appendRow(['x', 'Faixa X', '0 a 19.999M', '--x-color', 1]);
+      abas.abaFaixas.appendRow(['y', 'Faixa Y', '20M ou mais', '--y-color', 2]);
+    }
+
+    etapa = 'configurar os valores iniciais da aba Config';
+    if (lerConfig(abaConfig, 'Dias_Total', null) === null) escreverConfig(abaConfig, 'Dias_Total', 0);
+    if (lerConfig(abaConfig, 'Ranking_Revision', null) === null) escreverConfig(abaConfig, 'Ranking_Revision', 0);
+
+    etapa = 'verificar o administrador inicial';
+    if (contarAdministradores(abaUsuarios) === 0) {
+      const props = PropertiesService.getScriptProperties();
+      const nome = String(props.getProperty(PROP_ADMIN_NOME) || '').trim();
+      const email = normalizarEmail(props.getProperty(PROP_ADMIN_EMAIL));
+      const senha = String(props.getProperty(PROP_ADMIN_SENHA) || '');
+      if (!nome || !emailValido(email) || senha.length < 8) {
+        throw new Error('Defina ADMIN_BOOTSTRAP_NOME, ADMIN_BOOTSTRAP_EMAIL e ADMIN_BOOTSTRAP_SENHA (mínimo de 8 caracteres) nas Propriedades do script antes de criar o primeiro administrador.');
+      }
+      const salt = Utilities.getUuid();
+      etapa = 'criar o administrador inicial';
+      abaUsuarios.appendRow([Utilities.getUuid(), nome, email, gerarHashSenha(senha, salt), salt, PAPEL_ADMIN, new Date(), '', '', false]);
+      props.deleteProperty(PROP_ADMIN_SENHA); // segredo não permanece armazenado após bootstrap
+      etapa = 'registrar o bootstrap no Log';
+      registrarLog(nome, 'Conta administradora inicial criada por bootstrap seguro');
+    }
+
+    Logger.log('Planilha Mestra configurada/migrada com sucesso.');
+    return 'Planilha Mestra configurada/migrada com sucesso. A senha de bootstrap foi removida das Propriedades do script após a criação do primeiro administrador.';
+  } catch (erro) {
+    const mensagem = erro && erro.message ? erro.message : String(erro);
+    const detalhe = 'Falha ao executar configurarPlanilhaMestra na etapa "' + etapa + '": ' + mensagem;
+    try { console.error(detalhe, erro && erro.stack ? erro.stack : ''); } catch (ignorado) {}
+    try { Logger.log(detalhe); } catch (ignorado) {}
+    throw new Error(detalhe);
   }
-  if (lerConfig(abaConfig, 'Dias_Total', null) === null) escreverConfig(abaConfig, 'Dias_Total', 0);
-  if (lerConfig(abaConfig, 'Ranking_Revision', null) === null) escreverConfig(abaConfig, 'Ranking_Revision', 0);
+}
 
-  if (contarAdministradores(abaUsuarios) === 0) {
+/**
+ * Diagnóstico somente leitura para quando o Apps Script exibe apenas
+ * "Ocorreu um erro desconhecido". Não cria abas, não grava configurações e
+ * não executa a migração.
+ */
+function diagnosticarConfiguracaoPlanilhaMestra() {
+  let etapa = 'inicialização';
+  const resultado = {
+    sucesso: false,
+    planilhaIdConfigurada: Boolean(String(PLANILHA_MESTRA_ID || '').trim()),
+    planilhaId: String(PLANILHA_MESTRA_ID || ''),
+    abasEncontradas: [],
+    administradores: null,
+    propriedadesBootstrap: {},
+    etapa: '',
+    erro: ''
+  };
+
+  try {
+    etapa = 'abrir a Planilha Mestra pelo PLANILHA_MESTRA_ID';
+    const planilha = SpreadsheetApp.openById(PLANILHA_MESTRA_ID);
+    resultado.nomePlanilha = planilha.getName();
+    resultado.abasEncontradas = planilha.getSheets().map(function(aba) { return aba.getName(); });
+
+    etapa = 'ler a aba Usuarios';
+    const abaUsuarios = planilha.getSheetByName(ABA_USUARIOS);
+    resultado.abaUsuariosExiste = Boolean(abaUsuarios);
+    resultado.cabecalhoUsuarios = abaUsuarios ? cabecalhoAtual(abaUsuarios) : [];
+    resultado.administradores = abaUsuarios ? contarAdministradores(abaUsuarios) : 0;
+
+    etapa = 'ler as propriedades de bootstrap';
     const props = PropertiesService.getScriptProperties();
     const nome = String(props.getProperty(PROP_ADMIN_NOME) || '').trim();
     const email = normalizarEmail(props.getProperty(PROP_ADMIN_EMAIL));
     const senha = String(props.getProperty(PROP_ADMIN_SENHA) || '');
-    if (!nome || !emailValido(email) || senha.length < 8) {
-      throw new Error('Defina ADMIN_BOOTSTRAP_NOME, ADMIN_BOOTSTRAP_EMAIL e ADMIN_BOOTSTRAP_SENHA (mínimo 8 caracteres) nas Propriedades do script antes de criar o primeiro administrador.');
-    }
-    const salt = Utilities.getUuid();
-    abaUsuarios.appendRow([Utilities.getUuid(), nome, email, gerarHashSenha(senha, salt), salt, PAPEL_ADMIN, new Date(), '', '', false]);
-    props.deleteProperty(PROP_ADMIN_SENHA); // segredo não permanece armazenado após bootstrap
-    registrarLog(nome, 'Conta administradora inicial criada por bootstrap seguro');
+    resultado.propriedadesBootstrap = {
+      nomeDefinido: Boolean(nome),
+      emailValido: emailValido(email),
+      senhaDefinida: Boolean(senha),
+      senhaComTamanhoMinimo: senha.length >= 8
+    };
+
+    resultado.sucesso = true;
+    resultado.etapa = 'diagnóstico concluído';
+  } catch (erro) {
+    resultado.etapa = etapa;
+    resultado.erro = erro && erro.message ? erro.message : String(erro);
   }
 
-  Logger.log('Planilha Mestra configurada/migrada com sucesso.');
-  return 'Planilha Mestra configurada/migrada com sucesso. A senha de bootstrap foi removida das Propriedades do script após a criação do primeiro administrador.';
+  const saida = JSON.stringify(resultado, null, 2);
+  Logger.log(saida);
+  try { console.log(saida); } catch (ignorado) {}
+  return saida;
 }
